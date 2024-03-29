@@ -31,3 +31,39 @@ class Model(ABC):
         pass
 
 
+class Llama(Model):
+    # Subclass to handle Llama locally
+    
+    def model_init(self):
+        # Initialize the LLM model locally
+        from transformers import AutoTokenizer
+        import transformers
+        import torch
+
+        model_id = "meta-llama/Llama-2-7b-chat-hf"
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+        self.pipeline = transformers.pipeline(
+            "text-generation",
+            model = model_id,
+            torch_dtype=torch.float16,
+            device_map="auto"
+        )
+    
+    def generate(self, prompt):
+        # Generate text using the LLM locally
+        sequences = self.pipeline(
+            prompt,
+            do_sample=True,
+            temperature=0.1,
+            top_p=0.9,
+            num_return_sequences=1,
+            eos_token_id=self.tokenizer.eos_token_id,
+        )
+        return sequences[0]['generated_text']
+    
+    def extract(self):
+        # Extract relevant information from generated text
+        
+        #voir sur la dgx si ça marche et regarder le format de la réponse
+        pass
