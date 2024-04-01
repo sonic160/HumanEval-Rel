@@ -62,8 +62,26 @@ class Llama(Model):
         )
         return sequences[0]['generated_text']
     
-    def extract(self):
+    def extract(self,text):
         # Extract relevant information from generated text
+        Done = False
+
+        index_def = text.find('def')
+        if index_def == -1:
+            return None  # if "def" isn't found in the text
+
+        beginning = index_def
+
+        while not Done:
+            index_return = text.find('return',beginning)
+            if index_return == -1:
+                return None  # if "return" isn't found in the text
         
-        #voir sur la dgx si ça marche et regarder le format de la réponse
-        pass
+            index_last_break = text.find('\n', index_return)
+            if text[index_last_break] != " ":
+                Done = True
+            else:
+                beginning = index_return + 1
+
+        extract_string = text[index_def:index_last_break].strip()  # Remove spaces around the extracted string
+        return extract_string
