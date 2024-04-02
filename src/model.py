@@ -50,9 +50,9 @@ class HuggingFace(Model):
     def model_init(self,cachedir=None):
         # This method is used to initialize the model, we want to do it once at the start
         self.__tokenizer = AutoTokenizer.from_pretrained(self.model_path, cache_dir=cachedir)
-        self.__model = AutoModelForCausalLM.from_pretrained(self.model_path, cachedir=cachedir).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
+        self.__model = AutoModelForCausalLM.from_pretrained(self.model_path, cache_dir=cachedir).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
         
-    def generate(self, prompt, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3):
+    def generate(self, prompt, max_tokens=500, top_p=0.95, top_k=60, temperature=0.3):
         # This method is used to generate the code from a prompt in the chat model. Do not use this for batch generation.
         
         chat_input = self.__tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
