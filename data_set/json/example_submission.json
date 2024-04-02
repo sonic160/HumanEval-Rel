@@ -3,5 +3,6 @@
 {"task_id": "test/0", "completion": "    return input('enter a number')"},
 {"task_id": "test/0", "completion": "    return 1"},
 {"task_id": "test/0", "completion": "  return 1"},
-{"task_id": "test/0", "completion": "\treturn 1"}
+{"task_id": "test/0", "completion": "\treturn 1"},
+{"task_id": "test/0", "completion": "\treturn cdf(t + delta_t) - cdf(t)"}
 ]

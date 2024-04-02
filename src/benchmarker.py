@@ -13,12 +13,16 @@ class Benchmarker:
         self.challenges = self.load_challenges_file()
         self.sandbox = SandboxCodeRunner()
         self.tests = dict()
+        
 
         if self.challenges:
-            self.gen_file = self.load_gen_file()
-            pass
+            self.generations = self.load_gen_file()
         else:
-            self.gen_answers_with_model()
+            self.generations = self.gen_answers_with_model()
+
+        
+
+    
 
     def load_challenges_file(self):
         """_summary_
@@ -31,7 +35,7 @@ class Benchmarker:
         except FileNotFoundError:
             print('File not found')
             exit(1)
-        
+
         x = json.load(f)
         print(x)
         f.close()
@@ -48,8 +52,16 @@ class Benchmarker:
             exit(1)
         
         x = json.load(f)
+        gens = dict()
+
+        for gen in x:
+            if gen['task_id'] not in gens:
+                gens[gen['task_id']] = [gen]
+            else:
+                gens[gen['task_id']].append(gen)
+
         f.close()
-        return x
+        return gens
         
     def gen_answers_with_model(self):
         pass
@@ -57,10 +69,26 @@ class Benchmarker:
     def benchmark(self):
         """_summary_
         """
-        for i in tqdm.tqdm(range(20)):
-            time.sleep(0.1)
+        for i in tqdm.tqdm(range(len(self.challenges))):
 
+            id  = self.challenges[i]['task_id']
+            prompt = self.challenges[i]['prompt']
+            tests = self.challenges[i]['test']
+            entry_point = self.challenges[i]['entry_point']
+
+            for gen in self.generations[id]:
+                completion = gen['completion']
+                result = self.sandbox.run_tests(prompt, completion, tests, entry_point)
+                
+                if tests not in self.tests:
+                    self.tests[id] = [{'result': result, 'completion': completion}]
+                else:
+                    self.tests[id].append({'result': result, 'completion': completion})
+    
+    def save_results(self):
+        json.dump(self.tests, open('../data_set/json/results.json', 'w'))
 
 if __name__ == '__main__':
     bm = Benchmarker('../data_set/json/example_problem.json', '../data_set/json/example_submission.json')
     bm.benchmark()
+    bm.save_results()

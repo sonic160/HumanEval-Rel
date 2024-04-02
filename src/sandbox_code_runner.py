@@ -11,7 +11,7 @@ class bcolors:
 import sys
 import faulthandler
 from typing import Optional, Callable, Dict
-
+import time
 class SandboxCodeRunner:
     def __init__(self):
         self.print_warning()
@@ -104,16 +104,29 @@ class SandboxCodeRunner:
         else:
             return False
         
-    def run(self, code):
-        # This method is used to run the code in a sandbox environment
-        eval(code)
-    def load_func(self, code: str):
-        # This method is used to load the function from a string
+ 
+    
+    def run_tests(self, func: str, completion: str, tests: str, entry_point: str) -> bool:
+        # This method is used to run the tests in a sandbox environment
         context = {}
-        exec(code, context)
+        code  = func + completion + '\n' +tests + "\ntest = check(" + entry_point + ")\n"
         
-        return context['test']
+        try:
+            # record start time
+            start = time.time()
+            exec(code, context)
+            end = time.time()
+            
+            # Return false if execution is too long
+            if start - end > 5:
+                return False
+            
+            return self.convert_to_bool(context['test'])
         
+        except SyntaxError as e:
+            return False
+        
+    
 
 if __name__ == '__main__':
     test = None
