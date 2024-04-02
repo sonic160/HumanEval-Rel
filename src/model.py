@@ -49,7 +49,7 @@ class HuggingFace(Model):
     
     def model_init(self,cachedir=None):
         # This method is used to initialize the model, we want to do it once at the start
-        self.__tokenizer = AutoTokenizer.from_pretrained(self.model_path, cachedir=cachedir)
+        self.__tokenizer = AutoTokenizer.from_pretrained(self.model_path, cache_dir=cachedir)
         self.__model = AutoModelForCausalLM.from_pretrained(self.model_path, cachedir=cachedir).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
         
     def generate(self, prompt, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3):
