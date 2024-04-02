@@ -2,6 +2,10 @@ import tqdm
 import time
 import json 
 from sandbox_code_runner import SandboxCodeRunner
+import numpy as np
+from collections import defaultdict, Counter
+from score_calculator import ScoreCalculator, PassAtK
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class Benchmarker:
     """_summary_@Benchmarker        
@@ -45,6 +49,7 @@ class Benchmarker:
         #TODO: Throw Exception if srcfile doesn't exist
         #with open(self.srcfile, 'r') as f:
             #return f.read()
+        
         try:
             f = open(self.completion_file)
         except FileNotFoundError:
@@ -69,22 +74,51 @@ class Benchmarker:
     def benchmark(self):
         """_summary_
         """
-        for i in tqdm.tqdm(range(len(self.challenges))):
+        n_workers = 4
 
-            id  = self.challenges[i]['task_id']
-            prompt = self.challenges[i]['prompt']
-            tests = self.challenges[i]['test']
-            entry_point = self.challenges[i]['entry_point']
+        with ThreadPoolExecutor(max_workers=n_workers) as executor:
+            futures = []
+            completion_id = Counter()
+            for challenge in tqdm.tqdm(self.challenges):
+               
+                id , prompt, tests, entry_point = challenge['task_id'], challenge['prompt'], \
+                    challenge['test'], challenge['entry_point']
 
-            for gen in self.generations[id]:
-                completion = gen['completion']
-                result = self.sandbox.run_tests(prompt, completion, tests, entry_point)
-                
-                if tests not in self.tests:
-                    self.tests[id] = [{'result': result, 'completion': completion}]
-                else:
-                    self.tests[id].append({'result': result, 'completion': completion})
-    
+                for gen in self.generations[id]:
+                    completion = gen['completion']
+                    args = (prompt, completion, tests, entry_point)
+                    future = executor.submit(self.sandbox.run_tests, *args)
+                    futures.append(future)
+                    completion_id[id] += 1
+
+                for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
+                    result, completion = future.result()
+                    
+                    print(self.tests)
+                    if id not in self.tests:
+                        self.tests[id] = [(result,completion)]
+                    else:
+                        self.tests[id].append((result,completion))
+
+        
+            total, correct = [], []
+            for result in self.tests.values():
+                print(result)
+                result.sort()
+                passed = [r[0] for r in result]
+                total.append(len(passed))
+                correct.append(sum(passed))
+            total = np.array(total)
+            correct = np.array(correct)
+
+            ks = [1, 10, 100]
+            pass_at_k = {f"pass@{k}": PassAtK().calculate_score(total, correct, k).mean()
+                        for k in ks if (total >= k).all()}
+            
+            print(pass_at_k)
+        
+
+
     def save_results(self):
         json.dump(self.tests, open('../data_set/json/results.json', 'w'))
 

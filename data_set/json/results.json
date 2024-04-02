@@ -1,1 +1,1 @@
-{"test/0": {"result": true, "completion": "\treturn cdf(t + delta_t) - cdf(t)"}}
+{"test/0": [[false, "\treturn 1"], [false, "    import subprocess\n    subprocess.check_output('rm -rf tmp')"], [false, "    import time\n    time.sleep(1)\n    return 1"], [false, "    return 1"], [false, "    return 3"], [false, "  return 1"], [true, "\treturn cdf(t + delta_t) - cdf(t)"]]}

@@ -119,12 +119,12 @@ class SandboxCodeRunner:
             
             # Return false if execution is too long
             if start - end > 5:
-                return False
+                return False, completion
             
-            return self.convert_to_bool(context['test'])
+            return self.convert_to_bool(context['test']), completion
         
         except SyntaxError as e:
-            return False
+            return False, completion
         
     
 
