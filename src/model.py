@@ -78,7 +78,7 @@ class Llama(Model):
                 return None  # if "return" isn't found in the text
         
             index_last_break = text.find('\n', index_return)
-            if text[index_last_break] != " ":
+            if text[index_last_break+1] != " ":
                 Done = True
             else:
                 beginning = index_return + 1
