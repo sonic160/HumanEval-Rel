@@ -33,9 +33,8 @@ class Prompter:
         for challenge in self.challenges:
             id , prompt, tests, entry_point = challenge['task_id'], challenge['prompt'], \
                     challenge['test'], challenge['entry_point']
-            print(prompt)
-            #completion = self.model.generate(prompt)
-            #self.completions.append({'task_id': challenge['task_id'], 'completion': completion})
+            completion = self.model.generate(prompt)
+            self.completions.append({'task_id': challenge['task_id'], 'completion': completion})
 
     def output_json(self):
         json.dump(self.completions, open('../data_set/json/completions.json', 'w'))
