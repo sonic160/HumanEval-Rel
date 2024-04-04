@@ -1,1 +1,3 @@
 my_ws/
+*.pyc
+*.DS_STORE
