@@ -112,7 +112,9 @@ class HuggingFace(Model):
                 #return None  # if "return" isn't found in the text
         
             index_last_break = text.find('\n', beginning)
-            if text[index_last_break+1] != ' ' and text[index_last_break+1] != "\n":
+            if (not (index_last_break == len(text)-1)) and text[index_last_break+1] != ' ' and text[index_last_break+1] != "\n":
+                Done = True
+            elif index_last_break == len(text)-1:
                 Done = True
             else:
                 beginning = index_last_break + 1
