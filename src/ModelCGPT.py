@@ -2,6 +2,8 @@
 
 
 # Importing the necessary libraries
+!pip install accelerate
+!pip install -i https://pypi.org/simple/ bitsandbytes
 from abc import ABC
 
 
