@@ -1,3 +1,5 @@
 my_ws/
 *.pyc
 *.DS_STORE
+src/.env/
+src/venv/
