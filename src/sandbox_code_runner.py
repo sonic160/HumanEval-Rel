@@ -2,7 +2,7 @@ import sys
 import faulthandler
 from typing import Optional, Callable, Dict
 import time
-
+import os
 
 class bcolors:
     HEADER = "\033[95m"
@@ -124,14 +124,13 @@ class SandboxCodeRunner:
 
         try:
             # record start time
-            start = time.time()
+            start = time.time()         
             exec(code, context)
             end = time.time()
-
             # Return false if execution is too long
             if start - end > 5:
                 return False, completion
-
+            
             return self.convert_to_bool(context["test"]), completion
 
         except Exception:

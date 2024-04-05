@@ -21,7 +21,7 @@ class PassAtK(ScoreCalculator):
         :param c: number of correct samples
         :param k: k in pass@$k$
         :return: pass@$k$ score"""
-
+        
         if n - c < k:
             return 1.0
         return 1.0 - np.prod(1.0 - k / np.arange(n - c + 1, n + 1))

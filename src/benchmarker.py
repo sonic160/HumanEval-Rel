@@ -6,6 +6,7 @@ import numpy as np
 from collections import defaultdict, Counter
 from score_calculator import ScoreCalculator, PassAtK
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import itertools
 
 N_WORKERS = 4
 class Benchmarker:
@@ -104,14 +105,18 @@ class Benchmarker:
         total = np.array(total)
         correct = np.array(correct)
 
-        ks = [1, 10, 100]
-        pass_at_k = {
-            f"pass@{k}": PassAtK().calculate_score(total, correct, k).mean()
-            for k in ks
-            if (total >= k).all()
-        }
+        if isinstance(total, int):
+            num_samples_it = itertools.repeat(total, len(correct))
+        else:
+            assert len(total) == len(correct)
+            num_samples_it = iter(total)
 
-        print(pass_at_k)
+        for k in [1, 10, 100]:
+            pass_per_challenge = np.array([PassAtK().calculate_score(int(n), int(c), k) for n, c in zip(num_samples_it, correct)])
+            
+            if (total >= k).all():
+                print(f"pass@{k}: {pass_per_challenge.mean()}")
+        
         
 
     def benchmark(self):
@@ -154,8 +159,8 @@ class Benchmarker:
 
 if __name__ == "__main__":
     bm = Benchmarker(
-        "../data_set/json/example_problem.json",
-        "../data_set/json/example_submission.json",
+        "../data_set/json/example.json",
+        "../data_set/json/completions.json",
     )
     #bm.benchmark_parallel()
     #bm.save_results()
