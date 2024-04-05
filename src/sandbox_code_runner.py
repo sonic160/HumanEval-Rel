@@ -134,7 +134,7 @@ class SandboxCodeRunner:
 
             return self.convert_to_bool(context["test"]), completion
 
-        except (SyntaxError, AssertionError) as e:
+        except Exception:
             return False, completion
 
 
