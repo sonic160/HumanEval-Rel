@@ -24,10 +24,11 @@ class Benchmarker:
         self.generations = self.load_gen_file()
 
         print('Starting benchmark...')
-        self.benchmark_parallel()
+        self.benchmark_linear()
         print('Saving results...')
         self.save_results()
         print('Done.')
+        print(self.tests[list(self.tests.keys())[0]])
        
 
     def load_challenges_file(self):
@@ -65,6 +66,26 @@ class Benchmarker:
         f.close()
         return gens
 
+    def benchmark_linear(self):
+        for challenge in tqdm.tqdm(self.challenges):
+            id, prompt, tests, entry_point = (
+                challenge["task_id"],
+                challenge["prompt"],
+                challenge["test"],
+                challenge["entry_point"],
+            )
+
+            for gen in self.generations[id]:
+                completion = gen["completion"]
+                args = (prompt, completion, tests, entry_point)
+                result, completion = self.sandbox.run_tests(*args)
+
+                if id not in self.tests:
+                    self.tests[id] = [(result, completion)]
+                else:
+                    self.tests[id].append((result, completion))
+
+        self.score_model()
 
     def benchmark_parallel(self):
         with tqdm.tqdm(total=len(self.challenges)) as pbar:
@@ -113,7 +134,6 @@ class Benchmarker:
 
         for k in [1, 10, 100]:
             pass_per_challenge = np.array([PassAtK().calculate_score(int(n), int(c), k) for n, c in zip(num_samples_it, correct)])
-            
             if (total >= k).all():
                 print(f"pass@{k}: {pass_per_challenge.mean()}")
         
@@ -159,7 +179,7 @@ class Benchmarker:
 
 if __name__ == "__main__":
     bm = Benchmarker(
-        "../data_set/json/example.json",
+        "../data_set/json/big.json",
         "../data_set/json/completions.json",
     )
     #bm.benchmark_parallel()

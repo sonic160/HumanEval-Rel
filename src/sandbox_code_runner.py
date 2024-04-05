@@ -1,8 +1,11 @@
 import sys
 import faulthandler
-from typing import Optional, Callable, Dict
 import time
 import os
+from typing import Optional, Callable, Dict, List
+import traceback
+import numpy as np
+import pandas as pd
 
 class bcolors:
     HEADER = "\033[95m"
@@ -119,7 +122,7 @@ class SandboxCodeRunner:
         # This method is used to run the tests in a sandbox environment
         context = {}
         code = (
-            func + completion + "\n" + tests + "\ntest = check(" + entry_point + ")\n"
+            'from typing import List\n' + completion + "\n" + tests + "\ntest = check(" + entry_point + ")\n"
         )
 
         try:
@@ -130,10 +133,10 @@ class SandboxCodeRunner:
             # Return false if execution is too long
             if start - end > 5:
                 return False, completion
-            
+            # TODO: ajouter le mode zhiguo
             return self.convert_to_bool(context["test"]), completion
-
-        except Exception:
+        
+        except Exception as e:
             return False, completion
 
 
