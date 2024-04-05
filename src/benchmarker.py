@@ -7,7 +7,7 @@ from collections import defaultdict, Counter
 from score_calculator import ScoreCalculator, PassAtK
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-
+N_WORKERS = 4
 class Benchmarker:
     """_summary_@Benchmarker"""
 
@@ -15,14 +15,19 @@ class Benchmarker:
 
         self.completion_file = completion_file
         self.chalfile = chal_file
+        print('Loading the files...')
         self.challenges = self.load_challenges_file()
         self.sandbox = SandboxCodeRunner()
         self.tests = dict()
+        
+        self.generations = self.load_gen_file()
 
-        if self.challenges:
-            self.generations = self.load_gen_file()
-        else:
-            self.generations = self.gen_answers_with_model()
+        print('Starting benchmark...')
+        self.benchmark_parallel()
+        print('Saving results...')
+        self.save_results()
+        print('Done.')
+       
 
     def load_challenges_file(self):
         """_summary_
@@ -37,7 +42,6 @@ class Benchmarker:
             exit(1)
 
         x = json.load(f)
-        print(x)
         f.close()
         return x
 
@@ -60,8 +64,55 @@ class Benchmarker:
         f.close()
         return gens
 
-    def gen_answers_with_model(self):
-        pass
+
+    def benchmark_parallel(self):
+        with tqdm.tqdm(total=len(self.challenges)) as pbar:
+            with ThreadPoolExecutor(max_workers=N_WORKERS) as executor:
+                futures = []
+                completion_id = Counter()
+
+                for challenge in self.challenges:
+                    future = executor.submit(self.benchmark_worker, challenge, completion_id)
+                    futures.append(future)
+                
+                for future in as_completed(futures):
+                    pbar.update(1)
+                    id, answers = future.result()
+                    self.tests[id] = answers
+                
+        self.score_model()
+    #TODO: tqdm        
+    def benchmark_worker(self, challenge, completion_id):
+        id = challenge["task_id"]
+        answers = []
+        for gen in self.generations[challenge["task_id"]]:
+            completion = gen["completion"]
+            args = (challenge["prompt"], completion, challenge["test"], challenge["entry_point"])
+            result, completion = self.sandbox.run_tests(*args)
+            
+            completion_id[challenge["task_id"]] += 1
+            answers.append((result, completion))
+        return id, answers
+    
+    def score_model(self):
+        total, correct = [], []
+        for result in self.tests.values():
+            result.sort()
+            passed = [r[0] for r in result]
+            total.append(len(passed))
+            correct.append(sum(passed))
+        total = np.array(total)
+        correct = np.array(correct)
+
+        ks = [1, 10, 100]
+        pass_at_k = {
+            f"pass@{k}": PassAtK().calculate_score(total, correct, k).mean()
+            for k in ks
+            if (total >= k).all()
+        }
+
+        print(pass_at_k)
+        
 
     def benchmark(self):
         """_summary_"""
@@ -87,33 +138,15 @@ class Benchmarker:
                     futures.append(future)
                     completion_id[id] += 1
 
-                for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
+                for future in tqdm.tqdm(as_completed(futures), total=len(futures), position=1, leave=False):
                     result, completion = future.result()
 
-                    print(self.tests)
                     if id not in self.tests:
                         self.tests[id] = [(result, completion)]
                     else:
                         self.tests[id].append((result, completion))
 
-            total, correct = [], []
-            for result in self.tests.values():
-                print(result)
-                result.sort()
-                passed = [r[0] for r in result]
-                total.append(len(passed))
-                correct.append(sum(passed))
-            total = np.array(total)
-            correct = np.array(correct)
-
-            ks = [1, 10, 100]
-            pass_at_k = {
-                f"pass@{k}": PassAtK().calculate_score(total, correct, k).mean()
-                for k in ks
-                if (total >= k).all()
-            }
-
-            print(pass_at_k)
+            self.score_model()
 
     def save_results(self):
         json.dump(self.tests, open("../data_set/json/results.json", "w"))
@@ -124,5 +157,5 @@ if __name__ == "__main__":
         "../data_set/json/example_problem.json",
         "../data_set/json/example_submission.json",
     )
-    bm.benchmark()
-    bm.save_results()
+    #bm.benchmark_parallel()
+    #bm.save_results()
