@@ -65,7 +65,7 @@ class Benchmarker:
 
     def benchmark(self):
         """_summary_"""
-        #TODO: Make this method shorter (refactor)
+        # TODO: Make this method shorter (refactor)
         n_workers = 4
 
         with ThreadPoolExecutor(max_workers=n_workers) as executor:

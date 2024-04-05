@@ -113,7 +113,9 @@ class SandboxCodeRunner:
         else:
             return False
 
-    def run_tests(self, func: str, completion: str, tests: str, entry_point: str) -> bool:
+    def run_tests(
+        self, func: str, completion: str, tests: str, entry_point: str
+    ) -> bool:
         # This method is used to run the tests in a sandbox environment
         context = {}
         code = (
@@ -132,7 +134,7 @@ class SandboxCodeRunner:
 
             return self.convert_to_bool(context["test"]), completion
 
-        except SyntaxError as e:
+        except (SyntaxError, AssertionError) as e:
             return False, completion
 
 

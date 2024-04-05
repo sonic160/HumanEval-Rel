@@ -7,6 +7,7 @@ from abc import ABC
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+
 class Model(ABC):
     # This class is the parent class of all the models used in the project
 
@@ -34,18 +35,15 @@ class Model(ABC):
 
 class HuggingFace(Model):
     # This class can be used to use an open source model that is available on the HuggingFace library
-    
-    
-    def __init__(self, model_name:str, model_path:str):
+
+    def __init__(self, model_name: str, model_path: str):
         # The parameter model_name is used to find wich model is used
         self.model_name = model_name
         self.model_path = model_path
-        
-        
-    
+
     def __str__(self):
         return f"{self.model_name}"
-    
+
     def model_init(self, cachedir=None):
         """
         Initializes the model by loading the tokenizer and the model itself.
@@ -58,11 +56,15 @@ class HuggingFace(Model):
         """
         # To do :
         #           add a parameter for quantization. May be a try with if quantization is not available
-        self.__tokenizer = AutoTokenizer.from_pretrained(self.model_path, cache_dir=cachedir)
-        self.__model = AutoModelForCausalLM.from_pretrained(self.model_path, cache_dir=cachedir).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
-        
+        self.__tokenizer = AutoTokenizer.from_pretrained(
+            self.model_path, cache_dir=cachedir
+        )
+        self.__model = AutoModelForCausalLM.from_pretrained(
+            self.model_path, cache_dir=cachedir
+        ).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
+
     def generate(self, prompt, max_tokens=500, top_p=0.95, top_k=60, temperature=0.3):
-        """        Args:
+        """Args:
             prompt (str): The prompt to generate code from.
             max_tokens (int, optional): The maximum number of tokens to generate. Defaults to 500.
             top_p (float, optional): The cumulative probability for nucleus sampling. Defaults to 0.95.
@@ -78,17 +80,30 @@ class HuggingFace(Model):
         Notes:
             - This method is used for generating code from a prompt in the chat model.
             - Do not use this method for batch generation.
-        """        
-        #chat_input = self.__tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
+        """
+        # chat_input = self.__tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
         # To DO:
-        #       Implement a try with to try if a chat template is available. Maybe implement two different prompts (autocompletion or chatbot expert)        
-        inputs = self.__tokenizer(prompt, return_tensors="pt", add_special_tokens=True).to(self.__model.device)
-        
-        tokens = self.__model.generate(**inputs, max_new_tokens=max_tokens, do_sample=True, top_p=top_p, top_k=top_k, temperature=temperature)
-        
-        return self.extract(self.__tokenizer.decode(tokens[0], skip_special_tokens=True))
-    
-    def generate_batch(self, prompts, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3):
+        #       Implement a try with to try if a chat template is available. Maybe implement two different prompts (autocompletion or chatbot expert)
+        inputs = self.__tokenizer(
+            prompt, return_tensors="pt", add_special_tokens=True
+        ).to(self.__model.device)
+
+        tokens = self.__model.generate(
+            **inputs,
+            max_new_tokens=max_tokens,
+            do_sample=True,
+            top_p=top_p,
+            top_k=top_k,
+            temperature=temperature,
+        )
+
+        return self.extract(
+            self.__tokenizer.decode(tokens[0], skip_special_tokens=True)
+        )
+
+    def generate_batch(
+        self, prompts, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3
+    ):
         """
         Generate code from a list of prompts in the chat model.
 
@@ -103,14 +118,28 @@ class HuggingFace(Model):
             list: A list of generated code snippets corresponding to each prompt.
 
         """
-        chat_input = [self.__tokenizer.apply_chat_template(prompts[i], tokenize=False, add_generation_prompt=True) for i in range(len(prompts))]
-        inputs = self.__tokenizer(chat_input, return_tensors="pt", add_special_tokens=True, padding=True).to(self.__model.device)
-        
-        tokens = self.__model.generate(**inputs, max_new_tokens=max_tokens, do_sample=True, top_p=top_p, top_k=top_k, temperature=temperature)
+        chat_input = [
+            self.__tokenizer.apply_chat_template(
+                prompts[i], tokenize=False, add_generation_prompt=True
+            )
+            for i in range(len(prompts))
+        ]
+        inputs = self.__tokenizer(
+            chat_input, return_tensors="pt", add_special_tokens=True, padding=True
+        ).to(self.__model.device)
+
+        tokens = self.__model.generate(
+            **inputs,
+            max_new_tokens=max_tokens,
+            do_sample=True,
+            top_p=top_p,
+            top_k=top_k,
+            temperature=temperature,
+        )
         decoded = self.__tokenizer.batch_decode(tokens, skip_special_tokens=True)
-        
+
         return [self.extract(decoded[i]) for i in range(len(tokens))]
-    
+
     def extract(self, text):
         """
         Extracts the code from the text generated by the model.
@@ -125,46 +154,51 @@ class HuggingFace(Model):
             None
 
         """
-        lines = text.split('\n')
+        lines = text.split("\n")
         lines_filtered = [line for line in lines if not line.strip().startswith("#")]
-        text = '\n'.join(lines_filtered)
+        text = "\n".join(lines_filtered)
 
         debut_bloc = text.find('''"""''')
-        fin_bloc = text.find('''"""''', debut_bloc + 3)  # Recherche à partir de l'indice juste après le premier '''
+        fin_bloc = text.find(
+            '''"""''', debut_bloc + 3
+        )  # Recherche à partir de l'indice juste après le premier '''
         # Tant qu'il y a des débuts et des fins de blocs trouvés
         while debut_bloc != -1 and fin_bloc != -1:
             # Supprimer le bloc de texte trouvé
-            text = text[:debut_bloc] + text[fin_bloc + 3:]
+            text = text[:debut_bloc] + text[fin_bloc + 3 :]
 
             # Recherche du prochain début et fin de bloc
             debut_bloc = text.find('''"""''')
             fin_bloc = text.find('''"""''', debut_bloc + 3)
 
-
         # Extract relevant information from generated text
         Done = False
-        index_def = text.find('def')
+        index_def = text.find("def")
         if index_def == -1:
             return None  # if "def" isn't found in the text
 
         beginning = index_def
 
         while not Done:
-            index_return = text.find('return',beginning)
-            #if index_return == -1:
+            index_return = text.find("return", beginning)
+            # if index_return == -1:
 
-                #return None  # if "return" isn't found in the text
-        
-            index_last_break = text.find('\n', beginning)
-            if (not (index_last_break == len(text)-1)) and text[index_last_break+1] != ' ' and text[index_last_break+1] != "\n":
+            # return None  # if "return" isn't found in the text
+
+            index_last_break = text.find("\n", beginning)
+            if (
+                (not (index_last_break == len(text) - 1))
+                and text[index_last_break + 1] != " "
+                and text[index_last_break + 1] != "\n"
+            ):
                 Done = True
-            elif index_last_break == len(text)-1:
+            elif index_last_break == len(text) - 1:
                 Done = True
             else:
                 beginning = index_last_break + 1
 
-        extract_string = text[index_def:index_last_break+1].strip()  # Remove spaces around the extracted string
+        extract_string = text[
+            index_def : index_last_break + 1
+        ].strip()  # Remove spaces around the extracted string
 
         return extract_string
-
-
