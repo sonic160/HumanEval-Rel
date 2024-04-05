@@ -48,6 +48,9 @@ class HuggingFace(Model):
     
     def model_init(self,cachedir=None):
         # This method is used to initialize the model, we want to do it once at the start
+        
+        # To do :
+        #           add a parameter for quantization. May be a try with if quantization is not available
         self.__tokenizer = AutoTokenizer.from_pretrained(self.model_path, cache_dir=cachedir)
         self.__model = AutoModelForCausalLM.from_pretrained(self.model_path, cache_dir=cachedir).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
         
