@@ -7,6 +7,7 @@ import traceback
 import numpy as np
 import pandas as pd
 
+
 class bcolors:
     HEADER = "\033[95m"
     OKBLUE = "\033[94m"
@@ -115,7 +116,7 @@ class SandboxCodeRunner:
             return True
         elif value == "fail":
             return False
-        return True # To allow running HumanEval challenges
+        return True  # To allow running HumanEval challenges
 
     def run_tests(
         self, func: str, completion: str, tests: str, entry_point: str
@@ -123,19 +124,25 @@ class SandboxCodeRunner:
         # This method is used to run the tests in a sandbox environment
         context = {}
         code = (
-            'from typing import List\n' + completion + "\n" + tests + "\ntest = check(" + entry_point + ")\n"
+            "from typing import List\n"
+            + completion
+            + "\n"
+            + tests
+            + "\ntest = check("
+            + entry_point
+            + ")\n"
         )
 
         try:
             # record start time
-            start = time.time()         
+            start = time.time()
             exec(code, context)
             end = time.time()
             # Return false if execution is too long
             if start - end > 5:
                 return False, completion
             return self.convert_to_bool(context["test"]), completion
-        
+
         except Exception as e:
             return False, completion
 

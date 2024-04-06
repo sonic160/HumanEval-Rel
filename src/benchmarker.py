@@ -13,6 +13,8 @@ import timeit
 
 
 N_WORKERS = 20
+
+
 class Benchmarker:
     """
     The Benchmarker class is responsible for benchmarking a language model's performance on a set of challenges.
@@ -21,7 +23,6 @@ class Benchmarker:
     """
 
     def __init__(self, chal_file, completion_file=None):
-
         """
         Initializes the Benchmarker with a challenges file and an optional completions file.
 
@@ -35,16 +36,16 @@ class Benchmarker:
         self.sandbox = SandboxCodeRunner()
         self.tests = dict()
 
-        print('Loading the files...')
+        print("Loading the files...")
         self.challenges = self.load_challenges_file()
         self.generations = self.load_gen_file()
 
-        print('Starting benchmark...')
+        print("Starting benchmark...")
         self.benchmark_linear()
 
-        print('Saving results...')
+        print("Saving results...")
         self.save_results()
-        print('Done.')       
+        print("Done.")
 
     def load_challenges_file(self):
         """
@@ -122,14 +123,16 @@ class Benchmarker:
                 completion_id = Counter()
 
                 for challenge in self.challenges:
-                    future = executor.submit(self.benchmark_worker, challenge, completion_id)
+                    future = executor.submit(
+                        self.benchmark_worker, challenge, completion_id
+                    )
                     futures.append(future)
-                
+
                 for future in as_completed(futures):
                     pbar.update(1)
                     id, answers = future.result()
                     self.tests[id] = answers
-                
+
         self.score_model()
 
     def benchmark_worker(self, challenge, completion_id):
@@ -147,13 +150,18 @@ class Benchmarker:
         answers = []
         for gen in self.generations[challenge["task_id"]]:
             completion = gen["completion"]
-            args = (challenge["prompt"], completion, challenge["test"], challenge["entry_point"])
+            args = (
+                challenge["prompt"],
+                completion,
+                challenge["test"],
+                challenge["entry_point"],
+            )
             result, completion = self.sandbox.run_tests(*args)
-            
+
             completion_id[challenge["task_id"]] += 1
             answers.append((result, completion))
         return id, answers
-    
+
     def score_model(self):
         """
         Scores the model based on the results of the tests.
@@ -174,11 +182,14 @@ class Benchmarker:
             num_samples_it = iter(total)
 
         for k in [1, 10, 100]:
-            pass_per_challenge = np.array([PassAtK().calculate_score(int(n), int(c), k) for n, c in zip(num_samples_it, correct)])
+            pass_per_challenge = np.array(
+                [
+                    PassAtK().calculate_score(int(n), int(c), k)
+                    for n, c in zip(num_samples_it, correct)
+                ]
+            )
             if (total >= k).all():
                 print(f"pass@{k}: {pass_per_challenge.mean()}")
-        
-        
 
     def benchmark(self):
         """
@@ -206,7 +217,9 @@ class Benchmarker:
                     futures.append(future)
                     completion_id[id] += 1
 
-                for future in tqdm.tqdm(as_completed(futures), total=len(futures), position=1, leave=False):
+                for future in tqdm.tqdm(
+                    as_completed(futures), total=len(futures), position=1, leave=False
+                ):
                     result, completion = future.result()
 
                     if id not in self.tests:
@@ -248,7 +261,7 @@ def parse_args() -> tuple[bool, str, str]:
         "-p",
         "--parallel",
         required=False,
-        action='store_true',
+        action="store_true",
         help="Use parallel processing to perform the tests more quickly.",
     )
     parser.add_argument(
@@ -261,16 +274,17 @@ def parse_args() -> tuple[bool, str, str]:
 
     return parser.parse_args()
 
+
 if __name__ == "__main__":
     bm = Benchmarker(
         "../data_set/json/big.json",
         "../data_set/json/completions.json",
     )
-    #arg_parser = parse_args()
-    #print(arg_parser.source, arg_parser.completions, arg_parser.parallel)
-    #print('\n\n Linear: '+str(timeit.timeit(bm.benchmark_linear, number=25))+'\n\n')
-    #print('\n\n Parallel: '+str(timeit.timeit(bm.benchmark_parallel, number=25))+'\n\n')
-    #print('\n\n Parallel 2: '+str(timeit.timeit(bm.benchmark, number=25))+'\n\n')
+    # arg_parser = parse_args()
+    # print(arg_parser.source, arg_parser.completions, arg_parser.parallel)
+    # print('\n\n Linear: '+str(timeit.timeit(bm.benchmark_linear, number=25))+'\n\n')
+    # print('\n\n Parallel: '+str(timeit.timeit(bm.benchmark_parallel, number=25))+'\n\n')
+    # print('\n\n Parallel 2: '+str(timeit.timeit(bm.benchmark, number=25))+'\n\n')
 
-    #bm.benchmark_parallel()
-    #bm.save_results()
+    # bm.benchmark_parallel()
+    # bm.save_results()

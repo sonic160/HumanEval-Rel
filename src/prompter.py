@@ -140,7 +140,7 @@ def parse_args() -> tuple[bool, str, str]:
 
 if __name__ == "__main__":
     # TODO: Add command line arguments
-    # model = Model("test")
-    # prompter = Prompter(model, "../data_set/json/example_problem.json")
-    #args = parse_args()
-    #print(args.source, args.dest)
+    model = Model("test")
+    prompter = Prompter(model, "../data_set/json/example_problem.json")
+    # args = parse_args()
+    # print(args.source, args.dest)
