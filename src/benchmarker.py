@@ -266,8 +266,8 @@ if __name__ == "__main__":
         "../data_set/json/big.json",
         "../data_set/json/completions.json",
     )
-    arg_parser = parse_args()
-    print(arg_parser.source, arg_parser.completions, arg_parser.parallel)
+    #arg_parser = parse_args()
+    #print(arg_parser.source, arg_parser.completions, arg_parser.parallel)
     #print('\n\n Linear: '+str(timeit.timeit(bm.benchmark_linear, number=25))+'\n\n')
     #print('\n\n Parallel: '+str(timeit.timeit(bm.benchmark_parallel, number=25))+'\n\n')
     #print('\n\n Parallel 2: '+str(timeit.timeit(bm.benchmark, number=25))+'\n\n')
