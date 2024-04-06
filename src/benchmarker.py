@@ -27,9 +27,7 @@ class Benchmarker:
         self.benchmark_linear()
         print('Saving results...')
         self.save_results()
-        print('Done.')
-        print(self.tests[list(self.tests.keys())[0]])
-       
+        print('Done.')       
 
     def load_challenges_file(self):
         """_summary_

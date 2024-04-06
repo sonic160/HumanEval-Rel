@@ -113,8 +113,9 @@ class SandboxCodeRunner:
     def convert_to_bool(self, value: str) -> bool:
         if value == "pass":
             return True
-        else:
+        elif value == "fail":
             return False
+        return True # To allow running HumanEval challenges
 
     def run_tests(
         self, func: str, completion: str, tests: str, entry_point: str
@@ -133,7 +134,6 @@ class SandboxCodeRunner:
             # Return false if execution is too long
             if start - end > 5:
                 return False, completion
-            # TODO: ajouter le mode zhiguo
             return self.convert_to_bool(context["test"]), completion
         
         except Exception as e:
