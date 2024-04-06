@@ -1,5 +1,6 @@
 import tqdm
-import time
+import argparse
+import sys
 import json
 from sandbox_code_runner import SandboxCodeRunner
 import numpy as np
@@ -7,33 +8,50 @@ from collections import defaultdict, Counter
 from score_calculator import ScoreCalculator, PassAtK
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import itertools
+from typing import Tuple
+import timeit
 
-N_WORKERS = 4
+
+N_WORKERS = 20
 class Benchmarker:
-    """_summary_@Benchmarker"""
+    """
+    The Benchmarker class is responsible for benchmarking a language model's performance on a set of challenges.
+    It loads the challenges and the model's responses from JSON files, runs tests on the responses, scores the model,
+    and saves the results to a JSON file.
+    """
 
     def __init__(self, chal_file, completion_file=None):
 
+        """
+        Initializes the Benchmarker with a challenges file and an optional completions file.
+
+        Args:
+            chal_file (str): The path to the JSON file containing the challenges.
+            completion_file (str, optional): The path to the JSON file containing the model's responses. Defaults to None.
+        """
+
         self.completion_file = completion_file
         self.chalfile = chal_file
-        print('Loading the files...')
-        self.challenges = self.load_challenges_file()
         self.sandbox = SandboxCodeRunner()
         self.tests = dict()
-        
+
+        print('Loading the files...')
+        self.challenges = self.load_challenges_file()
         self.generations = self.load_gen_file()
 
         print('Starting benchmark...')
         self.benchmark_linear()
+
         print('Saving results...')
         self.save_results()
         print('Done.')       
 
     def load_challenges_file(self):
-        """_summary_
+        """
+        Loads the challenges from a JSON file.
 
         Returns:
-            _type_: _description_
+            dict: A dictionary containing the challenges.
         """
         try:
             f = open(self.chalfile)
@@ -46,6 +64,12 @@ class Benchmarker:
         return x
 
     def load_gen_file(self):
+        """
+        Loads the model's responses from a JSON file.
+
+        Returns:
+            dict: A dictionary containing the model's responses.
+        """
         try:
             f = open(self.completion_file)
         except FileNotFoundError:
@@ -65,6 +89,9 @@ class Benchmarker:
         return gens
 
     def benchmark_linear(self):
+        """
+        Runs tests on the model's responses in a linear manner, scores the model, and stores the results.
+        """
         for challenge in tqdm.tqdm(self.challenges):
             id, prompt, tests, entry_point = (
                 challenge["task_id"],
@@ -86,6 +113,9 @@ class Benchmarker:
         self.score_model()
 
     def benchmark_parallel(self):
+        """
+        Runs tests on the model's responses in parallel, scores the model, and stores the results.
+        """
         with tqdm.tqdm(total=len(self.challenges)) as pbar:
             with ThreadPoolExecutor(max_workers=N_WORKERS) as executor:
                 futures = []
@@ -101,8 +131,18 @@ class Benchmarker:
                     self.tests[id] = answers
                 
         self.score_model()
-    #TODO: tqdm        
+
     def benchmark_worker(self, challenge, completion_id):
+        """
+        A worker function for running tests on the model's responses in parallel.
+
+        Args:
+            challenge (dict): A dictionary containing a single challenge.
+            completion_id (Counter): A counter for tracking the number of completions for each challenge.
+
+        Returns:
+            tuple: A tuple containing the challenge ID and a list of results.
+        """
         id = challenge["task_id"]
         answers = []
         for gen in self.generations[challenge["task_id"]]:
@@ -115,6 +155,9 @@ class Benchmarker:
         return id, answers
     
     def score_model(self):
+        """
+        Scores the model based on the results of the tests.
+        """
         total, correct = [], []
         for result in self.tests.values():
             result.sort()
@@ -138,7 +181,9 @@ class Benchmarker:
         
 
     def benchmark(self):
-        """_summary_"""
+        """
+        Runs tests on the model's responses, scores the model, and stores the results.
+        """
         # TODO: Make this method shorter (refactor)
         n_workers = 4
 
@@ -172,13 +217,60 @@ class Benchmarker:
             self.score_model()
 
     def save_results(self):
+        """
+        Saves the results of the tests to a JSON file.
+        """
         json.dump(self.tests, open("../data_set/json/results.json", "w"))
 
+
+def parse_args() -> tuple[bool, str, str]:
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
+    parser = argparse.ArgumentParser(
+        description="Prompt a language model with a set of challenges and save the completions to a JSON file."
+    )
+    parser.add_argument(
+        "-s",
+        "--source",
+        required=True,
+        help="The path to the JSON file containing the challenges.",
+    )
+    parser.add_argument(
+        "-c",
+        "--completions",
+        required=False,
+        help="The path to the file where the completions JSON is saved;",
+    )
+    parser.add_argument(
+        "-p",
+        "--parallel",
+        required=False,
+        action='store_true',
+        help="Use parallel processing to perform the tests more quickly.",
+    )
+    parser.add_argument(
+        "-w",
+        "--workers",
+        required=False,
+        type=int,
+        help="Number of workers to use in parallel processing. Default is 20.",
+    )
+
+    return parser.parse_args()
 
 if __name__ == "__main__":
     bm = Benchmarker(
         "../data_set/json/big.json",
         "../data_set/json/completions.json",
     )
+    arg_parser = parse_args()
+    print(arg_parser.source, arg_parser.completions, arg_parser.parallel)
+    #print('\n\n Linear: '+str(timeit.timeit(bm.benchmark_linear, number=25))+'\n\n')
+    #print('\n\n Parallel: '+str(timeit.timeit(bm.benchmark_parallel, number=25))+'\n\n')
+    #print('\n\n Parallel 2: '+str(timeit.timeit(bm.benchmark, number=25))+'\n\n')
+
     #bm.benchmark_parallel()
     #bm.save_results()
