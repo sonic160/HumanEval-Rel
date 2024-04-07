@@ -167,11 +167,13 @@ class Benchmarker:
         Scores the model based on the results of the tests.
         """
         total, correct = [], []
+
         for result in self.tests.values():
             result.sort()
             passed = [r[0] for r in result]
             total.append(len(passed))
             correct.append(sum(passed))
+
         total = np.array(total)
         correct = np.array(correct)
 
@@ -191,43 +193,6 @@ class Benchmarker:
             if (total >= k).all():
                 print(f"pass@{k}: {pass_per_challenge.mean()}")
 
-    def benchmark(self):
-        """
-        Runs tests on the model's responses, scores the model, and stores the results.
-        """
-        # TODO: Make this method shorter (refactor)
-        n_workers = 4
-
-        with ThreadPoolExecutor(max_workers=n_workers) as executor:
-            futures = []
-            completion_id = Counter()
-            for challenge in tqdm.tqdm(self.challenges):
-
-                id, prompt, tests, entry_point = (
-                    challenge["task_id"],
-                    challenge["prompt"],
-                    challenge["test"],
-                    challenge["entry_point"],
-                )
-
-                for gen in self.generations[id]:
-                    completion = gen["completion"]
-                    args = (prompt, completion, tests, entry_point)
-                    future = executor.submit(self.sandbox.run_tests, *args)
-                    futures.append(future)
-                    completion_id[id] += 1
-
-                for future in tqdm.tqdm(
-                    as_completed(futures), total=len(futures), position=1, leave=False
-                ):
-                    result, completion = future.result()
-
-                    if id not in self.tests:
-                        self.tests[id] = [(result, completion)]
-                    else:
-                        self.tests[id].append((result, completion))
-
-            self.score_model()
 
     def save_results(self):
         """
@@ -284,7 +249,5 @@ if __name__ == "__main__":
     # print(arg_parser.source, arg_parser.completions, arg_parser.parallel)
     # print('\n\n Linear: '+str(timeit.timeit(bm.benchmark_linear, number=25))+'\n\n')
     # print('\n\n Parallel: '+str(timeit.timeit(bm.benchmark_parallel, number=25))+'\n\n')
-    # print('\n\n Parallel 2: '+str(timeit.timeit(bm.benchmark, number=25))+'\n\n')
-
     # bm.benchmark_parallel()
     # bm.save_results()

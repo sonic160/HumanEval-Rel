@@ -139,7 +139,7 @@ class SandboxCodeRunner:
             exec(code, context)
             end = time.time()
             # Return false if execution is too long
-            if start - end > 5:
+            if start - end > 3.0:
                 return False, completion
             return self.convert_to_bool(context["test"]), completion
 
