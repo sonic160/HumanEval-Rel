@@ -60,10 +60,24 @@ class HuggingFace(Model):
         self.__tokenizer = AutoTokenizer.from_pretrained(
             self.model_path, cache_dir=cachedir
         )
-        self.__model = AutoModelForCausalLM.from_pretrained(
-            self.model_path, cache_dir=cachedir
-        ).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
-
+        if self.quantization_config == None:
+            
+            self.__model = AutoModelForCausalLM.from_pretrained(
+            self.model_path, 
+            cache_dir=cachedir,
+            device_map="auto",  
+            attn_implementation="flash_attention_2", 
+            torch_dtype=torch.float16
+            ).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
+        else:
+            self.__model = AutoModelForCausalLM.from_pretrained(
+            self.model_path, 
+            cache_dir=cachedir,
+            device_map="auto",  
+            attn_implementation="flash_attention_2", 
+            torch_dtype=torch.float16,
+            quantization_config = self.quantization_config
+            )
     def generate(self, prompt, max_tokens=500, top_p=0.95, top_k=60, temperature=0.3):
         """Args:
             prompt (str): The prompt to generate code from.
@@ -99,7 +113,7 @@ class HuggingFace(Model):
             top_k=top_k,
             temperature=temperature,
             pad_token_id=self.__tokenizer.eos_token_id,
-            quantization_config = self.quantization_config
+            
         )
 
         return self.extract(
