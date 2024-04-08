@@ -87,8 +87,13 @@ class Prompter:
         for challenge in tqdm.tqdm(self.challenges):
 
             id, prompt = challenge["task_id"], challenge["prompt"]
-            completion = self.model.generate(prompt)
-            self.completions.append({"task_id": id, "completion": completion})
+            try:
+                completion = self.model.generate(prompt)
+                self.completions.append({"task_id": id, "completion": completion})
+            except Exception as e:
+                print(f'task_id number {id} problem with generation')
+                print(e)
+                self.completions.append({"task_id": id, "completion": ""})
 
     def output_json(self) -> None:
         """
