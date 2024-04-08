@@ -20,10 +20,10 @@ class bcolors:
     UNDERLINE = "\033[4m"
 
 
-class SandboxCodeRunner:
+class SandboxCodeRunner:    
     def __init__(self):
         self.print_warning()
-        # self.reliability_guard()
+        #self.reliability_guard() # TODO: Uncomment this line to enable the reliability guard
 
     def print_warning(self) -> None:
         warning_msg = "WARNING: This is NOT a security sandbox. Untrusted code, including, model-generated code, should not be blindly executed outside of one."

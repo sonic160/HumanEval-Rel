@@ -36,10 +36,11 @@ class Model(ABC):
 class HuggingFace(Model):
     # This class can be used to use an open source model that is available on the HuggingFace library
 
-    def __init__(self, model_name: str, model_path: str):
+    def __init__(self, model_name: str, model_path: str, quantization_config = None):
         # The parameter model_name is used to find wich model is used
         self.model_name = model_name
         self.model_path = model_path
+        self.quantization_config = quantization_config
 
     def __str__(self):
         return f"{self.model_name}"
@@ -85,7 +86,9 @@ class HuggingFace(Model):
         # To DO:
         #       Implement a try with to try if a chat template is available. Maybe implement two different prompts (autocompletion or chatbot expert)
         inputs = self.__tokenizer(
-            prompt, return_tensors="pt", add_special_tokens=True
+            prompt,
+            return_tensors="pt",
+            add_special_tokens=True
         ).to(self.__model.device)
 
         tokens = self.__model.generate(
@@ -95,6 +98,8 @@ class HuggingFace(Model):
             top_p=top_p,
             top_k=top_k,
             temperature=temperature,
+            pad_token_id=self.__tokenizer.eos_token_id,
+            quantization_config = self.quantization_config
         )
 
         return self.extract(
