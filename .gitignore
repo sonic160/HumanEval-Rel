@@ -3,3 +3,6 @@ my_ws/
 *.DS_STORE
 src/.env/
 src/venv/
+.env/
+.pytest_cache/
+data_set/
