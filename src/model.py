@@ -137,14 +137,9 @@ class HuggingFace(Model):
             list: A list of generated code snippets corresponding to each prompt.
 
         """
-        chat_input = [
-            self.__tokenizer.apply_chat_template(
-                prompts[i], tokenize=False, add_generation_prompt=True
-            )
-            for i in range(len(prompts))
-        ]
+
         inputs = self.__tokenizer(
-            chat_input, return_tensors="pt", add_special_tokens=True, padding=True
+            prompts, return_tensors="pt", add_special_tokens=True, padding=True
         ).to(self.__model.device)
 
         tokens = self.__model.generate(
