@@ -78,23 +78,43 @@ class Prompter:
         """
         raise NotImplementedError
 
-    def prompt(self) -> None:
+    def prompt(self, batch = False, batch_size = 5) -> None:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         """
         print("Prompting the LLM for answers...\n")
+        if not batch:
+            for challenge in tqdm.tqdm(self.challenges):
 
-        for challenge in tqdm.tqdm(self.challenges):
-
-            id, prompt = challenge["task_id"], challenge["prompt"]
-            try:
-                completion = self.model.generate(prompt)
-                self.completions.append({"task_id": id, "completion": completion})
-            except Exception as e:
-                print(f'task_id number {id} problem with generation')
-                print(e)
-                self.completions.append({"task_id": id, "completion": ""})
-
+                id, prompt = challenge["task_id"], challenge["prompt"]
+                try:
+                    completion = self.model.generate(prompt)
+                    self.completions.append({"task_id": id, "completion": completion})
+                except Exception as e:
+                    print(f'task_id number {id} problem with generation')
+                    print(e)
+                    self.completions.append({"task_id": id, "completion": ""})
+        else:
+            def regroup(chalenge, size):
+                output = [[]]
+                i=0
+                for chal in chalenge:
+                    if len(output[i])<size:
+                        output[i].append(chal)
+                    else:
+                        output.append([chal])
+                return output
+            for batch in tqdm.tqdm(regroup(self.challenges,batch_size)):
+                prompts = map(lambda l : l["prompt"])
+                task_ids = map(lambda l : l["task_id"])
+                try:
+                    completions = self.model.generate_batch(prompts)
+                    for i in range(batch_size):
+                        self.completions.append({"task_id": task_ids[i], "completion": completions[i]})
+                except Exception as e:
+                    print("error")
+                    print(e)
+                    
     def output_json(self) -> None:
         """
         Saves the LLM's answers to the benchmark questions as a json file
