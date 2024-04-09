@@ -187,7 +187,7 @@ class HuggingFace(Model):
 
         # Extract relevant information from generated text
         Done = False
-        index_def = text.find("def")
+        index_def = text.find("def ")
         if index_def == -1:
             return None  # if "def" isn't found in the text
 
@@ -195,10 +195,7 @@ class HuggingFace(Model):
 
         while not Done:
             index_return = text.find("return", beginning)
-            # if index_return == -1:
-
-            # return None  # if "return" isn't found in the text
-
+            
             index_last_break = text.find("\n", beginning)
             if (
                 (not (index_last_break == len(text) - 1))
