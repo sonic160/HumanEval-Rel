@@ -78,6 +78,9 @@ class HuggingFace(Model):
             torch_dtype=torch.float16,
             quantization_config = self.quantization_config
             )
+        if self.__tokenizer.pad_token is None:
+            self.__tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+            self.__model.resize_token_embeddings(len(self.__tokenizer))
     def generate(self, prompt, max_tokens=500, top_p=0.95, top_k=60, temperature=0.3):
         """Args:
             prompt (str): The prompt to generate code from.

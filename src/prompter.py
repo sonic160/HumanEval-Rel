@@ -17,7 +17,7 @@ class Prompter:
     """
 
     def __init__(
-        self, model: Model, challenges_file: str, savepath: str = None
+        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False
     ) -> None:
         """
         Initializes the Prompter with a given model, challenges file, and an optional save path.
@@ -33,8 +33,8 @@ class Prompter:
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
         self.completions = []
-
-        self.prompt()
+        self.prompt() if not batch else self.prompt_batched()
+        
         self.output_json()
 
     def load_challenges_file(self, chalfile: str) -> None:
@@ -71,49 +71,48 @@ class Prompter:
 
         return x
 
-    def prompt_batched(self) -> None:
+    def prompt_batched(self, batch_size = 5) -> None:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         This version uses batching to generate answers more quickly.
         """
-        raise NotImplementedError
+        def regroup(chalenge, size):
+            output_list = []
+            for i in range(0, len(chalenge), size):
+                # Append sublist of size n to the output list
+                output_list.append(chalenge[i:i + size])
+    
+            return output_list
+        batches = regroup(self.challenges,batch_size)
+        print(len(batches))
+        for batch in tqdm.tqdm(batches):
+            prompts = list(map(lambda l : l["prompt"],batch))
+            task_ids = list(map(lambda l : l["task_id"],batch))
+            try:
+                completions = self.model.generate_batch(prompts)
+                for i in range(batch_size):
+                    self.completions.append({"task_id": task_ids[i], "completion": completions[i]})
+            except Exception as e:
+                print("error")
+                print(e)
 
-    def prompt(self, batch = False, batch_size = 5) -> None:
+    def prompt(self) -> None:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         """
         print("Prompting the LLM for answers...\n")
-        if not batch:
-            for challenge in tqdm.tqdm(self.challenges):
 
-                id, prompt = challenge["task_id"], challenge["prompt"]
-                try:
-                    completion = self.model.generate(prompt)
-                    self.completions.append({"task_id": id, "completion": completion})
-                except Exception as e:
-                    print(f'task_id number {id} problem with generation')
-                    print(e)
-                    self.completions.append({"task_id": id, "completion": ""})
-        else:
-            def regroup(chalenge, size):
-                output = [[]]
-                i=0
-                for chal in chalenge:
-                    if len(output[i])<size:
-                        output[i].append(chal)
-                    else:
-                        output.append([chal])
-                return output
-            for batch in tqdm.tqdm(regroup(self.challenges,batch_size)):
-                prompts = map(lambda l : l["prompt"])
-                task_ids = map(lambda l : l["task_id"])
-                try:
-                    completions = self.model.generate_batch(prompts)
-                    for i in range(batch_size):
-                        self.completions.append({"task_id": task_ids[i], "completion": completions[i]})
-                except Exception as e:
-                    print("error")
-                    print(e)
+        for challenge in tqdm.tqdm(self.challenges):
+
+            id, prompt = challenge["task_id"], challenge["prompt"]
+            try:
+                completion = self.model.generate(prompt)
+                self.completions.append({"task_id": id, "completion": completion})
+            except Exception as e:
+                print(f'task_id number {id} problem with generation')
+                print(e)
+                self.completions.append({"task_id": id, "completion": ""})
+
                     
     def output_json(self) -> None:
         """
