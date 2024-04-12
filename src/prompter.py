@@ -71,7 +71,7 @@ class Prompter:
 
         return x
 
-    def prompt_batched(self, batch_size = 5) -> None:
+    def prompt_batched(self, batch_size = 8) -> None:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         This version uses batching to generate answers more quickly.
@@ -84,7 +84,6 @@ class Prompter:
     
             return output_list
         batches = regroup(self.challenges,batch_size)
-        print(len(batches))
         for batch in tqdm.tqdm(batches):
             prompts = list(map(lambda l : l["prompt"],batch))
             task_ids = list(map(lambda l : l["task_id"],batch))
