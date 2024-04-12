@@ -17,7 +17,7 @@ class Prompter:
     """
 
     def __init__(
-        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False
+        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False, batch_size: int =8
     ) -> None:
         """
         Initializes the Prompter with a given model, challenges file, and an optional save path.
@@ -33,7 +33,7 @@ class Prompter:
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
         self.completions = []
-        self.prompt() if not batch else self.prompt_batched()
+        self.prompt() if not batch else self.prompt_batched(batch_size= batch_size)
         
         self.output_json()
 
