@@ -4,9 +4,12 @@ import time
 import os
 from typing import Optional, Callable, Dict, List
 import traceback
+import multiprocessing
 import numpy as np
 import pandas as pd
 
+
+TIMEOUT_SECONDS = 3.0
 
 class bcolors:
     HEADER = "\033[95m"
@@ -117,12 +120,30 @@ class SandboxCodeRunner:
         elif value == "fail":
             return False
         return True  # To allow running HumanEval challenges
-
+    
+    
+    def __execute(self, *code_and_context) -> bool:
+        try:
+            with multiprocessing.Pool(processes=2) as pool:
+                result = pool.apply_async(exec_with_context, [*code_and_context])
+                
+                try:
+                    test_result = result.get(timeout=TIMEOUT_SECONDS)
+                    return self.convert_to_bool(test_result)
+                
+                except multiprocessing.TimeoutError:
+                    return False
+                
+        except Exception as e:
+            return False
+        
+    
+    
     def run_tests(
-        self, func: str, completion: str, tests: str, entry_point: str
+        self, prompt: str, completion: str, tests: str, entry_point: str
     ) -> bool:
+        #TODO: Delete the prompt argument
         # This method is used to run the tests in a sandbox environment
-        context = {}
         code = (
             "from typing import List\n"
             + completion
@@ -132,20 +153,17 @@ class SandboxCodeRunner:
             + entry_point
             + ")\n"
         )
-
         try:
             # record start time
-            start = time.time()
-            exec(code, context)
-            end = time.time()
-            # Return false if execution is too long
-            if start - end > 3.0:
-                return False, completion
-            return self.convert_to_bool(context["test"]), completion
+            test_result = self.__execute(code)
+            return test_result, completion
 
         except Exception as e:
             return False, completion
-
+def exec_with_context(code: str) -> bool:
+        context = {}
+        exec(code, context)
+        return context['test']
 
 if __name__ == "__main__":
     test = None
@@ -154,5 +172,4 @@ if __name__ == "__main__":
     tests = "def check(candidate):\n\timport numpy as np\n\tdef weibull_cdf(x, scale=2, shape=3):\n\t\treturn 1 - np.exp(-((x / scale) ** shape))\n\ttry:\n\t\tassert candidate(lambda x: weibull_cdf(x), 1, .5) == weibull_cdf(1.5) - weibull_cdf(1)\n\t\treturn 'pass'\n\texcept:\n\t\treturn 'fail'\n"
     pr = "test = check(p_f_interval)\n"
 
-    bl = runner.load_func(func + tests + pr)
-    print(runner.convert_to_bool(bl))
+    print(runner.run_tests(pr, func, tests, "p_f_interval"))
