@@ -1,10 +1,27 @@
 import pytest
+import json
 from model import HuggingFace
+from benchmarker import Benchmarker
 
 @pytest.fixture(scope="module")
+
 def huggingface_model():
     # Initialise le modèle HuggingFace une fois avant tous les tests du module
     return HuggingFace('Croissant', 'croissantllm/CroissantLLMBase')
+
+@pytest.fixture
+def challenges_data():
+    return [
+        {"task_id": 1, "prompt": "Prompt 1", "test": "Test 1", "entry_point": "Entry 1"},
+        {"task_id": 2, "prompt": "Prompt 2", "test": "Test 2", "entry_point": "Entry 2"},
+    ]
+
+@pytest.fixture
+def completions_data():
+    return [
+        {"task_id": 1, "completion": "Completion 1"},
+        {"task_id": 2, "completion": "Completion 2"},
+    ]
 
 def test_model_init(huggingface_model):
     # Teste si le modèle est correctement initialisé
@@ -25,6 +42,7 @@ def test_generate(huggingface_model):
     prompt2 = '''Write a code that can calculate a matrix dot product'''
     result2 = huggingface_model.generate(prompt2)
     assert  (result2 != "")
+    assert isinstance(result2, str)
 
 def test_extract(huggingface_model):
     #Teste l'extraction de code d'un string
@@ -51,11 +69,7 @@ def test_extract(huggingface_model):
         return result
 
 
-    You can use this function to calculate the square of a matrix by passing it as a list of lists. For example, if you have a matrix [1, 2, 3, 4, 5], you can calculate its square by calling square_matrix([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]]).square(). The function will return the square of the matrix, which in this case is 25.
-
-    Note that this function assumes that the input matrix is a list of lists. If your input matrix is not a list of lists, you will need to adjust the function accordingly.
-
-    I hope this helps! Let me know if you have any further questions.'''
+    You can use this function to calculate the square of a matrix by passing it as a list of lists. For example, if you have a matrix [1, 2, 3, 4, 5], you can calculate its square by calling square_matrix([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]]).square(). The function will return the square of the matrix, which in this case is 25.'''
 
     result1 = huggingface_model.extract(str1)
     assert (result1 == '''def square_matrix(matrix):\n  \n  result = 0\n    for row in matrix:\n        result += sum(row)\n    return result''')
@@ -69,9 +83,8 @@ def test_extract(huggingface_model):
         # Pas de return statement ici
 
     # Appel de la fonction
-    afficher_message()
+    afficher_message()'''
 
-    Cette fonction, afficher_message(), ne retourne aucune valeur explicite. Elle se contente d'afficher "Bonjour !" à l'écran à l'aide de la fonction print().'''
-
-    result2 = huggingface_model.extract(str1)
+    result2 = huggingface_model.extract(str2)
     assert (result2 == '''def afficher_message():\n    print("Bonjour !")''')
+

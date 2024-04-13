@@ -41,12 +41,11 @@ class Benchmarker:
         self.generations = self.load_gen_file()
 
         print("Starting benchmark...")
-        self.benchmark_linear()
+        self.result = self.benchmark_linear()
 
         print("Saving results...")
         self.save_results()
         print("Done.")
-
     def load_challenges_file(self):
         """
         Loads the challenges from a JSON file.
@@ -111,7 +110,7 @@ class Benchmarker:
                 else:
                     self.tests[id].append((result, completion))
 
-        self.score_model()
+        return self.score_model()
 
     def benchmark_parallel(self):
         """
@@ -192,7 +191,7 @@ class Benchmarker:
             )
             if (total >= k).all():
                 print(f"pass@{k}: {pass_per_challenge.mean()}")
-
+                return pass_per_challenge.mean()
 
     def save_results(self):
         """

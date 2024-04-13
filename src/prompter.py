@@ -17,7 +17,7 @@ class Prompter:
     """
 
     def __init__(
-        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False
+        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False, batch_size: int =8
     ) -> None:
         """
         Initializes the Prompter with a given model, challenges file, and an optional save path.
@@ -33,7 +33,7 @@ class Prompter:
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
         self.completions = []
-        self.prompt() if not batch else self.prompt_batched()
+        self.prompt() if not batch else self.prompt_batched(batch_size= batch_size)
         
         self.output_json()
 
@@ -71,7 +71,7 @@ class Prompter:
 
         return x
 
-    def prompt_batched(self, batch_size = 5) -> None:
+    def prompt_batched(self, batch_size = 8) -> None:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         This version uses batching to generate answers more quickly.
@@ -84,7 +84,6 @@ class Prompter:
     
             return output_list
         batches = regroup(self.challenges,batch_size)
-        print(len(batches))
         for batch in tqdm.tqdm(batches):
             prompts = list(map(lambda l : l["prompt"],batch))
             task_ids = list(map(lambda l : l["task_id"],batch))
