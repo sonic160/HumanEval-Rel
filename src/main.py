@@ -34,4 +34,7 @@ if __name__ == "__main__":
         prompteur = prompter.Prompter(modele, '../data_set/json/big.json', savepath= f'../data_set/json/completions_{modele.model_name}.json', batch=True, batch_size=256)
         
         benchmarkeur = benchmarker.Benchmarker('../data_set/json/big.json',f'../data_set/json/completions_{modele.model_name}.json')
-        print(f"End of {model}'s benchmark")        
+        print(f"End of {model}'s benchmark") 
+        del modele
+        del prompteur
+        del benchmarkeur       
