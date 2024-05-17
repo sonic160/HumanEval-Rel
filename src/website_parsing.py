@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from urllib.request import urlopen, Request
 import time
+from tqdm import tqdm
 
 
 def extract_text_html(html):
@@ -40,8 +41,8 @@ def scrapping():
     #Add others links to the list
     links = list_link(url, links)
 
-    for i in range(20):
-        print('test')
+    for i in tqdm(range(0,20), desc = 'Scrapping'):
+        #print('test')
         headers = {'User-Agent': 'Mozilla/5.0'}
         request = Request(links[i], headers=headers)
         html = urlopen(request).read()
