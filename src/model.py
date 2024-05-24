@@ -81,7 +81,7 @@ class HuggingFace(Model):
         if self.__tokenizer.pad_token is None:
             self.__tokenizer.add_special_tokens({'pad_token': '[PAD]'})
             self.__model.resize_token_embeddings(len(self.__tokenizer))
-    def generate(self, prompt, max_tokens=500, top_p=0.95, top_k=60, temperature=0.3):
+    def generate(self, prompt, max_tokens=5000, top_p=0.95, top_k=60, temperature=0.3):
         """Args:
             prompt (str): The prompt to generate code from.
             max_tokens (int, optional): The maximum number of tokens to generate. Defaults to 500.
