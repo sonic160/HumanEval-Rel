@@ -78,7 +78,6 @@ class Benchmarker:
 
         x = json.load(f)
         gens = dict()
-
         for gen in x:
             if gen["task_id"] not in gens:
                 gens[gen["task_id"]] = [gen]
@@ -109,7 +108,6 @@ class Benchmarker:
                     self.tests[id] = [(result, completion)]
                 else:
                     self.tests[id].append((result, completion))
-
         return self.score_model()
 
     def benchmark_parallel(self):
@@ -197,7 +195,7 @@ class Benchmarker:
         """
         Saves the results of the tests to a JSON file.
         """
-        json.dump(self.tests, open("../data_set/json/results.json", "w"))
+        json.dump(self.tests, open("./data_set/json/results.json", "w"))
 
 
 def parse_args() -> tuple[bool, str, str]:
