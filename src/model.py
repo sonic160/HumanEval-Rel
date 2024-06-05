@@ -39,7 +39,9 @@ class HuggingFace(Model):
     def __init__(self, model_name: str, model_path: str, quantization_config = None):
         # The parameter model_name is used to find wich model is used
         self.model_name = model_name
+        #The parameters model_path is here to specify the full hugging face path, should be like this : croissantllm/CroissantLLMBase
         self.model_path = model_path
+        #You can specify a quantization_config if the model is too big for your computer
         self.quantization_config = quantization_config
 
     def __str__(self):
@@ -55,11 +57,12 @@ class HuggingFace(Model):
         Returns:
         - None
         """
-        # To do :
-        #           add a parameter for quantization. May be a try with if quantization is not available
+        # We initialize the tokenizer
         self.__tokenizer = AutoTokenizer.from_pretrained(
             self.model_path, cache_dir=cachedir
         )
+        
+        #We check if a 
         if self.quantization_config == None:
             
             self.__model = AutoModelForCausalLM.from_pretrained(
@@ -77,12 +80,18 @@ class HuggingFace(Model):
             attn_implementation="flash_attention_2", 
             torch_dtype=torch.float16,
             quantization_config = self.quantization_config
-            )
+            )     
+        #We the add padding tokens if none is defined
         if self.__tokenizer.pad_token is None:
             self.__tokenizer.add_special_tokens({'pad_token': '[PAD]'})
             self.__model.resize_token_embeddings(len(self.__tokenizer))
+            
+            
     def generate(self, prompt, max_tokens=5000, top_p=0.95, top_k=60, temperature=0.3):
-        """Args:
+        """This function is deprecated, we now use only the generate_batch method
+        
+        
+        Args:
             prompt (str): The prompt to generate code from.
             max_tokens (int, optional): The maximum number of tokens to generate. Defaults to 500.
             top_p (float, optional): The cumulative probability for nucleus sampling. Defaults to 0.95.
@@ -99,15 +108,16 @@ class HuggingFace(Model):
             - This method is used for generating code from a prompt in the chat model.
             - Do not use this method for batch generation.
         """
-        # chat_input = self.__tokenizer.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True)
-        # To DO:
-        #       Implement a try with to try if a chat template is available. Maybe implement two different prompts (autocompletion or chatbot expert)
+        # We tokenise the prompt
+        
         inputs = self.__tokenizer(
             prompt,
             return_tensors="pt",
             add_special_tokens=True
         ).to(self.__model.device)
-
+        
+        # We generate an output token with the model
+        
         tokens = self.__model.generate(
             **inputs,
             max_new_tokens=max_tokens,
@@ -118,7 +128,7 @@ class HuggingFace(Model):
             pad_token_id=self.__tokenizer.eos_token_id,
             
         )
-
+        #We then use the extract method to return only the code
         return self.extract(
             self.__tokenizer.decode(tokens[0], skip_special_tokens=True)
         )
@@ -140,10 +150,13 @@ class HuggingFace(Model):
             list: A list of generated code snippets corresponding to each prompt.
 
         """
+        # We tokenise the prompt
 
         inputs = self.__tokenizer(
             prompts, return_tensors="pt", add_special_tokens=True, padding=True
         ).to(self.__model.device)
+
+        # We generate an output token with the model
 
         tokens = self.__model.generate(
             **inputs,
@@ -153,7 +166,10 @@ class HuggingFace(Model):
             top_k=top_k,
             temperature=temperature,
         )
+        #We then decode the generated token
+
         decoded = self.__tokenizer.batch_decode(tokens, skip_special_tokens=True)
+        #We then use the extract method to return only the code
 
         return [self.extract(decoded[i]) for i in range(len(tokens))]
 
