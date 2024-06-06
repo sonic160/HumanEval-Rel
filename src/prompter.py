@@ -1,4 +1,4 @@
-from model import Model
+from model import Model, TestModel
 from sandbox_code_runner import bcolors
 import json
 import tqdm
@@ -17,7 +17,7 @@ class Prompter:
     """
 
     def __init__(
-        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False, batch_size: int =8
+        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False, batch_size: int =8, k: int = 1
     ) -> None:
         """
         Initializes the Prompter with a given model, challenges file, and an optional save path.
@@ -29,6 +29,7 @@ class Prompter:
         """
         self.model = model
         self.savepath = savepath
+        self.k = k
 
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
@@ -80,7 +81,8 @@ class Prompter:
             output_list = []
             for i in range(0, len(chalenge), size):
                 # Append sublist of size n to the output list
-                output_list.append(chalenge[i:i + size])
+                for _ in range(self.k):
+                    output_list.append(chalenge[i:i + size])
     
             return output_list
         batches = regroup(self.challenges,batch_size)
@@ -102,15 +104,15 @@ class Prompter:
         print("Prompting the LLM for answers...\n")
 
         for challenge in tqdm.tqdm(self.challenges):
-
             id, prompt = challenge["task_id"], challenge["prompt"]
-            try:
-                completion = self.model.generate(prompt)
-                self.completions.append({"task_id": id, "completion": completion})
-            except Exception as e:
-                print(f'task_id number {id} problem with generation')
-                print(e)
-                self.completions.append({"task_id": id, "completion": ""})
+            for _ in range(self.k):
+                try:
+                    completion = self.model.generate(prompt)
+                    self.completions.append({"task_id": id, "completion": completion})
+                except Exception as e:
+                    print(f'task_id number {id} problem with generation')
+                    print(e)
+                    self.completions.append({"task_id": id, "completion": ""})
 
                     
     def output_json(self) -> None:
@@ -162,8 +164,6 @@ def parse_args() -> tuple[bool, str, str]:
 
 
 if __name__ == "__main__":
-    # TODO: Add command line arguments
-    model = Model("test")
-    prompter = Prompter(model, "../data_set/json/example_problem.json")
-    # args = parse_args()
-    # print(args.source, args.dest)
+    model = TestModel("test")
+    prompter = Prompter(model, "../data_set/json/example_problem.json", batch=False, k=1)
+

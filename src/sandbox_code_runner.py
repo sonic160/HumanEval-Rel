@@ -153,8 +153,10 @@ class SandboxCodeRunner:
             + entry_point
             + ")\n"
         )
+
+        print(code)
+
         try:
-            # record start time
             test_result = self.__execute(code)
             return test_result, completion
 
