@@ -154,8 +154,6 @@ class SandboxCodeRunner:
             + ")\n"
         )
 
-        print(code)
-
         try:
             test_result = self.__execute(code)
             return test_result, completion

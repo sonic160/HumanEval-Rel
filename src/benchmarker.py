@@ -180,22 +180,29 @@ class Benchmarker:
             assert len(total) == len(correct)
             num_samples_it = iter(total)
 
-        for k in [1, 10, 100]:
+        ks= [1, 5, 10, 100]
+        pass_per_k = {k: None for k in ks}
+        
+
+        for k in ks:
             pass_per_challenge = np.array(
                 [
                     PassAtK().calculate_score(int(n), int(c), k)
-                    for n, c in zip(num_samples_it, correct)
+                    for n, c in zip(total, correct)
                 ]
             )
+            
             if (total >= k).all():
                 print(f"pass@{k}: {pass_per_challenge.mean()}")
-                return pass_per_challenge.mean()
+                pass_per_k[k] = pass_per_challenge.mean()
+
+        return pass_per_k
 
     def save_results(self):
         """
         Saves the results of the tests to a JSON file.
         """
-        json.dump(self.tests, open("./data_set/json/results.json", "w"))
+        json.dump(self.tests, open("../data_set/json/results.json", "w"))
 
 
 def parse_args() -> tuple[bool, str, str]:
@@ -239,8 +246,8 @@ def parse_args() -> tuple[bool, str, str]:
 
 if __name__ == "__main__":
     bm = Benchmarker(
-        "../data_set/json/big.json",
-        "../data_set/json/completions.json",
+        "../data_set/json/prompt_file.json",
+        "../data_set/json/completions_meta-llamaCodeLlama-34b-hf.json",
     )
     # arg_parser = parse_args()
     # print(arg_parser.source, arg_parser.completions, arg_parser.parallel)
