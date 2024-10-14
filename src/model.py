@@ -1,12 +1,6 @@
-### The goal of this files is to centralise all the classes and subclasses used in the project.
-
-
-# Importing the necessary libraries
 from abc import ABC
-
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
 
 class Model(ABC):
     # This class is the parent class of all the models used in the project
@@ -34,7 +28,6 @@ class Model(ABC):
 
 class TestModel(Model):
     # This class is used to test the Model class
-
     def __init__(self, model_name: str):
         # The parameter model_name is used to find wich model is used
         super().__init__(model_name)
@@ -54,13 +47,22 @@ class TestModel(Model):
 
 class HuggingFace(Model):
     # This class can be used to use an open source model that is available on the HuggingFace library
+    def __init__(
+            self,
+            model_name: str,
+            model_path: str,
+            quantization_config=None,
+        ):
+        """
+        Initializes the HuggingFace model with the given model name and path.
 
-    def __init__(self, model_name: str, model_path: str, quantization_config = None):
-        # The parameter model_name is used to find wich model is used
+        Args:
+            model_name (str): The name of the model.
+            model_path (str): The full path of the model on HuggingFace, e.g. croissantllm/CroissantLLMBase.
+            quantization_config (optional): A QuantizationConfig object to specify the quantization configuration if the model is too big for your computer. Defaults to None.
+        """
         self.model_name = model_name
-        #The parameters model_path is here to specify the full hugging face path, should be like this : croissantllm/CroissantLLMBase
         self.model_path = model_path
-        #You can specify a quantization_config if the model is too big for your computer
         self.quantization_config = quantization_config
 
     def __str__(self):
@@ -81,34 +83,42 @@ class HuggingFace(Model):
             self.model_path, cache_dir=cachedir
         )
         
-        #We check if a 
-        if self.quantization_config == None:
-            
+        device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+        # We check if a quantization config was passed.
+        if device == torch.device('cuda'):
+            if self.quantization_config is None:
+                self.__model = AutoModelForCausalLM.from_pretrained(
+                self.model_path, 
+                cache_dir=cachedir,
+                device_map='auto',  
+                attn_implementation='flash_attention_2', 
+                torch_dtype=torch.float16
+                ).to(device)
+            else:
+                self.__model = AutoModelForCausalLM.from_pretrained(
+                self.model_path, 
+                cache_dir=cachedir,
+                device_map='auto',  
+                attn_implementation='flash_attention_2', 
+                torch_dtype=torch.float16,
+                quantization_config=self.quantization_config
+                ).to(device)
+        elif device == torch.device('cpu'):
             self.__model = AutoModelForCausalLM.from_pretrained(
-            self.model_path, 
-            cache_dir=cachedir,
-            device_map="auto",  
-            attn_implementation="flash_attention_2", 
-            torch_dtype=torch.float16
-            ).to(torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
+                self.model_path, 
+                cache_dir=cachedir,
+                torch_dtype=torch.float16
+                ).to(device)
         else:
-            self.__model = AutoModelForCausalLM.from_pretrained(
-            self.model_path, 
-            cache_dir=cachedir,
-            device_map="auto",  
-            attn_implementation="flash_attention_2", 
-            torch_dtype=torch.float16,
-            quantization_config = self.quantization_config
-            )     
+            raise Exception(f"Unexpected device: {device}")
         #We the add padding tokens if none is defined
         if self.__tokenizer.pad_token is None:
             self.__tokenizer.add_special_tokens({'pad_token': '[PAD]'})
             self.__model.resize_token_embeddings(len(self.__tokenizer))
             
             
-    def generate(self, prompt, max_tokens=5000, top_p=0.95, top_k=60, temperature=0.3):
+    def generate(self, prompt, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3):
         """This function is deprecated, we now use only the generate_batch method
-        
         
         Args:
             prompt (str): The prompt to generate code from.
@@ -127,16 +137,15 @@ class HuggingFace(Model):
             - This method is used for generating code from a prompt in the chat model.
             - Do not use this method for batch generation.
         """
-        # We tokenise the prompt
-        
+        # We tokenize the prompt
         inputs = self.__tokenizer(
             prompt,
             return_tensors="pt",
             add_special_tokens=True
         ).to(self.__model.device)
         
+        print("Generating LLM answer.")
         # We generate an output token with the model
-        
         tokens = self.__model.generate(
             **inputs,
             max_new_tokens=max_tokens,
@@ -145,9 +154,10 @@ class HuggingFace(Model):
             top_k=top_k,
             temperature=temperature,
             pad_token_id=self.__tokenizer.eos_token_id,
-            
         )
-        #We then use the extract method to return only the code
+
+        print("LLM answer generated.\nExtracting only the code.")
+        # We then use the extract method to return only the code
         return self.extract(
             self.__tokenizer.decode(tokens[0], skip_special_tokens=True)
         )
@@ -204,7 +214,6 @@ class HuggingFace(Model):
 
         Raises:
             None
-
         """
         lines = text.split("\n")
         lines_filtered = [line for line in lines if not line.strip().startswith("#")]

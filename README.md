@@ -11,7 +11,7 @@ The dataset and source code will follow the framework from [HumanEval, introduce
 
 ## TODO
 
-[ ]  Change the code so that it supports environments that do not include CUDA and are CPU-only.
+- [ ]  Change the code so that it supports environments that do not include CUDA and are CPU-only.
 
 ## Quickstart
 

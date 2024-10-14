@@ -22,8 +22,8 @@ if __name__ == "__main__":
                     # "meta-llama/Meta-Llama-3-8B",
                     # "meta-llama/CodeLlama-7b-hf",
                     # "mistralai/Mixtral-8x7B-v0.1",
-                    # "croissantllm/CroissantLLMBase",
-                    "google/gemma-7b",           
+                    "croissantllm/CroissantLLMBase",
+                    # "google/gemma-7b",           
     ]
 
     # We iterate over all the models
@@ -39,11 +39,11 @@ if __name__ == "__main__":
                 quantization_config=quantization_config,
                 )
             current_model.model_init('../cache')
-        except:
+        except Exception as e:
+            print(e)
             # We offload the previous model from the memory
             del current_model
             torch.cuda.empty_cache() if torch.cuda.is_available() else ()
-        
             gc.collect()
 
             # We choose a quantization_config to use
@@ -65,8 +65,8 @@ if __name__ == "__main__":
             current_model,
             './data_set/json/prompt_file.json',
             savepath=f'./data_set/json/completions_{current_model.model_name}.json',
-            batch=True,
-            batch_size=256,
+            batch=False, # True,
+            # batch_size=256,
             )
        
         # With the completion's file, it run the functions and compute the score

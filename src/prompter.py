@@ -76,30 +76,29 @@ class Prompter:
 
         f.close()
         print("Loaded!\n")
-
         return x
 
-    def prompt_batched(self, batch_size = 8) -> None:
+    def prompt_batched(self, batch_size=8) -> None:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         This version uses batching to generate answers more quickly.
         """
-        def regroup(chalenge, size):
+        def regroup(challenge, size):
             output_list = []
-            for i in range(0, len(chalenge), size):
+            for i in range(0, len(challenge), size):
                 # Append sublist of size n to the output list
                 for _ in range(self.k):
-                    output_list.append(chalenge[i:i + size])
+                    output_list.append(challenge[i:i + size])
             return output_list
         
-        batches = regroup(self.challenges,batch_size)
+        batches = regroup(self.challenges, batch_size)
         for batch in tqdm.tqdm(batches):
-            prompts = list(map(lambda l : l["prompt"], batch))
-            task_ids = list(map(lambda l : l["task_id"], batch))
+            prompts = list(map(lambda l : l['prompt'], batch))
+            task_ids = list(map(lambda l : l['task_id'], batch))
             try:
                 completions = self.model.generate_batch(prompts)
                 for i in range(batch_size):
-                    self.completions.append({"task_id": task_ids[i], "completion": completions[i]})
+                    self.completions.append({'task_id': task_ids[i], 'completion': completions[i]})
             except Exception as e:
                 print("error")
                 print(e)
@@ -109,25 +108,23 @@ class Prompter:
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         """
         print("Prompting the LLM for answers...\n")
-
         for challenge in tqdm.tqdm(self.challenges):
-            id, prompt = challenge["task_id"], challenge["prompt"]
+            id, prompt = challenge['task_id'], challenge['prompt']
             for _ in range(self.k):
                 try:
                     completion = self.model.generate(prompt)
-                    self.completions.append({"task_id": id, "completion": completion})
+                    self.completions.append({'task_id': id, 'completion': completion})
                 except Exception as e:
                     print(f'task_id number {id} problem with generation')
                     print(e)
-                    self.completions.append({"task_id": id, "completion": ""})
-
+                    self.completions.append({'task_id': id, 'completion': ""})
                     
     def output_json(self) -> None:
         """
         Saves the LLM's answers to the benchmark questions as a json file
 
-                Parameters:
-                        chalfile (str): The path to the file that hosts the challenges that are to be asked to the LLM.
+        Parameters:
+            chalfile (str): The path to the file that hosts the challenges that are to be asked to the LLM.
         """
         if self.savepath is None:
             savepath = str(
@@ -136,7 +133,7 @@ class Prompter:
             self.savepath = savepath.replace(":", "_")
 
         print(self.savepath)
-        json.dump(self.completions, open(self.savepath, "w"))
+        json.dump(self.completions, open(self.savepath, 'w'))
         print("Done!")
 
 
@@ -170,6 +167,6 @@ def parse_args() -> tuple[bool, str, str]:
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     model = TestModel("test")
     prompter = Prompter(model, "../data_set/json/example_problem.json", batch=False, k=1)
