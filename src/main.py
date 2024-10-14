@@ -8,12 +8,11 @@ import model
 import prompter
 import benchmarker
 
-#login ('YOUR_TOKEN_HERE') #Only for models that you need access for (e.g LLama)
+# login ('YOUR_TOKEN_HERE') # Only for models that you need access for (e.g LLama)
 
 # If the file is executed, we run the following code
 if __name__ == "__main__":
     # A list of the models that will be benchmarked
-    
     models_list = [
                     # "m-a-p/OpenCodeInterpreter-DS-6.7B",
                     # "codefuse-ai/CodeFuse-DeepSeek-33B",
@@ -24,45 +23,62 @@ if __name__ == "__main__":
                     # "meta-llama/CodeLlama-7b-hf",
                     # "mistralai/Mixtral-8x7B-v0.1",
                     # "croissantllm/CroissantLLMBase",
-                    # "google/gemma-7b",              
+                    "google/gemma-7b",           
     ]
-    #We iterate over all the models
+
+    # We iterate over all the models
     for model_name in models_list : 
         print(f"Now benchmarking the following model : {model_name}")
-        # we try to see if the GPU can fit the whole model or if it should be quantized
+        # We try to see if the GPU can fit the whole model or if it should be quantized
         try:
             quantization_config = None
 
-            current_model = model.HuggingFace(model_name.replace('/',""),model_name, quantization_config=quantization_config)
+            current_model = model.HuggingFace(
+                model_name.replace('/',""),
+                model_name,
+                quantization_config=quantization_config,
+                )
             current_model.model_init('../cache')
         except:
             # We offload the previous model from the memory
             del current_model
-            torch.cuda.empty_cache()      if torch.cuda.is_available() else ()
+            torch.cuda.empty_cache() if torch.cuda.is_available() else ()
         
             gc.collect()
-            # We choose a quantization_config to use
-            
-            quantization_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_quant_type="nf4",
 
-            bnb_4bit_compute_dtype=torch.float16,
+            # We choose a quantization_config to use
+            quantization_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_compute_dtype=torch.float16,
                 )
-            #We initialise the model
-            current_model = model.HuggingFace(model_name.replace('/',""),model_name, quantization_config=quantization_config)
+            # We initialize the model
+            current_model = model.HuggingFace(
+                model_name.replace('/',""),
+                model_name,
+                quantization_config=quantization_config,
+                )
             current_model.model_init('../cache')
         
-        #We call the prompter over the model, save the completions in a file
-        prompteur = prompter.Prompter(current_model, './data_set/json/prompt_file.json', savepath= f'./data_set/json/completions_{current_model.model_name}.json', batch=True, batch_size=256)
+        # We call the prompter over the model, save the completions in a file
+        prompteur = prompter.Prompter(
+            current_model,
+            './data_set/json/prompt_file.json',
+            savepath=f'./data_set/json/completions_{current_model.model_name}.json',
+            batch=True,
+            batch_size=256,
+            )
        
-        #With the completion's file, it run the functions and compute the score
-        benchmarkeur = benchmarker.Benchmarker('./data_set/json/prompt_file.json',f'./data_set/json/completions_{current_model.model_name}.json')
+        # With the completion's file, it run the functions and compute the score
+        benchmarkeur = benchmarker.Benchmarker(
+            './data_set/json/prompt_file.json',
+            f'./data_set/json/completions_{current_model.model_name}.json',
+            )
         print(f"End of {model_name}'s benchmark") 
         
-        #We clear memory for the following model
+        # We clear memory for the following model
         del prompteur
         del current_model
         del benchmarkeur  
-        torch.cuda.empty_cache()      if torch.cuda.is_available() else ()
+        torch.cuda.empty_cache() if torch.cuda.is_available() else ()
         gc.collect()

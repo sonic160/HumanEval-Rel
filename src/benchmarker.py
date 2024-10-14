@@ -1,19 +1,18 @@
-import tqdm
 import argparse
-import sys
-import json
-from sandbox_code_runner import SandboxCodeRunner
-import numpy as np
-from collections import defaultdict, Counter
-from score_calculator import ScoreCalculator, PassAtK
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import itertools
-from typing import Tuple
+import json
+import numpy as np
 import timeit
+import tqdm
+from typing import Tuple
 
+# Custom imports.
+from sandbox_code_runner import SandboxCodeRunner
+from score_calculator import PassAtK
 
 N_WORKERS = 20
-
 
 class Benchmarker:
     """
@@ -46,6 +45,7 @@ class Benchmarker:
         print("Saving results...")
         self.save_results()
         print("Done.")
+
     def load_challenges_file(self):
         """
         Loads the challenges from a JSON file.
@@ -180,10 +180,9 @@ class Benchmarker:
             assert len(total) == len(correct)
             num_samples_it = iter(total)
 
-        ks= [1, 5, 10, 100]
+        ks = [1, 5, 10, 100]
         pass_per_k = {k: None for k in ks}
         
-
         for k in ks:
             pass_per_challenge = np.array(
                 [
@@ -242,7 +241,6 @@ def parse_args() -> tuple[bool, str, str]:
     )
 
     return parser.parse_args()
-
 
 if __name__ == "__main__":
     bm = Benchmarker(

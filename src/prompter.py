@@ -1,11 +1,12 @@
+import argparse
+from datetime import datetime
+import json
+import sys
+import tqdm
+
+# Custom imports.
 from model import Model, TestModel
 from sandbox_code_runner import bcolors
-import json
-import tqdm
-from datetime import datetime
-import sys
-import argparse
-
 
 class Prompter:
     """
@@ -17,7 +18,13 @@ class Prompter:
     """
 
     def __init__(
-        self, model: Model, challenges_file: str, savepath: str = None, batch: bool = False, batch_size: int =8, k: int = 1
+        self,
+        model: Model,
+        challenges_file: str,
+        savepath: str=None,
+        batch: bool=False,
+        batch_size: int=8,
+        k: int=1,
     ) -> None:
         """
         Initializes the Prompter with a given model, challenges file, and an optional save path.
@@ -34,7 +41,7 @@ class Prompter:
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
         self.completions = []
-        self.prompt() if not batch else self.prompt_batched(batch_size= batch_size)
+        self.prompt() if not batch else self.prompt_batched(batch_size=batch_size)
         
         self.output_json()
 
@@ -43,7 +50,7 @@ class Prompter:
         Loads the file that hosts the challenges that are to be asked to the LLM.
 
         Args:
-                chalfile (str): The path to the file that hosts the challenges that are to be asked to the LLM.
+            chalfile (str): The path to the file that hosts the challenges that are to be asked to the LLM.
         """
         try:
             f = open(chalfile)
@@ -83,12 +90,12 @@ class Prompter:
                 # Append sublist of size n to the output list
                 for _ in range(self.k):
                     output_list.append(chalenge[i:i + size])
-    
             return output_list
+        
         batches = regroup(self.challenges,batch_size)
         for batch in tqdm.tqdm(batches):
-            prompts = list(map(lambda l : l["prompt"],batch))
-            task_ids = list(map(lambda l : l["task_id"],batch))
+            prompts = list(map(lambda l : l["prompt"], batch))
+            task_ids = list(map(lambda l : l["task_id"], batch))
             try:
                 completions = self.model.generate_batch(prompts)
                 for i in range(batch_size):
@@ -122,7 +129,7 @@ class Prompter:
                 Parameters:
                         chalfile (str): The path to the file that hosts the challenges that are to be asked to the LLM.
         """
-        if self.savepath == None:
+        if self.savepath is None:
             savepath = str(
                 f"../data_set/json/completions_{datetime.now()}_{self.model.model_name}.json"
             ).replace(" ", "_")
@@ -166,4 +173,3 @@ def parse_args() -> tuple[bool, str, str]:
 if __name__ == "__main__":
     model = TestModel("test")
     prompter = Prompter(model, "../data_set/json/example_problem.json", batch=False, k=1)
-

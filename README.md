@@ -9,9 +9,14 @@ This repository aims at centralizing the following elements:
 
 The dataset and source code will follow the framework from [HumanEval, introduced in Chen et al. (2021)](https://arxiv.org/abs/2107.03374).
 
+## TODO
+
+[ ]  Change the code so that it supports environments that do not include CUDA and are CPU-only.
+
 ## Quickstart
 
 To get started with the current code, you will need the `make` command to setup the project.
+Note: the current code assumes that the environment supports CUDA.
 
 ### 1 - Installing `make` (Windows)
 
@@ -43,4 +48,12 @@ Then, once `make` is installed, you can setup the project by running:
 
 ```bash
 make all
+```
+
+### 3 - Running the code
+
+Once the project has been set up a first time, you can run the code at any point by running:
+
+```bash
+make run
 ```
