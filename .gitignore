@@ -6,3 +6,4 @@ src/venv/
 .env/
 .pytest_cache/
 **/.venv/
+venv

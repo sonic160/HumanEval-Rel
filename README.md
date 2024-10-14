@@ -8,3 +8,39 @@ This repository aims at centralizing the following elements:
 * **source code**: an assessment framework to evaluate LLMs on the evaluation dataset.
 
 The dataset and source code will follow the framework from [HumanEval, introduced in Chen et al. (2021)](https://arxiv.org/abs/2107.03374).
+
+## Quickstart
+
+To get started with the current code, you will need the `make` command to setup the project.
+
+### 1 - Installing `make` (Windows)
+
+To check if you have `make` already installed, you can run:
+
+```bash
+make --version
+```
+
+If it is not installed, you can use `chocolatey` to install it.
+
+To check if you have `chocolatey` already installed, you can run:
+
+```bash
+choco --version
+```
+
+If it is not already installed, you can install `chocolatey` following [this quick tutorial](https://chocolatey.org/install).
+
+Then, once `chocolatey` is setup, you can install `make` by running:
+
+```bash
+choco install make
+```
+
+### 2 - Setting up the project
+
+Then, once `make` is installed, you can setup the project by running:
+
+```bash
+make all
+```
