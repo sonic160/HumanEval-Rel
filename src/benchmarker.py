@@ -201,7 +201,7 @@ class Benchmarker:
         """
         Saves the results of the tests to a JSON file.
         """
-        json.dump(self.tests, open("../data_set/json/results.json", "w"))
+        json.dump(self.tests, open("./data_set/json/results.json", "w"))
 
 
 def parse_args() -> tuple[bool, str, str]:
