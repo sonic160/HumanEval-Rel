@@ -1,12 +1,16 @@
 import gc
 from huggingface_hub import login
 import torch
+from transformers import BitsAndBytesConfig
 
 # Custom imports.
-from transformers import BitsAndBytesConfig
+from helpers.reproducibility import set_random_seeds
 import model
 import prompter
 import benchmarker
+
+# Reproducibility.
+set_random_seeds()
 
 # login ('YOUR_TOKEN_HERE') # Only for models that you need access for (e.g LLama)
 

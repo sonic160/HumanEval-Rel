@@ -4,15 +4,17 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import itertools
 import json
 import numpy as np
-import timeit
 import tqdm
-from typing import Tuple
 
 # Custom imports.
+from helpers.reproducibility import set_random_seeds
 from sandbox_code_runner import SandboxCodeRunner
 from score_calculator import PassAtK
 
 N_WORKERS = 20
+
+# Reproducibility.
+set_random_seeds()
 
 class Benchmarker:
     """
