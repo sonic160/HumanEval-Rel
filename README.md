@@ -11,7 +11,8 @@ The dataset and source code will follow the framework from [HumanEval, introduce
 
 ## TODO
 
-- [ ]  Change the code so that it supports environments that do not include CUDA and are CPU-only.
+- [ ] Check reproducibility settings: random seeds?
+- [ ] Run the benchmark, once reproducible, on a list of models and save the initial results in a table in the repository.
 
 ## Quickstart
 

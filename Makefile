@@ -22,9 +22,11 @@ VENV_DIR = venv
 # Define targets
 .PHONY: all all_test install run test clean
 
-all: install run 
+all: install run
 
 all_test: install run test
+
+all_ruche: run_ruche
 
 install:
 	# Create virtual environment
@@ -37,6 +39,10 @@ install:
 run:
 	# Run main Python file
 	. $(VENV_DIR)/Scripts/Activate && \
+	$(PYTHON) $(SRC_DIR)/$(MAIN_FILE)
+
+run_ruche:
+	# Run main Python file, but in Ruche environment.
 	$(PYTHON) $(SRC_DIR)/$(MAIN_FILE)
 
 test:

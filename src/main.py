@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 model_name,
                 quantization_config=quantization_config,
                 )
-            current_model.model_init('../cache')
+            current_model.model_init()
         except Exception as e:
             print(e)
             # We offload the previous model from the memory
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                 model_name,
                 quantization_config=quantization_config,
                 )
-            current_model.model_init('../cache')
+            current_model.model_init()
         
         # We call the prompter over the model, save the completions in a file
         prompteur = prompter.Prompter(

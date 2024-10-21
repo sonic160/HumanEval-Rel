@@ -7,3 +7,5 @@ src/venv/
 .pytest_cache/
 **/.venv/
 venv
+**ruche_logs
+**ruche_scripts
