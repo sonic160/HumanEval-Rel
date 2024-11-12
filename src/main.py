@@ -60,10 +60,9 @@ if __name__ == "__main__":
                 )
             current_model.model_init()
         
-        #completion_file=f'./data_set/json/completions_{current_model.model_name}.json'
-        completion_file="./data_set/json/completions_googlegemma-2b.json"
+        # We call the prompter over the model, save the completions in a file
+        completion_file=f'./data_set/json/completions_{current_model.model_name}.json'
         
-        #We call the prompter over the model, save the completions in a file
         prompteur = prompter.Prompter(
             current_model,
             './data_set/json/prompt_file.json',
