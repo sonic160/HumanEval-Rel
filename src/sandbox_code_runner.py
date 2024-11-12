@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 
-TIMEOUT_SECONDS = 3.0
+TIMEOUT_SECONDS = 10
 
 class bcolors:
     HEADER = "\033[95m"
@@ -24,8 +24,9 @@ class bcolors:
 
 
 class SandboxCodeRunner:    
-    def __init__(self):
+    def __init__(self, timeout_warnings = False) -> None:
         self.print_warning()
+        self.__timeout_warnings = timeout_warnings
         #self.reliability_guard() # TODO: Uncomment this line to enable the reliability guard
 
     def print_warning(self) -> None:
@@ -124,7 +125,7 @@ class SandboxCodeRunner:
     
     def __execute(self, *code_and_context) -> bool:
         try:
-            with multiprocessing.Pool(processes=2) as pool:
+            with multiprocessing.Pool(processes=1) as pool:
                 result = pool.apply_async(exec_with_context, [*code_and_context])
                 
                 try:
@@ -132,6 +133,9 @@ class SandboxCodeRunner:
                     return self.convert_to_bool(test_result)
                 
                 except multiprocessing.TimeoutError:
+                    if self.__timeout_warnings:
+                        print(bcolors.WARNING + "\nWARNING[SandboxCodeRunner]: TIMEOUT error (you may want to check the LLM's code)" + bcolors.ENDC)
+                        print("\ncode that time out at execution:\n\n", *code_and_context, "\n\n\n")
                     return False
                 
         except Exception as e:

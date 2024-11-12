@@ -23,7 +23,7 @@ class Benchmarker:
     and saves the results to a JSON file.
     """
 
-    def __init__(self, chal_file, completion_file=None):
+    def __init__(self, chal_file, completion_file=None, timeout_warnings=False):
         """
         Initializes the Benchmarker with a challenges file and an optional completions file.
 
@@ -34,7 +34,7 @@ class Benchmarker:
 
         self.completion_file = completion_file
         self.chalfile = chal_file
-        self.sandbox = SandboxCodeRunner()
+        self.sandbox = SandboxCodeRunner(timeout_warnings=timeout_warnings)
         self.tests = dict()
 
         print("Loading the files...")
