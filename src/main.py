@@ -26,8 +26,19 @@ if __name__ == "__main__":
                     # "meta-llama/Meta-Llama-3-8B",
                     # "meta-llama/CodeLlama-7b-hf",
                     # "mistralai/Mixtral-8x7B-v0.1",
-                    "croissantllm/CroissantLLMBase",
-                    # "google/gemma-7b",           
+                    # "croissantllm/CroissantLLMBase",
+                    # "google/gemma-7b",
+                    # "microsoft/Orca-2-13b",
+                    # "nvidia/Llama-3.1-Nemotron-70B-Reward-HF",
+                    # "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
+                    # "meta-llama/Llama-Guard-3-8B",
+                    # "facebook/MobileLLM-125M",
+                    # "facebook/MobileLLM-1B",
+                    # "mistralai/Ministral-8B-Instruct-2410",
+                    # "openai-community/roberta-large-openai-detector",
+                    # "google/gemma-2-27b-it",
+                    # "princeton-nlp/gemma-2-9b-it-SimPO",
+                    # "Qwen/Qwen2.5-Coder-7B-Instruct"       
     ]
 
     # We iterate over all the models
