@@ -52,6 +52,7 @@ class HuggingFace(Model):
             model_name: str,
             model_path: str,
             quantization_config=None,
+            cache_dir=None
         ):
         """
         Initializes the HuggingFace model with the given model name and path.
@@ -64,11 +65,12 @@ class HuggingFace(Model):
         self.model_name = model_name
         self.model_path = model_path
         self.quantization_config = quantization_config
+        self.__cache_dir = cache_dir
 
     def __str__(self):
         return f"{self.model_name}"
 
-    def model_init(self, cachedir=None):
+    def model_init(self):
         """
         Initializes the model by loading the tokenizer and the model itself.
 
@@ -80,7 +82,7 @@ class HuggingFace(Model):
         """
         # We initialize the tokenizer
         self.__tokenizer = AutoTokenizer.from_pretrained(
-            self.model_path, cache_dir=cachedir
+            self.model_path, cache_dir=self.__cache_dir
         )
         
         device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -89,7 +91,7 @@ class HuggingFace(Model):
             if self.quantization_config is None:
                 self.__model = AutoModelForCausalLM.from_pretrained(
                 self.model_path, 
-                cache_dir=cachedir,
+                cache_dir=self.__cache_dir,
                 device_map='auto',  
                 attn_implementation='flash_attention_2', 
                 torch_dtype=torch.float16
@@ -97,7 +99,7 @@ class HuggingFace(Model):
             else:
                 self.__model = AutoModelForCausalLM.from_pretrained(
                 self.model_path, 
-                cache_dir=cachedir,
+                cache_dir=self.__cache_dir,
                 device_map='auto',  
                 attn_implementation='flash_attention_2', 
                 torch_dtype=torch.float16,
@@ -106,7 +108,7 @@ class HuggingFace(Model):
         elif device == torch.device('cpu'):
             self.__model = AutoModelForCausalLM.from_pretrained(
                 self.model_path, 
-                cache_dir=cachedir,
+                cache_dir=self.__cache_dir,
                 torch_dtype=torch.float16
                 ).to(device)
         else:

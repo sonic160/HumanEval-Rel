@@ -1,6 +1,7 @@
 import gc
 from huggingface_hub import login
 import torch
+import os
 from transformers import BitsAndBytesConfig
 
 # Custom imports.
@@ -18,18 +19,26 @@ set_random_seeds()
 if __name__ == "__main__":
     # A list of the models that will be benchmarked
     models_list = [
-                    # "m-a-p/OpenCodeInterpreter-DS-6.7B",
-                    # "codefuse-ai/CodeFuse-DeepSeek-33B",
-                    # "meta-llama/CodeLlama-34b-hf",
-                    # "meta-llama/Meta-Llama-3-70B",
-                    # "meta-llama/CodeLlama-70b-hf",
-                    # "meta-llama/Meta-Llama-3-8B",
-                    # "meta-llama/CodeLlama-7b-hf",
-                    # "mistralai/Mixtral-8x7B-v0.1",
-                    "croissantllm/CroissantLLMBase",
-                    # "google/gemma-7b",           
+                   # "facebook/MobileLLM-125M",
+                   # "facebook/MobileLLM-1B",
+                   # "croissantllm/CroissantLLMBase",
+                   # "Qwen/Qwen2.5-Coder-7B-Instruct",
+                   # "mistralai/Ministral-8B-Instruct-2410",
+                    "meta-llama/Llama-Guard-3-8B",
+                    "princeton-nlp/gemma-2-9b-it-SimPO",
+                    "google/gemma-2-9b-it",
+                    "microsoft/Orca-2-13b"
+                    "google/gemma-2-27b-it",
+                    "nvidia/Llama-3.1-Nemotron-70B-Reward-HF",
+                    "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
+                    "mistralai/Mistral-Large-Instruct-2407",
+                    "openai-community/roberta-large-openai-detector"
+                    "deepseek-ai/DeepSeek-V2.5",
     ]
-
+    #determine cache dir (test if we are in ruche)
+    cache_dir = None
+    if  "/gpfs/" in str(os.getcwd()):
+        cache_dir = "/gpfs/workdir/baudoinso/.cache/huggingface"
     # We iterate over all the models
     for model_name in models_list : 
         print(f"Now benchmarking the following model : {model_name}")
@@ -41,6 +50,7 @@ if __name__ == "__main__":
                 model_name.replace('/',""),
                 model_name,
                 quantization_config=quantization_config,
+                cache_dir=cache_dir
                 )
             current_model.model_init()
         except Exception as e:
