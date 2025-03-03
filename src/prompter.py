@@ -36,7 +36,7 @@ class Prompter:
         """
         self.model = model
         self.savepath = savepath
-        self.k = k
+        self.n = n
 
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
@@ -87,7 +87,7 @@ class Prompter:
             output_list = []
             for i in range(0, len(challenge), size):
                 # Append sublist of size n to the output list
-                for _ in range(self.k):
+                for _ in range(self.n):
                     output_list.append(challenge[i:i + size])
             return output_list
         

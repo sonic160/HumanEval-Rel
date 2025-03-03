@@ -82,6 +82,7 @@ if __name__ == "__main__":
             './data_set/json/prompt_file.json',
             savepath=completion_file,
             batch=False, # True,
+            n=50
             # batch_size=256,
             )
        
