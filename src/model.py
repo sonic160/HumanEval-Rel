@@ -173,9 +173,16 @@ class HuggingFace(Model):
         if self.__tokenizer.pad_token is None:
             self.__tokenizer.add_special_tokens({'pad_token': '[PAD]'})
             self.__model.resize_token_embeddings(len(self.__tokenizer))
-            
-            
-    def generate(self, prompt, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3):
+
+    def generate(self, 
+                 prompt : str, 
+                 max_tokens : int =1000, 
+                 top_p : float =0.95, 
+                 top_k : int =60, 
+                 temperature : float=0.3,
+                 prompt_prefix : Annotated[str, "passed by the prompter"] ="",
+                 prompt_suffix : Annotated[str, "passed by the prompter"] ="",
+                 stream: bool =False) -> str:
         """This function is deprecated, we now use only the generate_batch method
         
         Args:
@@ -197,28 +204,49 @@ class HuggingFace(Model):
         """
         # We tokenize the prompt
         inputs = self.__tokenizer(
-            prompt,
+            prompt_prefix+prompt+prompt_suffix,
             return_tensors="pt",
             add_special_tokens=True
         ).to(self.__model.device)
-        
-        print("Generating LLM answer.")
-        # We generate an output token with the model
-        tokens = self.__model.generate(
-            **inputs,
-            max_new_tokens=max_tokens,
-            do_sample=True,
-            top_p=top_p,
-            top_k=top_k,
-            temperature=temperature,
-            pad_token_id=self.__tokenizer.eos_token_id,
-        )
 
-        print("LLM answer generated.\nExtracting only the code.")
+        # We generate an output token with the model
+        tokens = None
+        try:
+            if stream:
+                streamer = TextStreamer(self.__tokenizer, )
+                tokens = self.__model.generate(
+                    **inputs,
+                    max_new_tokens=max_tokens,
+                    do_sample=True,
+                    top_p=top_p,
+                    top_k=top_k,
+                    temperature=temperature,
+                    pad_token_id=self.__tokenizer.eos_token_id,
+                    streamer=streamer
+                )
+            else:
+                tokens = self.__model.generate(
+                    **inputs,
+                    max_new_tokens=max_tokens,
+                    do_sample=True,
+                    top_p=top_p,
+                    top_k=top_k,
+                    temperature=temperature,
+                    pad_token_id=self.__tokenizer.eos_token_id,
+                )
+        except Exception as e:
+            print(f"Error while generating LLM answer for {self.model_name}:")
+            print(e)
+
         # We then use the extract method to return only the code
-        return self.extract(
-            self.__tokenizer.decode(tokens[0], skip_special_tokens=True)
-        )
+        try:
+            whole_answer = self.__tokenizer.decode(tokens[0], skip_special_tokens=True)
+            extracted_code = self.extract(whole_answer)
+        except Exception as e:
+            print(f"Error extracting code from LLM answer for {self.model_name}:")
+            print(e)
+
+        return extracted_code, whole_answer
 
     def generate_batch(
         self, prompts, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3
