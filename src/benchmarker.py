@@ -182,16 +182,18 @@ class Benchmarker:
             assert len(total) == len(correct)
             num_samples_it = iter(total)
 
-        ks = [1, 5, 10, 100]
+        ks = [1, 5, 10, 15]+[k*10 for k in range(2, 10+1)]
+
         pass_per_k = {k: None for k in ks}
-        
+         
         for k in ks:
-            pass_per_challenge = np.array(
-                [
-                    PassAtK().calculate_score(int(n), int(c), k)
-                    for n, c in zip(total, correct)
-                ]
-            )
+            if (total >= k).all():
+                pass_per_challenge = np.array(
+                    [
+                        PassAtK().calculate_score(int(n), int(c), k)
+                        for n, c in zip(total, correct)
+                    ]
+                )
             
             if (total >= k).all():
                 print(f"pass@{k}: {pass_per_challenge.mean()}")
