@@ -79,7 +79,7 @@ class Benchmarker:
         try:
             f = open(self.completion_file)
         except FileNotFoundError:
-            print("File not found)))")
+            print("File not found")
             exit(1)
 
         x = json.load(f)
