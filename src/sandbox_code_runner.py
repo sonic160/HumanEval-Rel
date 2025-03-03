@@ -163,7 +163,7 @@ class SandboxCodeRunner:
             return test_result, completion
 
         except Exception as e:
-            return False, completion
+            return False, completion+"\nthe LLM's program failed to execute\n"+str(e)
 def exec_with_context(code: str) -> bool:
         context = {}
         exec(code, context)

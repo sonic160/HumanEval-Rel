@@ -9,3 +9,5 @@ src/venv/
 venv
 **ruche_logs
 **ruche_scripts
+tmp
+.vscode/settings.json

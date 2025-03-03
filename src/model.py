@@ -1,6 +1,8 @@
 from abc import ABC
+from typing import Annotated
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
+
 
 class Model(ABC):
     # This class is the parent class of all the models used in the project
