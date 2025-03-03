@@ -1,0 +1,57 @@
+\documentclass{report}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{courier}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  backgroundcolor=\color{white}, 
+  basicstyle=\footnotesize\ttfamily,
+  breakatwhitespace=false,        
+  breaklines=true,                 
+  commentstyle=\color{mygreen},   
+  deletekeywords={...},            
+  escapeinside={\%*}{*)},          
+  extendedchars=true,              
+  keepspaces=true,                 
+  keywordstyle=\color{blue},       
+  language=Python,                 
+  otherkeywords={*,...},           
+  numbers=left,                    
+  numbersep=5pt,                   
+  numberstyle=\tiny\color{mygray}, 
+  rulecolor=\color{black},         
+  showspaces=false,               
+  showstringspaces=false,          
+  showtabs=false,                 
+  stepnumber=2,                  
+  stringstyle=\color{mymauve},  
+  tabsize=2,                      
+  title=\lstname                   
+}
+
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listingpass}{\colorbox{ForestGreen}{\parbox{\textwidth}{#1#2#3}}}
+\DeclareCaptionFormat{listingfail}{\colorbox{WildStrawberry}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listingpass,labelfont=white,textfont=white}
+%WildStrawberry
+
+
+\date{}
+\title{Code produced by LLMs}
+\renewcommand{\chaptername}{LLM}
+
+
+
+
+\begin{document}
+\maketitle
+\tableofcontents
