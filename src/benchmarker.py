@@ -5,7 +5,9 @@ import itertools
 import json
 import numpy as np
 import tqdm
-
+# make sure progress bars resize with terminal size
+from functools import partial
+tqdm.tqdm = partial(tqdm.tqdm, dynamic_ncols=True)
 # Custom imports.
 from helpers.reproducibility import set_random_seeds
 from sandbox_code_runner import SandboxCodeRunner
@@ -23,7 +25,7 @@ class Benchmarker:
     and saves the results to a JSON file.
     """
 
-    def __init__(self, chal_file, completion_file=None, timeout_warnings=False):
+    def __init__(self, chal_file, completion_file=None, timeout_warnings=False, model_name=None, save_result_filepath=None):
         """
         Initializes the Benchmarker with a challenges file and an optional completions file.
 
@@ -36,6 +38,8 @@ class Benchmarker:
         self.chalfile = chal_file
         self.sandbox = SandboxCodeRunner(timeout_warnings=timeout_warnings)
         self.tests = dict()
+        self.model_name = model_name 
+        self.save_result_filepath = save_result_filepath if save_result_filepath else f"./experiment_results/results_{self.model_name_fp()}.json"
 
         print("Loading the files...")
         self.challenges = self.load_challenges_file()
@@ -75,7 +79,7 @@ class Benchmarker:
         try:
             f = open(self.completion_file)
         except FileNotFoundError:
-            print("File not found)))")
+            print("File not found")
             exit(1)
 
         x = json.load(f)
@@ -93,7 +97,7 @@ class Benchmarker:
         """
         Runs tests on the model's responses in a linear manner, scores the model, and stores the results.
         """
-        for challenge in tqdm.tqdm(self.challenges):
+        for challenge in tqdm.tqdm(self.challenges, desc=f"{self.model_name} benchmark"):
             id, prompt, tests, entry_point = (
                 challenge["task_id"],
                 challenge["prompt"],
@@ -161,9 +165,12 @@ class Benchmarker:
             answers.append((result, completion))
         return id, answers
 
-    def score_model(self):
+    def score_model(self) -> dict[int, float]:
         """
         Scores the model based on the results of the tests.
+
+        Returns
+        a dict described by { k: pass@k(model) for k in [1, 5, 10, 100] }
         """
         total, correct = [], []
 
@@ -182,28 +189,36 @@ class Benchmarker:
             assert len(total) == len(correct)
             num_samples_it = iter(total)
 
-        ks = [1, 5, 10, 100]
+        ks = [1, 5, 10, 15]+[k*10 for k in range(2, 10+1)]
+
         pass_per_k = {k: None for k in ks}
-        
+         
         for k in ks:
-            pass_per_challenge = np.array(
-                [
-                    PassAtK().calculate_score(int(n), int(c), k)
-                    for n, c in zip(total, correct)
-                ]
-            )
-            
             if (total >= k).all():
+                pass_per_challenge = np.array(
+                    [
+                        PassAtK().calculate_score(int(n), int(c), k)
+                        for n, c in zip(total, correct)
+                    ]
+                )
+            
                 print(f"pass@{k}: {pass_per_challenge.mean()}")
                 pass_per_k[k] = pass_per_challenge.mean()
 
         return pass_per_k
 
+    def model_name_fp(self) -> str:
+        if self.model_name:
+            return self.model_name
+        return self.completion_file.split('_')[-1][:-5]
+
     def save_results(self):
         """
         Saves the results of the tests to a JSON file.
         """
-        json.dump(self.tests, open("./data_set/json/results.json", "w"))
+        # get the name from the completion file _{current_model.model_name}.json
+        json.dump({ "test_results": self.tests, "pass_per_k" : self.score_model()},
+                   open(self.save_result_filepath, "w"))
 
 
 def parse_args() -> tuple[bool, str, str]:
