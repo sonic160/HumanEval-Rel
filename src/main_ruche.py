@@ -63,7 +63,7 @@ def benchmark(model_name : str) -> None:
         current_model.model_init()    
         prompteur = prompter.Prompter(
             current_model,
-            './data_set/json/prompt_file.json',
+            './data_set/benchmark.json',
             savepath=completion_file,
             batch=False, # True,
             n=10,
@@ -77,7 +77,7 @@ def benchmark(model_name : str) -> None:
     
     # With the completion's file, it run the functions and compute the score
     benchmarkeur = benchmarker.Benchmarker(
-        './data_set/json/prompt_file.json',
+        './data_set/benchmark.json',
         completion_file=completion_file,
         timeout_warnings=True,
         )
