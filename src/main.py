@@ -86,7 +86,7 @@ if __name__ == "__main__":
         
         prompteur = prompter.Prompter(
             current_model,
-            './data_set/json/prompt_file.json',
+            './data_set/benchmark.json',
             savepath=completion_file,
             batch=False, # True,
             n=50
@@ -95,7 +95,7 @@ if __name__ == "__main__":
        
         # With the completion's file, it run the functions and compute the score
         benchmarkeur = benchmarker.Benchmarker(
-            './data_set/json/prompt_file.json',
+            './data_set/benchmark.json',
             completion_file=completion_file,
             timeout_warnings=False
             )

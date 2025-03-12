@@ -32,7 +32,7 @@ PARAMS = {
 }
 
 
-challenges_file =  './data_set/json/prompt_file.json'
+challenges_file =  './data_set/benchmark.json'
 
 #create the batch file
 tasks = []

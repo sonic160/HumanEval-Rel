@@ -261,7 +261,7 @@ def parse_args() -> tuple[bool, str, str]:
 
 if __name__ == "__main__":
     bm = Benchmarker(
-        "../data_set/json/prompt_file.json",
+        "../data_set/benchmark.json",
         "../data_set/json/completions_meta-llamaCodeLlama-34b-hf.json",
     )
     # arg_parser = parse_args()

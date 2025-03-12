@@ -4,9 +4,6 @@ from openai import OpenAI
 from benchmarker import Benchmarker
 from model import Model
 
-client = OpenAI(
-    api_key="INSERT API KEY"
-)
 
 def retrieve_and_format_batch_results(batch_id: str, output_file: str) -> None:
     """
@@ -16,6 +13,7 @@ def retrieve_and_format_batch_results(batch_id: str, output_file: str) -> None:
         batch_id (str): The ID of the batch job.
         output_file (str): The path to the output file where formatted results will be saved.
     """
+    client = OpenAI(api_key="INSERT API KEY")
     batch_job = client.batches.retrieve(batch_id)
     result_file_id = batch_job.output_file_id
     result = client.files.content(result_file_id).content
@@ -33,28 +31,33 @@ def retrieve_and_format_batch_results(batch_id: str, output_file: str) -> None:
             extracted_code = Model.extract_code(completion)
             formatted_results.append({'task_id': task_id, 'completion': extracted_code})
 
-
     with open(output_file, 'w') as f:
         json.dump(formatted_results, f)
 
 def main():
-    parser = argparse.ArgumentParser(description='Download and format batch results from OpenAI and run benchmark on them')
+    parser = argparse.ArgumentParser(description='Download batch results from OpenAI or run benchmark on them')
+    parser.add_argument('--action', type=str, required=True, choices=['download', 'benchmark', 'both'],
+                        help='Action to perform: download, benchmark, or both')
     parser.add_argument('--batchid', type=str, required=True, help='Batch ID to process')
     parser.add_argument('--modelname', type=str, required=True, help='Name of the model used for batch generation')
     
     args = parser.parse_args()
     batch_id = args.batchid
-
     output_file = f"./batches/results_{batch_id}_{args.modelname}.json"
-    print("retrieving and formatting batch results...")
-    retrieve_and_format_batch_results(batch_id, output_file)
-    print("running benchmark on formatted results...")
-    bm = Benchmarker(
-        chal_file="./data_set/json/prompt_file.json",
-        completion_file=output_file,
-        timeout_warnings=True,
-        model_name=args.modelname
-    )
+    
+    if args.action in ['download', 'both']:
+        print("retrieving and formatting batch results...")
+        retrieve_and_format_batch_results(batch_id, output_file)
+    
+    if args.action in ['benchmark', 'both']:
+        print("running benchmark on formatted results...")
+        bm = Benchmarker(
+            chal_file="./data_set/benchmark.json",
+            completion_file=output_file,
+            timeout_warnings=True,
+            model_name=args.modelname
+        )
+        bm.run_benchmark()  # Ajout de l'appel à run_benchmark qui manquait
 
 if __name__ == "__main__":
     main()
