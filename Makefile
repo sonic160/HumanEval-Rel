@@ -9,7 +9,7 @@ SRC_DIR = src
 
 # Define main Python file
 MAIN_FILE = main.py
-
+MAIN_FILE_RUCHE = main_ruche.py
 # Define requirements file
 REQUIREMENTS_FILE = requirements.txt
 
@@ -43,7 +43,7 @@ run:
 
 run_ruche:
 	# Run main Python file, but in Ruche environment.
-	$(PYTHON) $(SRC_DIR)/$(MAIN_FILE)
+	$(PYTHON) $(SRC_DIR)/$(MAIN_FILE_RUCHE)
 
 test:
 	# Run tests
@@ -53,3 +53,6 @@ test:
 clean:
 	# Clean up virtual environment
 	rm -rf $(VENV_DIR)
+
+buildjson:
+	$(PYTHON) $(SRC_DIR)/helpers/ipynb_to_json_converter.py $(SRC_DIR)/../data_set
