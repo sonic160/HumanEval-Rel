@@ -16,11 +16,12 @@ def extract_function_name(prompt):
 def process_notebook(notebook : tuple[dict, str]) -> list[dict]:
     """Process the notebook data and extract problems."""
     filename, notebook_data = notebook
+    name = os.path.splitext(filename)[0]
     print(f"Processing {filename}...")
     results = []
     cells = notebook_data['cells']
 
-    current_task_id = 0
+    current_task_id = "error no task id found"
     current_prompt = None
 
     for i, cell in enumerate(cells):
@@ -29,7 +30,7 @@ def process_notebook(notebook : tuple[dict, str]) -> list[dict]:
             content = ''.join(cell['source'])
 
             # Check if this is a question/problem cell
-            if '# question' in content or '## prompt' in content.lower():
+            if '# question' in content or '# prompt' in content.lower():
                 # Extract the prompt (function definition with docstring)
                 for regexp in (
                     r"```py\n(.*?)```",
@@ -47,11 +48,11 @@ def process_notebook(notebook : tuple[dict, str]) -> list[dict]:
                     r"Question\s*(\d+)", content
                 )
                 if question_number:
-                    current_task_id = int(question_number.group(1))
+                    current_task_id = f"{name}[Q{question_number.group(1)}]"
 
         # Look for code cells with unit tests
         # adapt for lower case
-        elif cell['cell_type'] == 'code' and current_prompt and '## unit test' in ''.join(cells[i-1]['source']).lower():
+        elif cell['cell_type'] == 'code' and current_prompt and '# unit test' in ''.join(cells[i-1]['source']).lower():
             test_code = ''.join(cell['source'])
 
             # If we have both a prompt and test code, create an entry
@@ -67,8 +68,8 @@ def process_notebook(notebook : tuple[dict, str]) -> list[dict]:
                             'origin': os.path.splitext(filename)[0],
                         }
                     })
-                    print(f"    ->Extracted question number: {current_task_id}")
-                    current_task_id += 1
+                    print(f"    ->Extracted: {current_task_id}")
+                    current_task_id = "error no task id found"
                     current_prompt = None
 
     return results
@@ -85,16 +86,16 @@ def main():
         
         # Read the notebooks
         notebook_data_list = []
-        for filename in os.listdir(args.directory):
-            if filename.endswith('.ipynb'):
-                with open(os.path.join(args.directory, filename), 'r', encoding='utf-8') as f:
-                    try:
-                        notebook_data = json.load(f)
-                        notebook_data_list.append((filename, notebook_data))
-                    except Exception as e:
-                        print(f"    ->Error decoding JSON from {filename}. Skipping this file.")
+        notebooks = list(filter(lambda fp: fp.endswith(".ipynb"), os.listdir(args.directory)))
+        notebooks.sort()
+        for notebook_filepath in notebooks:
+            with open(os.path.join(args.directory, notebook_filepath), 'r', encoding='utf-8') as f:
+                try:
+                    notebook_data = json.load(f)
+                    notebook_data_list.append((notebook_filepath, notebook_data))
+                except Exception as e:
+                    print(f"    ->Error decoding JSON from {notebook_filepath}. Skipping this file.")
         # Process each notebook
-        notebook_data_list.sort()
         results = list(reduce(lambda x, y: x + y, map(process_notebook, notebook_data_list)))
         
         # Determine output JSON filepath
