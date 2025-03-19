@@ -3,10 +3,6 @@ from datetime import datetime
 import json
 import sys
 import tqdm
-<<<<<<< HEAD
-=======
-import os
->>>>>>> upstream/solal
 # make sure progress bars resize with terminal size
 from functools import partial
 tqdm.tqdm = partial(tqdm.tqdm, dynamic_ncols=True)
@@ -39,12 +35,6 @@ class Prompter:
         prompt_suffix: str="",
         stream: bool=False,#show output of LLM in real time
         n: int=1,
-<<<<<<< HEAD
-=======
-        show_example: bool=True,
-        recovery_file: str=None,
-        attempt_recovery: bool=True,
->>>>>>> upstream/solal
     ) -> None:
         """
         Initializes the Prompter with a given model, challenges file, and an optional save path.
@@ -53,8 +43,6 @@ class Prompter:
             model (Model): The language model to use for generating completions.
             challenges_file (str): The path to the JSON file containing the benchmark.
             savepath (str, optional): The path where the output JSON will be saved. Defaults to None.
-            show_example (bool): Flag to indicate if examples should be shown during prompting. Defaults to True.
-            recovery_file (str, optional): Path to the recovery file. Defaults to None.
         """
         self.model : Model = model
         self.savepath = savepath
@@ -66,53 +54,13 @@ class Prompter:
         self.prompt_prefix = prompt_prefix
         self.prompt_suffix = prompt_suffix
         self.stream = stream
-<<<<<<< HEAD
-=======
-        self.show_example = show_example
-        if recovery_file is not None:
-            self.recovery_file = recovery_file
-        elif savepath is not None:
-            self.recovery_file = savepath.replace(".json", "_recovery.json")
->>>>>>> upstream/solal
 
-        
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
         self.completions = []
-        
-        # Check for recovery file
-        if attempt_recovery and os.path.exists(self.recovery_file):
-            self.load_recovery_state()
-            print(f"Recovered {len(self.completions)} completions from {self.recovery_file}")
-        
         self.prompt() if not batch else self.prompt_batched(batch_size=batch_size)
         
-        # Delete recovery file after successful completion
-        if os.path.exists(self.recovery_file):
-            os.remove(self.recovery_file)
-            
         self.output_json()
-    
-    def save_recovery_state(self):
-        """
-        Saves the current state of completions to a recovery file.
-        """
-        try:
-            with open(self.recovery_file, 'w') as f:
-                json.dump(self.completions, f)
-        except Exception as e:
-            print(f"Failed to save recovery state: {e}")
-    
-    def load_recovery_state(self):
-        """
-        Loads completions from a recovery file.
-        """
-        try:
-            with open(self.recovery_file, 'r') as f:
-                self.completions = json.load(f)
-        except Exception as e:
-            print(f"Failed to load recovery state: {e}")
-            self.completions = []
 
     def load_challenges_file(self, chalfile: str) -> None:
         """
@@ -160,64 +108,32 @@ class Prompter:
                     output_list.append(challenge[i:i + size])
             return output_list
         
-        # Filter out challenges that have already been completed
-        completed_task_ids = set(item['task_id'] for item in self.completions)
-        unprocessed_challenges = [c for c in self.challenges if c['task_id'] not in completed_task_ids]
-        
-        batches = regroup(unprocessed_challenges, batch_size)
-        for i, batch in enumerate(tqdm.tqdm(batches)):
+        batches = regroup(self.challenges, batch_size)
+        for batch in tqdm.tqdm(batches):
             prompts = list(map(lambda l : l['prompt'], batch))
             task_ids = list(map(lambda l : l['task_id'], batch))
             try:
                 completions = self.model.generate_batch(prompts)
-                for i in range(len(batch)):
-                    if i < len(completions):  # Safety check
-                        self.completions.append({'task_id': task_ids[i], 'completion': completions[i]})
-                
-                self.save_recovery_state()
-                    
+                for i in range(batch_size):
+                    self.completions.append({'task_id': task_ids[i], 'completion': completions[i]})
             except Exception as e:
-<<<<<<< HEAD
                 print(f"error in batched genration for {self.model.name}")
-=======
-                print(f"error in batched generation for {self.model.name}")
->>>>>>> upstream/solal
                 print(e)
-                # Save recovery state on error
-                self.save_recovery_state()
 
     def prompt(self) -> None:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         """
         print(f"Prompting {self.model.model_name} for answers...\n")
-<<<<<<< HEAD
         for challenge in tqdm.tqdm(self.challenges, position=0, desc="challenges"):
             id, challenge_prompt = challenge['task_id'], challenge['prompt']
-=======
-        
-        # Filter out challenges that have already been completed
-        completed_task_ids = set(item['task_id'] for item in self.completions)
-        unprocessed_challenges = [c for c in self.challenges if c['task_id'] not in completed_task_ids]
-        
-        for i, challenge in enumerate(tqdm.tqdm(unprocessed_challenges, position=0, desc="challenges")):
-            id, challenge_prompt = challenge['task_id'], challenge['prompt']
-            if not self.show_example:
-                challenge_prompt = self.remove_prompt_examples(challenge_prompt)  
-
->>>>>>> upstream/solal
             for _ in tqdm.tqdm(range(self.n), desc=f"collecting {self.n} samples for challenge{id}", position=1, leave=False):
                 try:
                     completion, whole_answer = self.model.generate(
                                 prompt=challenge_prompt, 
                                 max_tokens=self.max_tokens, 
-<<<<<<< HEAD
                                 top_p=0.95, 
                                 top_k=60, 
-=======
-                                top_p=self.top_p, 
-                                top_k=self.top_k, 
->>>>>>> upstream/solal
                                 temperature=self.temperature,
                                 prompt_prefix=self.prompt_prefix,
                                 prompt_suffix=self.prompt_suffix,
@@ -232,23 +148,6 @@ class Prompter:
                     print(f'[WARNING]: task_id number {id} problem with generation')
                     print(e)
                     self.completions.append({'task_id': id, 'completion': "#error in generation"})
-<<<<<<< HEAD
-=======
-        
-            self.save_recovery_state()
-
-    def remove_prompt_examples(self, challenge_prompt):
-        lines = challenge_prompt.split("\n")
-        new_lines = list()
-        for i in range(len(lines)):
-            if any((lines[i].strip().startswith("Example"),
-                           lines[i].strip().startswith(">>>"),
-                           i > 0 and lines[i-1].strip().startswith(">>>"))):
-                continue
-            new_lines.append(lines[i])
-        challenge_prompt = "\n".join(new_lines)
-        return challenge_prompt
->>>>>>> upstream/solal
                     
     def output_json(self) -> None:
         """
@@ -267,7 +166,7 @@ class Prompter:
         json.dump(self.completions, open(self.savepath, 'w'))
 
 
-def parse_args() -> tuple[bool, str, str, str]:
+def parse_args() -> tuple[bool, str, str]:
     """
     Parses the command line arguments and returns them as a tuple.
     """
@@ -293,22 +192,10 @@ def parse_args() -> tuple[bool, str, str, str]:
         required=False,
         help="Use batched prompting to generate completions more quickly.",
     )
-    parser.add_argument(
-        "-r",
-        "--recovery",
-        required=False,
-        help="Path to the recovery file to use for job recovery.",
-    )
 
     return parser.parse_args()
 
 
 if __name__ == '__main__':
-    args = parse_args()
     model = TestModel("test")
-<<<<<<< HEAD
     prompter = Prompter(model, "../data_set/json/example_problem.json", batch=False, n=1)
-=======
-    prompter = Prompter(model, "../data_set/json/example_problem.json", batch=False, n=1, 
-                        recovery_file=args.recovery if hasattr(args, 'recovery') else None)
->>>>>>> upstream/solal

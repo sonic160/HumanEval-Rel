@@ -97,7 +97,7 @@ class Benchmarker:
         """
         Runs tests on the model's responses in a linear manner, scores the model, and stores the results.
         """
-        for challenge in tqdm.tqdm(self.challenges, desc=f"{self.model_name} benchmark", position=0):
+        for challenge in tqdm.tqdm(self.challenges, desc=f"{self.model_name} benchmark"):
             id, prompt, tests, entry_point = (
                 challenge["task_id"],
                 challenge["prompt"],
