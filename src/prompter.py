@@ -35,6 +35,7 @@ class Prompter:
         prompt_suffix: str="",
         stream: bool=False,#show output of LLM in real time
         n: int=1,
+        show_example: bool=True,
     ) -> None:
         """
         Initializes the Prompter with a given model, challenges file, and an optional save path.
@@ -43,6 +44,7 @@ class Prompter:
             model (Model): The language model to use for generating completions.
             challenges_file (str): The path to the JSON file containing the benchmark.
             savepath (str, optional): The path where the output JSON will be saved. Defaults to None.
+            show_example (bool): Flag to indicate if examples should be shown during prompting. Defaults to True.
         """
         self.model : Model = model
         self.savepath = savepath
@@ -54,7 +56,7 @@ class Prompter:
         self.prompt_prefix = prompt_prefix
         self.prompt_suffix = prompt_suffix
         self.stream = stream
-
+        self.show_example = show_example
         print("Loading the benchmark json file...")
         self.challenges = self.load_challenges_file(challenges_file)
         self.completions = []
@@ -127,6 +129,9 @@ class Prompter:
         print(f"Prompting {self.model.model_name} for answers...\n")
         for challenge in tqdm.tqdm(self.challenges, position=0, desc="challenges"):
             id, challenge_prompt = challenge['task_id'], challenge['prompt']
+            if not self.show_example:
+                challenge_prompt = self.remove_prompt_examples(challenge_prompt)  
+
             for _ in tqdm.tqdm(range(self.n), desc=f"collecting {self.n} samples for challenge{id}", position=1, leave=False):
                 try:
                     completion, whole_answer = self.model.generate(
@@ -148,6 +153,17 @@ class Prompter:
                     print(f'[WARNING]: task_id number {id} problem with generation')
                     print(e)
                     self.completions.append({'task_id': id, 'completion': "#error in generation"})
+    def remove_prompt_examples(self, challenge_prompt):
+        lines = challenge_prompt.split("\n")
+        new_lines = list()
+        for i in range(len(lines)):
+            if any((lines[i].strip().startswith("Example"),
+                           lines[i].strip().startswith(">>>"),
+                           i > 0 and lines[i-1].strip().startswith(">>>"))):
+                continue
+            new_lines.append(lines[i])
+        challenge_prompt = "\n".join(new_lines)
+        return challenge_prompt
                     
     def output_json(self) -> None:
         """
