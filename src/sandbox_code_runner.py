@@ -5,8 +5,6 @@ import os
 from typing import Optional, Callable, Dict, List
 import traceback
 import multiprocessing
-import numpy as np
-import pandas as pd
 
 
 TIMEOUT_SECONDS = 10
@@ -161,7 +159,8 @@ class SandboxCodeRunner:
         try:
             test_result = self.__execute(code)
             return test_result, completion
-
+        except ImportError as e:
+            return False, completion+"\nImportError: "+str(e) 
         except Exception as e:
             return False, completion+"\nthe LLM's program failed to execute\n"+str(e)
 def exec_with_context(code: str) -> bool:
