@@ -1,0 +1,678 @@
+Customers expect products to not only meet the specified parameters upon delivery but to function throughout what they perceive as a reasonable lifetime. As products become more complex, the reliability requirements of individual components increase. Suppose, for instance, that a system has 1000 independent components that must function in order for the system to function. Further suppose that each component has a reliability of 99.9 percent. The system would have a reliability of 0.999^1000 = 0.40 
+
+- An unreliable product often has safety and health hazards. 
+- Reliability values are used in marketing and warranty material. 
+- Competitive pressures require increased emphasis on reliability. 
+- An increasing number of contracts specify reliability requirements. 
+- The study of reliability engineering responds to each of these influences by help- ing designers determine and increase the useful lifetime of products, processes, and services. 
+ 
+ 
+Interrelationship of safety, quality, and reliability
+ 
+In most organizations, the quality assurance function is designed to continually improve the ability to produce products and services that meet or exceed customer requirements. Narrowly construed, this means, in the manufacturing industries, producing parts with dimensions that are within tolerance. Quality engineering must expand this narrow construction to include reliability considerations, and all quality engineers should have a working knowledge of reliability engineering. What, then, is the distinction between these two fields? 
+
+Once an item has been successfully manufactured, the traditional quality assurance function has done its job (although the search for ways to improve is continuous). The reliability function’s principal focus in on what happens next. Answers are sought to questions such as: 
+Are components failing prematurely? 
+Was burn-in time sufficient? 
+Is the constant failure rate acceptable?
+What changes in design, manufacturing, installation, operation, or maintenance would improve reliability?  
+
+Another way to delineate the difference between quality and reliability is to note how data are collected. In the case of manufacturing, data for quality engineering are generally collected during the manufacturing process. Inputs such as voltages, pressures, temperatures, and raw material parameters are measured. Outputs such as dimensions, acidity, weight, and contamination levels are measured. The data for reliability engineering generally are collected after a component or product is manufactured. For example, a switch might be toggled repeatedly until it fails, and the number of successful cycles noted. A pump might be run until its output in gallons per minute falls below a defined value, and the number of hours recorded. 
+
+
+Quality and reliability engineers provide different inputs into the design process. Quality engineers suggest changes that permit the item to be produced within tolerance at a reasonable cost. Reliability engineers make recommendations that permit the item to function correctly for a longer period of time. although the roles of quality and reliability are different they do interrelate. 
+
+
+When processes are designed and operated, the quality and reliability engineers work together to determine the process param- eters that impact the performance and longevity of the product so that those parameters can be appropriately controlled. A similar interrelationship holds as specifications are developed for packaging, shipment, installation, operation, and maintenance. 
+
+
+Reliability will be impacted by product design and by the processes used in the product’s manufacture. Therefore, the designers of products and processes must understand and use reliability data as design decisions are made. Generally, the earlier reliability data are considered in the design process the more efficient and effective their impact will be. Once a reliable product is designed, quality engineering techniques are used to make sure that the processes produce that product. 
+ 
+ 
+Reliability engineer leadership responsibilities 
+The study of reliability engineering is usually undertaken primarily to determine and improve the useful lifetime of products. Data are collected on the failure rates of components and products, including those produced by suppliers. 
+Competitors’ products may also be subjected to reliability testing and analysis. Reliability analysis can be used to improve product design. Reliability predictions provide guidance as components are selected. Derating techniques aid in increasing a product’s useful lifetime. 
+Reliability improvements can be effected through component redundancy. Marketing and advertising can be assisted as warranty and other documents that inform customer expectations are prepared. Warranties that are not supported by reliability data can cause extra costs and inflame customer ire. 
+It is increasingly important to detect and prevent or mitigate product liability issues. Warnings and alarms should be incorporated into the design when hazards can’t be eliminated. Products whose failure can introduce safety and health hazards need to be analyzed for reliability so that procedures can be put in place to reduce the probability that they will be used beyond their useful lifetime. 
+Failure rates typically escalate in the final phase of a product’s life. Components whose useful lifetime is shorter than the product’s should be replaced on a schedule that can be determined through reliability engineering techniques. Manufacturing processes can use reliability tools in the following ways: The impact of process parameters on product failure rates can be studied. Alternative processes can be compared for their effect on reliability. 
+Reliability data for process equipment can be used to determine preventive maintenance schedules and spare parts inventories. The use of parallel process streams to improve process reliability can be evaluated. 
+
+
+Safety can be enhanced through the understanding of equipment failure rates. Vendors can be evaluated more effectively. Every facet of an organization, including purchasing, quality assurance, packaging, field service, logistics, and so on, can benefit from a knowledge of reliability engineering. An understanding of the lifecycles of the products and equipment they use and handle can improve the effectiveness and efficiency of their function
+ 
+
+RELIABILITY IN PRODUCT AND PROCESS DEVELOPMENT
+ 
+Some implementations of reliability engineering have consisted of testing products at the end of the manufacturing phase to determine their lifecycle parameters. At this point it is, of course, too late to have much impact on those parameters. Reliability engineering tools help the design engineer work more efficiently and effectively in various ways.
+
+Mean time between failure (MTBF) values for existing products can be determined and reasonable goals established. MTBF values for components and purchased parts can be determined. Failure types and times of occurrence can be anticipated.
+
+Optimal break-in/burn-in times can be determined. Recommendations for warranty times can be established. The impact of age and operating conditions on the life of the product can be studied. The effects of parallel redundant design features can be determined. Accelerated life testing can be used to provide failure data.  Field failure data can be analyzed to help evaluate product performance.
+
+Concurrent engineering can improve the efficiency and effectiveness of product development by scheduling design tasks in parallel rather than sequentially.  Reliability engineering can provide information to individual teams about failure rates of their proposed components. 
+
+Cost accounting estimates can be improved through the use of lifecycle cost analysis using reliability data. When management employs FMEA/FMECA techniques, reliability engineering provides essential input, as described in Chapter 6.
+ 
+
+FAILURE CONSEQUENCE AND LIABILITY MANAGEMENT 
+Reliability analysis provides estimates of the probability of failure. The reliability engineer must go beyond these calculations and examine the consequences of fail- ure. These consequences typically represent costs to the customer. The customer finds ways of sharing these costs with the producer through the warranty system, loss of business, decrease in reputation, or the civil litigation system. an important reliability function is the anticipation of possible failures and the estab- lishment of reliability acceptance goals that will limit their occurrence and conse- quent costs. 
+Once component, product, and system reliability goals have been set, a testing protocol should be implemented to provide validation that these goals will impact the failure rates and the associated consequences as planned reliability goals typically impose specifications on the product. In anticipation of the start of production, reliability engineers provide further testing procedures to provide verification that these specifications are being met. 
+ 
+
+LIFE-CYCLE COST PLANNING 
+Reliability engineering techniques help quantify the “pay me now or pay me later” concept. The goal is to determine the reliability level that will minimize the total lifecycle cost of the product. The lifecycle cost of a product includes the cost to purchase, operate, and maintain the product during its useful lifetime. In some cases, such as automotive products, where the customer seldom keeps the product for its entire useful lifetime, costs associated with depreciation may be factored into lifecycle costs. The real cost of failures is frequently underestimated.
+Reliability engineers take the long-term view and develop cost-effective ways to reduce lifecycle costs. These may range from design techniques such as redun- dancy and derating to specification of manufacturing parameters such as burn-in time. Increased reliability sometimes means increased manufacturing cost and sell- ing price. 
+Properly implemented, however, the result will be a decrease in lifecy- cle cost. As component and product design decisions are made, the reliability engineer can aid in calculating the cost–benefit relationships by providing life expectancies for various design options. 
+ 
+
+Reliability Program Management 
+TERMINOLOGY
+The mean life of a product is the average time to failure of identical products operat- ing under identical conditions. Mean life is also referred to as the expected time to failure. Mean life is denoted by mean time to failure (MTTF) for nonrepairable products and mean time between failures (MTBF) for repairable products. 
+The reliability engineer should exercise care in the use of the terms MTBF and MTTF usually used when the underlying failure distribution is the exponen- tial and the failure rate is constant. MTTF and MTBF are often denoted with the letter m or the Greek theta. “Time” as used here refers to some measure of life units for the product.
+ In the case of automotive products, the life units may be miles. In other equipment, life units may be cycles, rounds fired, and so forth. Some documents, for instance, replace MTBF with MCBF (mean cycles between failures). For a particular set of failure times, the mean life is obtained by averaging the failure times. This value serves as an estimate for q and is sometimes denoted qˆ.
+
+If n items are tested to failure the general formula is : MTBF = qˆ= (1/n) * ∑ti ;
+where ti’s are failure times.
+Censored Data 
+There are four types of failure data: 
+1. Exact failure times, in which the exact failure time is known. Example 2.1 illustrates this type of data. 
+2. Right-censored data,in which it is known only that the failure happened or would have happened after a particular time. This occurs if an item is still functioning when the test is concluded. 
+3. Left-censored data, in which it is known only that the failure happened before a particular time. This occurs if the items are not checked prior to being tested but are periodically examined and a failure is observed at the first examination. 
+4. Interval-censored data, in which it is known only that the failure happened between two times. 
+
+
+The mean time to repair (MTTR) is the average time it takes to return the prod- uct to operational status. »
+Failure rate is the reciprocal of the mean life. Failure rate is usually denoted by the letter f or the Greek letter lambda (l). So l = 1 / MTBF = 1 / MTTF
+
+
+Availability can be defined as the probability that a product is operable and in a committable state when needed. In other words it is the probability that an item has not failed or is not undergoing repair. This measure takes into account an item’s reliability and its maintainability. Another way to express this is the pro- portion of time a system is in a functioning condition. 
+This can be written as the fraction 
+A = (total time a functional unit is capable of being used during a given interval )/ (the length of the interval)  
+
+if the product is repairable and needs no preventive maintenance, and if repair can begin immediately when failure occurs, availability can be defined as 
+A =  MTBF/(MTBF + MTTR) 
+A more general formula for availability can be written as the ratio of the average value of the uptime of a system to the sum of the average values of uptime and downtime: 
+A = Average Uptime / (Average Uptime + Average Downtime)
+ 
+
+ELEMENTS OF A RELIABILITY PROGRAM 
+A reliability program should impact many functions in an enterprise, includ- ing research, purchasing, manufacturing, quality assurance, testing, shipping, and field service, among others. In order to accomplish this a reliability program should have the following elements : 
+
+1 Established reliability goals and requirements. The general goal of reliability efforts is to delight customers by increasing the reliability of products. The reliability program accomplishes this goal by establishing reliability goals and meeting them. Customer input and market analysis typically determine minimum reliability requirements. In general, consumers have rising expectations for reliability. The minimum reliability requirements are time dependent because reliability changes throughout the life of the product. 
+
+2 Productdesign.Thereliabilityprogrammusthaveamechanism for translating the minimum reliability requirements into design requirements. Reliability requirements should be documented for each stage of a product’s design and for all subsystems and components. 
+
+3 Process design. As the product design firms up, attention can shift toward the design of the processes that will produce it. Reliability requirements must be finalized for components, whether inhouse or from suppliers. These requirements must be linked to manufacturing process parameters by determining what processes and what settings will produce components with the required reliability. 
+4 Validation and verification. As either prototypes or the first production pieces become available, the reliability program must facilitate tests that are conducted to validate that the reliability requirements do indeed produce the desired product reliability. When these requirements have been validated it is necessary to verify that the production processes can produce products that meet these requirements.
+
+5 Post-production evaluation. The reliability program must make provisions for collecting and analyzing data from products during their useful life: 
+a. Random samples from regular production should be collected and tested for reliability. 
+b. Customer feedback should be actively solicited and analyzed. 
+c. Field service and warranty records should be studied. 
+
+6 training and education. Although listed last this is certainly not the least important element of a reliability program. No reliability program can succeed without a basic understanding of its elementary concepts by people at all levels. Support from key managers is essential because their cooperation is needed for the testing and analysis process. Top-level management must see the importance of the program to the success of the enterprise. So this element of the reliability program must sometimes be given first priority if the rest of the program is to succeed. 
+ 
+
+PRODUCT LIFE-CYCLE AND COSTS 
+The first stage is referred to variously as the early failure stage, the infant mortality stage, or the decreasing failure rate stage. The failures that occur during the early failure stage are usually associated with manufacturing rather than design. Examples of causes of failure include inadequate test or burn-in time, poor quality control, poor handling, weak materials or components, and human error in fabrication or assembly. Ideally, all these failures should occur in-house and be corrected before the customer takes possession.
+
+The second stage is called the constant failure rate stage, the random causes stage, or the useful life stage. During the useful life stage the failure rate is approximately constant. Note that the failure rate is not necessarily zero. During this stage the failures have random causes and can’t usually be assigned to production problems. Reducing the failure rate during this stage usually requires changes in product design. 
+
+The third stage is called wear-out stage, fatigue stage,or the increasing failure rate stage. The wear-out stage is characterized by an increasing failure rate over time. These failures are caused by product or component fatigue.
+
+
+Knowing the locations of the three stages of the bathtub curve can help answer important questions such as:
+Is the quality control system doing a good job?
+What is the optimum break-in/burn-in time?
+What is the optimum warranty period?
+What are the optimum replacement times for various components? 
+What are the spare parts requirements? 
+Is the preventive maintenance schedule optimized? 
+Is the failure rate during the useful life stage low enough to meet customer expectations?
+
+Each of these items relates to costs in some way, so insight gained from the bath- tub curve can have a direct impact on financial performance. Data are used to determine the shape of the bathtub curve, including locating the boundaries between the stages. 
+Reliability engineers try to change the curve by improving the product. They typically do one or more of the following: 
+Improve the early failure phase by shortening its length and giving it a flatter slope.
+Improve the useful lifestage by decreasing the constant failure rate. Failure data are studied to determine the most frequent failure types. 
+Improve the wear-out stage by delaying its onset and flattening the curve.  
+Reliability Engineering for Software Products 
+The reliability effort for software products consists of two general phases: 
+- Error prevention
+- Fault detection and removal 
+
+The software package is written, then tested against predetermined criteria. The software package may continue to be used until other considerations force its obsolescence. Software reliability engineering attempts to improve the reliability curve by reducing the time and effort involved in the test phase and lowering the failure rate during the useful life of the product. 
+Obviously, it is better to prevent errors than to detect faults. Many errors can be prevented by designing thorough requirements prior to code development. The requirements should be stated in terms of imperatives statements that command that something must occur. 
+Weak phrases that can be interpreted in more than one way should be eliminated from a requirements document. There should be no incomplete requirements of the “to be determined” (TBD) or “to be supplied” (TBS) type. In addition, the requirements should be structured much like a good modular quality program. Developing a high-quality requirements document is worth the effort. 
+ 
+
+DESIGN EVALUATION 
+The reliability engineer performs evaluation functions in each step of the design process. 
+
+Concept 
+As the earliest design parameters are established, preliminary estimates of reli- ability requirements should be made. 
+
+
+Design Team Effort
+As the more formal design phase is initiated, the reliability engineer should be prepared to provide the team with guidance and judgment regarding various options. Data on the reliability of proposed components and the implications for product reliability should be documented for the team at each design refinement. 
+The allocation of reliability requirements to various subsystems and components should also be studied. The underlying mind-set must be to formally study every potential failure and establish cost-effective ways of preventing them. 
+The two general approaches to failure prevention are fault tolerance and fault avoidance. A fault-tolerant approach requires design of redundant systems so that a fault does not result in a failure. The fault-avoidance approach requires designing the product with components that are sufficiently reliable to guaran- tee the minimum product reliability. 
+The customer’s lifecycle cost for the product can be minimized by establishing optimum reliability levels and implementing systems for obtaining them. 
+Design Review
+Reliability engineers should provide the design team with data from testing of the final version of the product, validating that the design meets the reliability requirements. 
+
+
+Preproduction 
+Alternative manufacturing processes and parameters should be studied for their impact on reliability in order to meet or exceed design requirements. 
+
+
+Production 
+A testing program should be established to verify that production output meets reliability requirements. 
+
+
+Postproduction 
+Once a product is released for production, a system for follow-up should be in place so that any failures, in-house or in the field, can be studied. One approach to doing this is known as failure reporting, analysis, and corrective action system (FRACAS). A system that permits traceabilty of individual components helps establish sources of failure due to design, production, service, customer misuse, and so on. The thrust should be not to fix the blame but to fix the problem. 
+Thorough, documented design requirements help assure customer satisfac- tion. The purpose of design evaluation is to verify that the product meets the requirements at each design stage. The aspects of the requirements relating to product reliability mandate special attention because the issue is not merely “does it work?” but rather “how long will it work and under what conditions?” A strong program of testing and documentation can help avoid disappointed customers.  
+REQUIREMENTS MANAGEMENT 
+Design requirements, as determined by the marketplace, customer input, organizational objectives, and other sources, must often be prioritized. An effective tool for managing requirements is the QFD matrix. 
+The design team uses the QFD matrix to help manage the requirement conflicts in a number of ways: 
+- The team may use the “Action” column to specify design activity.
+- The “Importance” column.
+- The “Comparison with competition” charts give the team guidance. 
+If the product is already far ahead of the competition in meeting one requirement and far behind in meeting a conflicting requirement, it may be prudent to produce a design that works toward meeting the latter. This strategy must be used carefully because the competition is seldom a fixed target. 
+Meeting reliability design requirements within time and resource constraints requires an efficient testing and documentation program. The tasks associated with the program must be accomplished in synchronization with other design, development, and manufacturing functions. These tasks must be given adequate priority at each stage of design if unpleasant late-term surprises are to be avoided. 
+
+
+RELIABILITY TRAINING PROGRAMS
+Reliability tends to be poorly understood. Many educated and experienced people don’t see much deeper than warranty metrics. Customers, however, are very sensitive to reliability issues and tend to have rising expectations. If the enterprise as a whole works from a mind-set of “Does it work?” rather than “How long will it work?” disaster can be predicted. 
+
+This situation calls for introductory training for almost all employees and a series of follow-up courses as needed by various specialties.
+
+Training Metrics 
+The evaluation of training programs can be considered on three levels:
+1. Can the participants parrot back the definitions and calculations?
+2. Do the participants use the course concepts in their work?
+3. Is product reliability and customer satisfaction improved? 
+
+Training Deployment
+to implement a training program? 
+- If the organization has a formal training program, the best approach is to get the reliability courses incorporated into that structure. It may be necessary to give the training department assistance in building the coursework and even conducting the courses. 
+- Absent a formal training program, it is recommended that the people with reliability responsibilities put the courses together and invite appropriate personnel to attend. Support from key management people is, of course, essential. 
+ 
+
+Product Safety and Liability 
+ROLES AND RESPONSIBILITIES 
+Producing a product that is safe must be a top priority for every organization. The responsibility of the reliability engineer in meeting this priority includes the following: 
+1. Collecting and analyzing data regarding failures and failure rates. 
+2. Presenting those data and analyse sinan understandable format. 
+3. Making sure that the key decision makers have an understanding of the analyses. 
+
+In discharging these responsibilities the following are among the additional items that must be considered: 
+1.Could the failure of the product cause some chain of events with safety/liability implications? 2.What aspects of the product could possibly cause safety/liability hazards even though the product hasn’t failed? 
+3.What Misuse The Product Might Cause Safety/liability issues? 
+4. Can the final disposition of the product present safety/liability issues? 
+5. Can the malfunction of other parts of the system cause safety/liability issues for the product?. 
+6.What is the impact of government regulation, current or contemplated, on safety/liability issues?
+7. Does the product design compromise the reliability of components? 
+8. Are Components Purchased From A Supplier Reliable? 
+
+
+ETHICAL ISSUES 
+The ASQ Code of Ethics (found in Appendix B) provides useful guidelines. Some particularly significant excerpts are given below. In the following paragraphs, quotes from the Code of Ethics are shown in italics. 
+[I] Will do whatever I can to promote the reliability and safety of all products that come within my jurisdiction. This indicates that the reliability engineer’s responsibilities are not limited to crunching numbers and producing good analyses but include the promotion of product reliability and safety. 
+Will be dignified and modest in explaining my work and merit. This phrase requires that all who subscribe to this code of ethics recognize that their efforts should be expended on objective analysis of facts and not on self-promotion. 
+Will preface any public statements that I may issue by clearly indicating on whose behalf they are made. Engineers are frequently called on to apply their expertise to issues not directly related to their employer. These opportunities vary from service on a committee in a professional organization to providing advice on public works projects. 
+Will inform each client or employer of any business connections, interests, or affiliations which might influence my judgment or impair the equitable character of my services. Professionals of all types make value judgments as part of their responsibilities. This section of the Code of Ethics requires a conscious search to identify any connections that might bias conclusions. 
+Will indicate to my employer or client the adverse consequences to be expected if my professional judgment is overruled. The reliability engineer is required to present both good news and bad news scenarios when making recommendations. 
+Will not disclose information concerning the business affairs or technical processes of any present or former employer or client without his consent. This clause says that even in the absence of a confidentiality agreement, the individual is honor bound to act as if one is in place. As a practical matter it may be advisable to have a signed state- ment from the former employer or client releasing the information. 
+Will take care that credit for work of others is given to those whom it is due. 
+ 
+
+SYSTEM SAFETY PROGRAM 
+A typical system safety program has three key elements: 
+1. Identification of safety hazards. The reliability engineer must be innovative and diligent in the discovery of all possible ways that any failure, combination of failures, or other combination of circumstances would present a safety hazard to personnel. Warranty data and other forms of customer feedback should be analyzed. 
+2. Risk analysis. The standard analysis techniques—failure mode and effects analysis (FMEA), failure mode, effects, and criticality analysis (FMECA), production reliability acceptance test (PRAT), fault tree analysis (FTA), success tree analysis (STA), failure reporting, analysis, and corrective action system (FRACAS). These techniques can be used to estimate the risk associated with various events. It then becomes possible to establish a prioritized list that will provide guidance as the root causes are attacked and resolved. 
+
+3. Correction and prevention. In the case of safety hazards there is the additional urgency to avoid harm to personnel. In cases in which flaws in products or processes permit hazardous conditions to occur, engineering change requests (ECR) should be initiated. 
+It is always necessary to consider human error. From one perspective, human error occurs because no system is in place to prevent it. In other words the onus is on the product/process design community to reduce or eliminate errors. Procedures for preventing/mitigating human error are variously called idiot-proofing, mistake-proofing, poka-yoke, and zero quality control (ZQC). Human error tends to fall into the following categories: misunderstanding, misidentification, inexperience, inattention, and lack of standards. 
+The ideal way to deal with human mistakes is to incorporate design elements that will prevent them from occurring or prevent their occurrence from causing defects. 
+Principal types of mistake-proofing techniques include: 
+- Physical barriers to errors. 
+- Visual reminders. 
+- Use of automated equipment. 
+- Standardizing
+
+Often the best way to prevent reoccurrence of human error is to approach a person who has made the error with the question “How can we design a system that will make that error impossible to occur?” 
+
+
+
+Reliability analysis is a good tool to manage risks, it provides estimates of the probability of failure. The reliability engineer must go beyond these calculations and examine the consequences of failure. An important reliability function is the anticipation of possible failures and the establishment of reliability acceptance goals that will limit their occurrence and consequent costs. Once component, product, and system reliability goals have been set, a testing protocol should be implemented to provide validation that these goals will impact the failure rates, and the associated consequences as planned. These reliability goals typically impose specifications on the product. In anticipation of the start of production, reliability engineers provide further testing procedures to provide verification that these specifications are being met.
+
+
+The four main types of risks are technical risks, scheduling risks, safety risks and financial risk. Technical Risks are potential issues related to the design, performance, or quality of a system or product. Poor reliability may lead to frequent failures, reduced performance or unmet specifications and so increases technical risks. Scheduling Risks are delays in project timelines due to resource unavailability, unrealistic schedules, or unforeseen events affecting milestones. Unreliable systems may cause project delays, affecting delivery schedules and cascading into other operational plans. Safety Risks are hazards that could lead to harm or injury to individuals, equipment, or the environment. Includes risks from system failures or operational errors. Low reliability directly impacts safety, as system failures can lead to accidents or hazardous conditions. Financial Risks are monetary losses stemming from budget overruns, unanticipated costs, or insufficient funding. Failures or downtime due to poor reliability can increase maintenance and repair costs, leading to budget overruns. The risks are interrelated, technical failures can lead to safety incidents, delays, and financial losses. Delayed schedules might require rushed designs, increasing technical and safety risks. Poor reliability across any domain compounds the impact on overall system performance and operational integrity.
+
+
+Fault tree analysis (FTA) is used to identify failures and use events and logic symbols to determine the root cause of product failures or the steps necessary to ensure product success. The fundamental symbols in FTA are the AND gate and the OR gate. Each of these has at least two inputs and a single output. The output for the AND gate occurs if and only if all inputs occur. The output for the OR gate occurs if and only if at least one input occurs. Rectangles are typically used for labeling inputs and outputs. The failure mode being studied is sometimes referred to as the “top” or “head” event. An FTA helps the user to consider underlying causes for a failure mode and to study relationships between various failures. Another common gate is the Voting OR gate, in this gate, the output occurs if and only if k or more of the input events occur, where k is specified, usually on the gate symbol.
+
+
+The purpose of failure mode and effect analysis (FMEA) is the anticipation and mitigation of the negative effects of possible failures prior to the time they occur. FMEA should be used at every stage from product and process design through service delivery activities. The steps of FMEA are, prior to the first team meeting, determine the product to be analyze and gather associated data. Then list all possible failure modes. It is very important that this step be given time and resources. If one or more failure modes are overlooked, the remainder of the FMEA becomes less valuable. 
+For each failure mode ask how, where, when, and why the failure would occur and what impact this failure would have. After that, you can calculate a risk priority number (rpn) for each mode. Do this by assigning a value from one to 10 for each of these categories: Severity, Occurrence and Detection. Severity is a judgment regarding the impact this failure would have. Occurrence is an estimate based on the probability that this failure will occur. And detection is an estimate of the probability that the failure would be detected once it has occurred. The rpn is the product of the three numbers: rpn = S × O × D. The next step is to develop a corrective action plan for the risks the team and management personnel deem most significant. Finally, document and report the results. 
+To assign a score to each category (severity, occurrence and detection), here are some indications. For severity: nine and 10 are reserved for failures that will endanger the safety of individuals, with 10 usually denoting a safety hazard that will occur without warning. Five through eight are associated with various levels of dissatisfaction of the customer. Two to four refer to some lack of function. One means the failure would have no impact. Often the best estimate for occurrence can be obtained by looking at data from similar products and processes. Otherwise: Use 10 if probability is about 0.5 Use nine if probability is about 0.3. Use eight if probability is about 0.1 Use seven if probability is about 0.05. Use six if probability is about 0.01. Use five if probability is about 0.003. Use four if probability is about 0.0005. Use three if probability is about 0.00007. Use two if probability is about 0.000007. Use one if the probability is about 0.0000007. For detection, ten is used for failures that are considered impossible to detect. One is used for failures that are almost certain to be detected and numbers between one and 10 indicate likelihood of detection from most likely to least likely. 
+Once the rpn has been calculated for each failure mode, the next step, step #4 on the list, is to determine which ones should have corrective or preventive actions. If several of the rpn values are clearly clumped at the upper end, these will typically be the place to begin. When two failure modes have very similar rpn values it is necessary to look a little deeper to determine which to work on first. One approach to prioritizing in this situation is to recalculate rpn with the occurrence factor omitted. There is an inherent mathematical problem with rpn values so it is important to exercise some judgment when using them. An alternate prioritization plan, avoiding rpn values altogether, is to rank all failure modes by severity, and within each severity value rank them by occurrence. Then within each occurrence value, rank them by detection. 
+The FMECA, Failure Mode Effects and Criticality Analysis, bases the prioritization scheme on probability of occurrence and severity of the failure mode. These two variables can be used to construct a two- dimensional graph displaying each failure mode as a point. Severity can be plotted on the horizontal axis and probability on the vertical axis. More severe failure modes will plot further to the right and more probable ones further up from the horizontal axis. If a set of failure modes is grouped in the upper right corner, those should be attacked with highest priority.
+
+
+A common mode failure occurs when multiple components or systems fail simultaneously due to a shared cause or underlying issue : The failures are not independent but stem from a single initiating event or condition. Common mode failures (CMFs) have several characteristics: Simultaneous Impact (CMFs typically affect multiple systems or components at the same time), Shared Vulnerability (the affected systems have a common dependency) and finally Low Probability but High Impact (CMFs are often rare but can have catastrophic consequences when they occur). CMFs affects risk by undermining redundancy and increasing the likelihood of catastrophic outcomes. CMFs undermine redundancy by causing simultaneous failure of redundant systems. Finally, while individual failures may have a low probability, the shared cause increases the likelihood of simultaneous failure.
+
+
+Hazard analysis helps the early identification of risks, it helps detect potential safety issues or failure points during the design phase and it promotes the integration of safety and reliability features, such as redundant systems or fail-safes, during development. It is also used to prioritize resources and focuses development efforts on mitigating high-risk hazards, optimizing time and cost allocation. And finally, hazards analysis helps the compliance with standards as it ensures adherence to safety regulations and industry standards. In reliability engineering, hazard analysis is an input for reliability modelling: Hazard analysis identifies failure modes, which are inputs to reliability tools like reliability block diagrams (RBDs) or Markov models. It is also used for risk mitigation strategies, reliability engineers use hazard data to implement design changes that reduce the probability or impact of failure. Plus, information on hazard severity helps reliability engineers rank failure modes by criticality, ensuring that the most severe are addressed first. Hazard analysis can also inform test planning to ensure that high-risk scenarios are adequately tested during system verification. Eventually, data from hazard analysis supports the development of maintenance plans and operational procedures to manage risks over the system's lifecycle.
+
+
+A risk matrix is a visual tool used to assess and prioritize risks based on two primary factors: Likelihood and Severity.  Likelihood is the probability of a risk event occurring and Severity is the impact or consequence of the risk event if it occurs. Typically presented as a grid where rows represent likelihood levels (e.g., Rare to Certain) and columns represent severity levels (e.g., Minor to Catastrophic). The matrix is divided into cells that represent risk levels, often color-coded for clarity. Low Risk in green, Medium Risk in yellow and High Risk in Red. Risk matrices are used for identification and prioritization: The matrix visually prioritizes which risks require immediate attention (e.g., those in the red zone). It also helps with decision making as acceptable risks may be present in the green zone and may require minimal or no mitigation efforts. While yellow and red zone risks require further analysis and mitigation plans to reduce their likelihood or severity. And finally, it eases communication to stakeholders as it simplifies complex risk data. Risk matrices have many limitations. They may oversimplify complex risks, accuracy can be reduced due to subjectivity while assigning likelihood and severity. It should be used as a preliminary assessment tool, requiring deeper analysis for high-priority risks. 
+
+
+System Safety
+A typical system safety program has three key elements: Identification of safety hazards, risk analysis and correction & prevention. For identification of safety hazards, the reliability engineer must be innovative and diligent in the discovery of all possible ways that any failure, combination of failures, or other combination of circumstances would present a safety hazard to personnel. For risk analysis, the standard analysis techniques—failure mode and effects analysis (FMEA), failure mode, effects, and criticality analysis (FMECA), production reliability acceptance test (PRAT), fault tree analysis (FTA), success tree analysis (STA), failure reporting, analysis, and corrective action system (FRACAS). Regarding correction and prevention. In the case of safety hazards there is the additional urgency to avoid harm to personnel. It is always necessary to consider human error. Human error occurs because no system is in place to prevent it. Procedures for preventing/mitigating human error are variously called idiot-proofing, mistake-proofing, poka-yoke, and zero quality control (ZQC). Human error tends to fall into the following categories: misunderstanding, misidentification, inexperience, inattention, and lack of standards. The ideal way to deal with human mistakes is to incorporate design elements that will prevent them from occurring or prevent their occurrence from causing defects. Principal types of mistake-proofing techniques include physical barriers to errors, visual reminders, use of automated equipment and standardizing. Often the best way to prevent reoccurrence of human error is to approach a person who has made the error with the question “How can we design a system that will make that error impossible to occur?” Activity must be continuous in the three elements of the system safety program. As the higher-priority hazards are corrected/prevented, action can focus on the lower-priority items.
+
+
+Risk Mitigation is the process of implementing strategies and controls to reduce the likelihood or severity of a risk. It aims to ensure safety, minimize liability, and comply with regulatory requirements. Risk mitigation generally falls into the following categories: Avoidance, Reduction, Transfer and Acceptance. Avoidance means eliminating the risk entirely by altering the design, process, or activity. Reduction is the implementation of controls to reduce the likelihood or impact of the risk. Transfer is shifting the financial or operational impact of the risk to another party. Acceptance means acknowledging the risk as unavoidable but manageable within defined thresholds. There are 2 types of control: Proactive Controls and Reactive Controls. Proactive controls can be engineering controls, meaning, changing the design or physical system; administrative controls such as policies, procedures and training to minimize human error; preventive maintenance that is scheduling inspections and servicing to prevent failures; or ; Diversity and segregation to reduce common mode of failures by using varied designs or separating systems. Reactive Controls can be achieved with Detection Systems that identify issues before they escalate, Emergency Response Plans that are protocols for managing incidents to minimize harm or Corrective Maintenance that are repairs or replacements after a failure to restore functionality.
+
+
+Reliability Design Techniques: Environmental and Stress Factors
+Understanding use factors is vital for reliability design. Environmental conditions like temperature, humidity, vibration, and corrosion, along with stress factors like ESD, RFI, and cyclic stresses, impact reliability. For instance, temperature affects electronics more than mechanics, while cyclic stresses cause mechanical fatigue. High humidity or salty environments corrode mechanical parts and damage electronics.
+
+
+Stress-Strength Analysis in Design
+Failure happens when stress exceeds a part's strength. To prevent this, designs use safety factors to keep strength above expected stress. When treated as distributions, stress and strength reveal an overlap (interference) region where failure can occur. The failure probability is based on this overlap. For example, with normal distributions, reliability improves by increasing mean strength or reducing stress variation, guiding durability enhancements in design.
+
+
+Failure Mode and Effects Analysis (FMEA) for Design
+FMEA enhances reliability by identifying potential failures, their causes, and consequences. It uses the risk priority number (RPN) to prioritize issues based on probability, severity, and detectability. DFMEA addresses product weaknesses to extend life, while PFMEA targets manufacturing to reduce defects. Both improve safety and reliability through cross-disciplinary collaboration.
+
+
+Failure Mode Effects and Criticality Analysis (FMECA)
+FMECA builds on FMEA by prioritizing critical failures during design, enabling cost-effective prevention and improved customer satisfaction. For example, addressing UV-related seal deterioration in a tractor cab prompts using UV-resistant materials or design changes before production.
+
+
+Fault Tree Analysis (FTA) in Design
+FTA visually maps conditions causing failures, aiding in complex system design. For example, analyzing a power line failure may reveal wind or insulator issues, guiding preventive measures.
+
+
+Tolerance and Worst-Case Analyses
+Tolerance analysis assesses how component variations impact reliability, using methods like root-sum-squared. Testing extremes ensures performance and identifies issues early for design adjustments.
+
+
+Terminology and Experimental Foundations
+Experimental error is variation in a response variable under constant conditions. Factors (variables) have levels, while noise factors are uncontrolled. Replication repeats treatment combinations, with results shown by the response variable. A treatment combines factor levels for an experimental unit. Designed experiments uncover relationships between inputs (independent variables) and outputs (dependent variables), e.g., feed, speed, and coolant temperature (inputs) affecting surface finish (output).
+  
+
+Planning and Organizing Experiments
+Organizing an experiment starts with a measurable objective, like optimizing a process. Experts suggest factors and levels, considering budget and time constraints (20–40% of the budget). Initial experiments screen variables, guiding further studies on additional factors or levels.
+
+
+Randomization and Blocking
+Randomization reduces noise variable effects by assigning random test orders. For example, in 40 tests, runs can be randomized entirely or within replicates. Blocking addresses non-uniform conditions, like shifts, by randomizing within shifts or splitting replicates to balance shift effects.
+
+
+Data Collection and Main Effects
+Once data is collected, averages of the replication responses are computed for each run. For example, the average surface finish for Run 1, where feed is 0.01 in/rev, speed is 1300 rev/min, and coolant temperature is 100°F, might be calculated as 10. Main effects, which describe the average impact of each factor level, are derived by averaging results across relevant runs. For instance, averaging the results of all runs with feed set at 0.01 in/rev provides the main effect for that level. Similarly, averages are computed for other factors like speed and coolant temperature.
+
+
+Efficiency in Experimental Design
+Full-factorial experiments can become prohibitively large with increasing factors and levels. The number of runs grows exponentially with the number of levels and factors, making it challenging in resource-constrained environments. For example, an experiment with eight two-level factors requires 256 runs, which becomes impractical if replicated multiple times.
+In cases where resources are limited, fractional factorial designs offer an alternative. These designs reduce the number of runs while still capturing essential information about the factors and their interactions. This approach is particularly useful in sequential testing environments, such as manufacturing, where full-factorial designs may disrupt production schedules.
+
+
+Human Factors in Reliability
+Human factors significantly influence the use and performance of products and processes, and these variations must be addressed during reliability testing. Differences among users can be grouped into usage, installation, and process management factors.
+
+
+Usage Factors
+Testing must account for diverse user habits. For instance, a home laundry appliance might face variations in door slamming, detergent selection, and cleanliness practices. Similarly, automotive components encounter varied operator habits. A test protocol of 100,000 door slams with a specific force may fail to reflect the wide range of real-world usage.
+
+
+Installation Factors
+The environments in which products are installed greatly affect their reliability. For example, building materials or automotive spare parts may have varying lifetimes depending on installation quality. A window installed slightly out of plumb might perform less reliably, underscoring the need for designs that tolerate minor misalignments. These considerations impact both testing protocols and installation instructions.
+
+
+Process Management Factors
+Human variation in production processes can influence product characteristics. Factors like how a paint gun is held or the timing of molding cycles introduce variability. Testing only on products made under ideal conditions may overlook this variation, leading to unrealistic reliability expectations.
+
+
+Design for X (DFX)
+Design for X refers to applying specific tools and techniques to enhance various aspects of a product's lifecycle, including assembly, manufacturability, serviceability, testability, and cost. Each of these focuses imposes constraints on design decisions.
+
+
+Design for Assembly
+This involves optimizing the assembly process by considering factors such as access to fasteners, tooling requirements, and safeguards against incorrect assembly.
+
+
+Design for Manufacturability
+Here, the emphasis is on ease of fabrication, addressing issues like tolerances and challenging configurations such as thin walls or deep holes.
+
+
+Design for Testability
+This focuses on creating designs where critical characteristics are easy to measure, enhancing the efficiency of testing procedures.
+
+
+Design for Cost
+Cost considerations influence both product and process design, aiming to balance affordability with functionality.
+
+
+Design for Serviceability
+The ease of replacing parts and performing standard maintenance tasks is the central focus here.
+
+
+Design for Reliability
+This ensures the product’s long-term usability, prioritizing customer satisfaction over its lifecycle. Each design constraint's relative importance shapes the final product.
+
+
+Parts Selection for Reliability
+The standardization and reduction of parts contribute to reliability. Using the same components across multiple products simplifies inventory management and reduces costs. For instance, in the automotive industry, a common chassis or engine may be used across several models.
+Efforts to reduce parts also streamline processes. For example, a two-bar linkage replacing a three-bar one reduces complexity. In software, reusing modules in multiple applications minimizes testing costs and improves reliability. These strategies lead to significant savings, making them vital for design teams.
+Material Selection and Control
+Variation in materials is an essential consideration during design. Probabilistic methods allow the design of robust products that accommodate material variability. Distribution models describe these variations, enabling precise assessments.
+For instance, when designing clips for livestock shelters, the variability in the dimensions of materials like two-by-fours and the clips themselves must be accounted for. If 32% of clips fail due to narrow gaps, adjustments in design are necessary. Software tools can aid in modeling material distributions when exact data is unavailable.
+
+
+Maintainability and Availability Planning
+Maintainability and availability plans are key for reliability. Maintenance includes preventive actions to avoid wear-out failures and corrective actions to restore function after failure. Availability measures the likelihood of system operation, impacted by downtime from failures or maintenance. Preventive actions during non-operational periods reduce impact. Metrics like MTTR and MTBF help improve system uptime and availability.
+
+
+Maintenance Strategies
+Effective maintenance strategies balance availability and cost. Preventive approaches like predictive and reliability-centered maintenance replace components before failure, using failure predictions and safety data. Condition-based maintenance reacts to failure but may introduce new risks. Proper design and strategy selection reduce costs, ensure reliability, and extend system lifespan.
+
+
+Maintainability Apportionment and Allocation
+Maintainability minimizes downtime by simplifying repairs and standardizing procedures. MIL-HDBK-472 defines it as restoring systems under controlled conditions. Requirements are allocated to subsystems, ensuring targets align with overall goals. MTTR and failure rates guide adjustments to meet maintainability standards.
+
+
+Availability Tradeoffs
+System availability, dependent on reliability and maintainability, reflects operational readiness. Several measures exist, such as inherent availability, which excludes preventive maintenance and logistic downtime, focusing solely on corrective maintenance. Achieved availability considers both corrective and preventive maintenance, excluding delays from logistical constraints. Operational availability, the most comprehensive measure, includes all downtime sources, including logistics and administrative delays.
+
+
+Design efforts must prioritize high reliability and efficient maintenance to ensure systems meet operational demands. Metrics like mean time between maintenance actions (MTBMA), mean active maintenance time (MAMT), and mean downtime (MDT) inform availability calculations. Increasing MTBF or reducing maintenance times enhances availability, meeting customer expectations for operational readiness.
+Preventive maintenance (PM) aims to optimize system reliability by reducing failure rates and minimizing downtime. To achieve this, PM procedures must account for the failure rate patterns of systems or subsystems. For systems with increasing failure rates, preventive maintenance actions, such as replacement or lubrication, can yield cost savings and reliability benefits. For units in their useful life phase, neglecting PM tasks, such as periodic lubrication, may lead to increased failure rates due to excessive wear. PM actions, however, must be carefully planned, as they could potentially induce failures, negatively impacting system reliability.
+Determining the optimal maintenance interval requires a balanced consideration of various costs: the expense of performing maintenance, the cost of failures if maintenance is deferred, and the system downtime costs. Intervals that are too short result in higher maintenance expenses, while overly extended intervals increase failure-related costs. Scheduling PM during periods of low system demand can minimize downtime. Consolidating multiple maintenance activities during a single downtime event further enhances efficiency.
+Replacing units before failure is a common Predictive Maintenance action, especially when the unit approaches the end of its useful life. Optimum replacement timing involves analyzing factors such as failure distributions, system impact of failures, associated costs (including downtime and safety implications), and the reliability effects of scheduled maintenance. Additionally, considerations like detectability of potential failures by operators, inspection costs, and whether maintenance activities might introduce new failures are essential to optimize Predictive Maintenance strategies.
+Corrective maintenance (CM) is performed reactively in response to system failures or malfunctions, aiming to restore operational functionality with minimal downtime. Total downtime includes active maintenance time (e.g., fault localization, isolation, repair, and reassembly) and inactive maintenance time (e.g., delays in acquiring parts or tools). Active corrective maintenance can be measured using metrics like mean time to repair (MTTR), which quantifies average repair duration.
+Design-phase input from maintainability engineers can significantly reduce repair time. For instance, systems designed for easy fault isolation or repair inherently enhance maintainability. Built-in testing (BIT), diagnostic ports, or failure indicators can facilitate fault localization and isolation, improving availability by enabling quicker repairs. However, additional complexity introduced by BIT systems may increase the probability of failures. Using software for fault monitoring instead of mechanical sensors can mitigate this risk.
+Minimizing inactive maintenance time is equally important. Delays caused by part shortages, tool unavailability, or administrative inefficiencies can extend system downtime unnecessarily. Effective logistics and spare parts strategies are critical to maintaining system availability.
+System testability, a crucial factor for maintainability, involves designing methods to detect and isolate faults efficiently. Built-in test systems, accessible test points, and external diagnostic tools support this goal. Fault detection and isolation capabilities are key performance indicators, reflecting the system's ability to identify failures and determine which components require repair. False alarm rates, which measure erroneous failure declarations, must also be minimized to ensure reliable diagnostics.
+Spare parts strategies are intrinsically tied to system maintainability and availability. The required inventory depends on anticipated failures and the preventive maintenance cycle. A constant failure rate allows for statistical prediction of spare parts requirements using cumulative Poisson distributions. Inventory management must balance delivery time, inventory costs, and availability demands to ensure spare parts are readily available, preventing downtime extensions due to shortages. Proper planning aligns spare part needs with both preventive and corrective maintenance activities, optimizing overall system reliability and operational efficiency.
+ 
+
+Statistics is the study of data for decision-making. A population includes all items under study, while a sample is a subset. The mean \bar{x} = \frac{\sum_{i=1}^n x_i}{n} is the average, while the median is the middle value, and the mode is the most frequent. Dispersion measures include the variance s^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n - 1}, and standard deviation s = \sqrt{s^2}
+
+An important statistical principle called the central limit states that: The distribution of sample averages is approximately normal even if the population from which the sample is drawn is not normally distributed. The approximation improves as the sample size increases. 
+
+
+
+The probability that an event A will not occur is given by the formula 1 – (the probability that A does occur). Stated symbolically, P(\text{not } A) = 1 - P(A)
+
+We’ll denote the probability that events A and B both occur as P(A & B). This leads to the general addition rule: P(A \cup B) = P(A) + P(B) - P(A \cap B)
+
+A formal definition for conditional probability is: P(B \mid A) = \frac{P(A \cap B)}{P(A)}
+
+Knowing that a part is of type X does not affect the probability that it is of type G. Intuitively, two events are called independent if the occurrence of one does not affect the probability that the other occurs. The formal definition of independence of events A and B is P(A \cap B) = P(A)P(B)
+
+Binomial Distribution. The binomial distribution is a discrete distribution whose random variable can take on one of only two possible values. In reliability applications, the two categories might be operable and failed. 
+The function that defines the distribution is called the binomial formula: P(X = x) = \binom{n}{x} p^x (1-p)^{n-x} where n = sample size, x = number of failures, p = proportion of the population that has failed and P(X = x) = the probability that the sample has x failures
+
+The mean x and standard deviation s of a binomial distribution are given by the formulas: x = np and s= np(1−p) 
+
+
+Poisson Distribution. The Poisson distribution is a discrete probability distribution that may be used to find the probability that an event will occur a specified number of times. 
+
+The Poisson distribution formula is P(X = x) = \frac{\lambda^x e^{-\lambda}}{x!} where x = a whole number and lambda = a real number. 
+
+The mean x and standard deviation s of the Poisson distribution are x=lambda and s=lambda. 
+
+Exponential Distribution. The exponential distribution is a continuous distribution that is frequently used to model time to failure for products when the failure rate is constant. 
+
+The function that defines the exponential distribution is f(t) = \lambda e^{-\lambda t} , where lambda=constant failure rate  and t = time (or some other measure of product use such as cycles, miles, rounds fired, and so on). When the distribution is exponential, the reliability R(t)= e^{-\lambda t}.
+ 
+In reliability analysis, the failure rate lambda is defined as lambda = \frac{\text{Number of Failures}}{\text{Total Test Time}}
+
+In reliability analysis, the reliability function R which is the probability a unit functions is defined as R(t) = e^{-\lambda t}
+ 
+
+A point estimate is a single value used to estimate a population parameter. Example: The sample mean (\bar{x} = \frac{\sum_{i=1}^n x_i}{n}) is a point estimate of the population mean.
+
+An estimator is unbiased if its expected value equals the parameter it estimates. Example: The sample mean (\bar{x}) is an unbiased estimator for the population mean.
+
+Efficiency compares two unbiased estimators. An estimator AAA is more efficient than BBB if it has a smaller variance. 
+
+An estimator is consistent if it approaches the true parameter value as the sample size increases.
+ 
+
+If the standard deviation sigma is known, the confidence interval for the population mean is given by \bar{x} \pm z_{\alpha/2} \frac{\sigma}{\sqrt{n}}. If it’s not known, the confidence interval is \bar{x} \pm t_{\alpha/2, n-1} \frac{s}{\sqrt{n}}.
+
+The confidence interval for the population proportion is \hat{p} \pm z_{\alpha/2} \sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}
+ 
+The different steps in hypothesis testing are: first, define the null hypothesis (H0​) and alternative hypothesis (Ha​). Then, calculate the test statistic and determine the critical value from statistical tables. Finally, compare the test statistic to the critical value to decide whether to reject H0.
+If the standard deviation sigma is known, the test statistics for the population mean is given by Z = \frac{\bar{x} - \mu}{\sigma / \sqrt{n}}. If it’s not known, the test statistics is t = \frac{\bar{x} - \mu}{s / \sqrt{n}}
+The maximum likelihood estimation (mle) is used to estimate unknown parameters by maximizing the likelihood function: l(\theta) = f(x_1, \theta) \cdot f(x_2, \theta) \cdots f(x_n, \theta)
+
+IV. Reliability Planning, Testing, and Modeling (Martin)
+Reliability data come from both external and internal sources. External sources include suppliers, other users of the same components, and programs like the Government–Industry Data Exchange Program (GIDEP). For nonelectrical parts, data can be sourced from the Rome Air Development Center and the National Technical Information Service (Springfield, VA).
+ 
+ 
+Internally generated data are often more reliable since the conditions under which they are produced are known and controlled. These data reflect manufacturing processes, quality control methods, and operational environments specific to the company.
+ 
+ 
+Field service facilities provide reliability data through records of repairs, maintenance, and product returns. Each service activity should generate a report, and failure analysis on returned parts can reveal root causes of issues.
+ 
+ 
+Reliability engineers are responsible for collecting and distributing this data, ensuring it is available to teams like quality engineering, product design, testing, marketing, and service functions.
+ 
+ 
+In a series system, the successful operation of the entire system depends on the successful operation of each subsystem. A failure in any subsystem leads to the failure of the entire system.
+ 
+The system reliability, \( R_{\text{System}}(t) \), represents the probability of success for the system over mission time \( t \). The reliability of each subsystem, \( R_i(t) \), is the probability of its success over the same mission time. For \( n \) subsystems, the system reliability is given by:
+R_{\text{System}}(t) = R_1(t) \cdot R_2(t) \cdot \ldots \cdot R_n(t)
+Since the reliability of each subsystem is less than one, the system reliability will always be less than the reliability of any individual subsystem:
+R_{\text{System}}(t) < R_i(t)
+ 
+ 
+A series–parallel system combines series and parallel subsystems. The same assumptions used for individual series or parallel systems apply. The overall system reliability is calculated by converting the system into an equivalent series or parallel model.
+ 
+### Example: Series–Parallel System
+Consider a series–parallel system where the reliabilities of each subsystem are given as follows:  
+1. **First part (left)**: Two components, each with a reliability of 0.99, are connected in parallel.  
+2. **Second part (center)**: The output from the parallel section is connected to a single component with a reliability of 0.999 in series.  
+3. **Third part (right)**: Three components with reliabilities of 0.89, 0.92, and 0.90 are connected in parallel.
+ 
+#### Step 1: Calculate the reliability for the parallel subsystems.
+For the first part (left):  
+R_1 = 1 - (1 - 0.99)^2 = 0.9999
+For the third part (right):  
+R_3 = 1 - (1 - 0.89)(1 - 0.92)(1 - 0.90) = 0.99912
+ 
+#### Step 2: Combine into an equivalent series system.
+The system is now an equivalent series system with \( R_1 \), \( R_2 = 0.999 \), and \( R_3 \). The overall system reliability is:  
+R_{\text{System}} = R_1 \cdot R_2 \cdot R_3 = (0.9999)(0.999)(0.99912) = 0.998
+The reliability of the entire system is \( R_{\text{System}} = 0.998 \).
+The m out of n system is a parallel system with \( n \) equivalent subsystems. The system requires at least \( m \) (where \( m < n \)) subsystems to succeed for the overall system to succeed.
+For each subsystem with reliability \( R \), the system reliability is calculated as:  
+R_{\text{System}}(t) = \sum_{i=m}^{n} \binom{n}{i} R^i (1 - R)^{n-i}
+where \( \binom{n}{i} = \frac{n!}{i!(n-i)!} \) is the number of combinations of \( n \) items taken \( i \) at a time.
+ 
+ 
+Significance. 
+The reliability engineer must always guard against presenting reli- ability results with more precision than the data warrant. All engineers need to know how to express results using correct significance. A legitimate concern might be raised about the significance of the results in the examples in this sec- tion. In order to illustrate the method of solving the problems, the results are many times carried to more significant digits than can be justified by the data used in the calculations. 
+ 
+ 
+In a coherent system, subsystems cannot be reduced to simple series or parallel models. To calculate the system reliability, Bayesian analysis can be used. 
+Choose a subsystem and assume it is first in a success state, then in a failed state. In each case, the remaining system is treated as a series–parallel arrangement. If the system doesn’t reduce to this, choose another subsystem.  
+For the success state, multiply the reliability of the remaining system by the probability that the subsystem hasn't failed. For the failure state, multiply the reliability of the remaining system by the probability that the subsystem has failed. The system reliability is the sum of these two values.
+ 
+ 
+The Truth Table Method calculates system reliability by identifying all events leading to system success. Each event represents a combination of subsystem success (S) and failure (F). 
+For a system with \( k \) subsystems, there are \( 2^k \) possible events. For each event, determine whether it results in system success or failure, and calculate the probability of each event. The system reliability is the sum of the probabilities of events that lead to success. 
+While this method is straightforward for simple systems, it becomes cumbersome for larger systems. For complex systems, a computer model can be used to handle the calculations.
+ 
+ 
+In a series system, assume each subsystem has an exponential failure distribution with a constant failure rate \( \lambda_i \) for subsystem \( i \). The system failure rate is the sum of the subsystem failure rates: \( \lambda_{\text{System}} = \sum_{i=1}^{n} \lambda_i \). The system reliability is given by \( R_{\text{System}} = e^{-\lambda_{\text{System}} t} \). The system's Mean Time to Failure (MTTF) or Mean Time Between Failures (MTBF) is \( \theta = \frac{1}{\lambda_{\text{System}}} \).
+ 
+ 
+In a load-sharing system, subsystems are connected such that each shares the total load equally, operating below maximum capacity. This reduces the failure rate of each subsystem due to lower stress levels. If one subsystem fails, the remaining subsystem carries the load but operates at a higher failure rate.
+For two units, each with a constant failure rate \( \lambda_1 \), the system operates at this rate as long as both subsystems are functioning. If one fails, the remaining subsystem operates at a higher failure rate \( \lambda_2 > \lambda_1 \). System success over mission time \( t \) is described as both subsystems operating successfully at failure rate \( \lambda_1 \), or one subsystem failing at time \( t_1 < t \) and the remaining subsystem operating at \( \lambda_2 \) for the time \( t - t_1 \).
+If \( 2\lambda_1 \neq \lambda_2 \), the system reliability is:  
+\( R_{\text{System}}(t) = e^{-2\lambda_1 t} + \frac{2\lambda_1 \left( e^{-\lambda_2 t} - e^{-2\lambda_1 t} \right)}{2\lambda_1 - \lambda_2} \)
+If \( 2\lambda_1 = \lambda_2 \), the system reliability is:  
+\( R_{\text{System}}(t) = e^{-2\lambda_1 t} + 2\lambda_1 t e^{-2\lambda_1 t} \)
+ 
+ 
+A standby redundant system uses parallel units that are only activated in case of failure. For example, if the primary unit fails, a standby unit takes over to continue the system’s function.
+Assume both the primary and secondary units have the same failure rate \( \lambda \), with perfect sensing and switching, and no failure for the secondary unit in standby. The system reliability \( R_{\text{System}}(t) \) is the probability that either the primary unit operates successfully for time \( t \), or the primary fails at time \( t_1 < t \), and the secondary unit operates successfully for \( t - t_1 \).
+The reliability equation is:  
+\( R_{\text{System}}(t) = e^{-\lambda t}(1 + \lambda t) \)
+If sensing and switching are not perfect (\( R_{\text{s/s}} < 1 \)), the equation becomes:  
+\( R_{\text{System}}(t) = e^{-\lambda t}(1 + R_{\text{s/s}} \lambda t) \)
+For multiple standby units (e.g., two units with perfect switching), the reliability is:  
+\( R_{\text{System}}(t) = e^{-\lambda t} \left( 1 + \lambda t + \frac{(\lambda t)^2}{2} \right) \)
+ 
+ 
+In a Monte Carlo simulation, system performance is calculated repeatedly using randomly selected values based on the probability distributions of each model element. The results form a probability distribution of system performance. While Monte Carlo simulation does not involve complex mathematics, it requires significant computer time, as each event for every unit must be repeatedly sampled over the mission time.
+ 
+ 
+Markov analysis is used to model a system's behavior where the future state depends only on the current state. In a repairable system, such as a machine, the system can be in a success (S) or failure (F) state. Transition probabilities determine the likelihood of moving from one state to another. For example, if the machine is in state S, it has a 0.1 chance of failing and transitioning to F, and if it's in state F, there's a 0.7 chance it will be restored to state S.
+The transition matrix is given by:
+\[ 
+T = \begin{bmatrix}
+0.9 & 0.1 \\
+0.7 & 0.3
+\end{bmatrix}
+\]
+By raising the matrix to a power \( T^k \), we can calculate the state probabilities after \( k \) time intervals. As \( k \) increases, the system approaches a steady state. For this example, after several time intervals, the steady-state availability is approximately 0.875.
+The process can be expanded for systems with more states, and matrix operations or software tools can be used to compute the results.
+ 
+ 
+Reliability prediction is a tool used in the early design phase to assess a system's feasibility in meeting reliability goals. It is based on available data and can highlight weak points in design, compare competing designs, and assist in maintenance planning. However, it's not an actual reliability estimate, as it doesn't rely on real performance data.
+**Example 9.1: MIL-HDBK-217 Usage**
+The failure rate for a resistor is calculated as:
+\[ \lambda_p = \lambda_b \times \pi_E \times \pi_R \times \pi_Q \]
+Where:
+- \( \lambda_b \) is the base failure rate,
+- \( \pi_E \) is the environmental factor,
+- \( \pi_R \) depends on the resistor value,
+- \( \pi_Q \) is the quality factor based on production control.
+ 
+These factors are combined to predict the failure rate of the resistor.
+ 
+ 
+Reliability needs to be evaluated continuously throughout design, development, and production to meet system requirements. During design, component data and system models are used for early predictions. As the product progresses, test data helps estimate reliability. Predictions help identify weak spots, guide redesign, compare designs, and assess design changes.
+However, predictions rely on the assumption of constant failure rates for components and cannot account for human factors. While they consider environmental stress, component complexity, and manufacturing capability, factors like operator skill, design foresight, and maintenance capability play a much larger role in actual product reliability.
+ 
+ 
+Reliability predictions for repairable and non-repairable devices can be based on testing results and failure distributions. For exponential distributions, the Mean Time to Failure (MTTF) is estimated as \(\hat{q} = \frac{T}{r}\), where \(T\) is total accumulated time and \(r\) is the number of failures. The failure rate is \(\hat{\lambda} = \frac{r}{T}\), and reliability for mission time \(t\) is \(\hat{R} = e^{-\left(\frac{t}{\hat{q}}\right)}\).
+For confidence intervals, the lower bound \(q_a\) is calculated, and reliability at a confidence level \(1 - a\) is \(R(a) = e^{-\left(\frac{t}{q(a)}\right)}\).
+For repairable systems, predictions are more complex due to repairs restoring the system to a previous state, requiring predictions of spare parts needed to meet availability requirements rather than reliability estimates over multiple repair cycles.
+ 
+ 
+Reliability apportionment allocates system-level reliability requirements (e.g., failure rate or MTBF) to subsystems and components. If each component and subsystem meets its allocated requirement, the system will meet the overall requirement. This process should start early, as soon as preliminary design and engineering drawings are available.
+The apportionment process ensures that reliability is considered alongside other design characteristics like power, weight, and performance. It helps the design team understand the relationship between component, subsystem, and system reliability.
+ 
+ 
+A key part of apportionment is a system reliability model or block diagram. The ARYNC method is used for allocation: if the predicted system failure rate exceeds the requirement, allocation becomes necessary. For subsystem \(i\), a weighted allocation is determined by \(\lambda_i^* = \frac{\lambda_i}{\sum \lambda_i} (\lambda^*)\), where \(\lambda_i\) is the failure rate of the subsystem and \(\lambda^*\) is the system requirement.
+In Example 10.1, 100 ICs are cycled in an environmental test chamber for 1000 hours, with two units failing during the test. Using the binomial distribution, the estimated reliability for 1000 hours is:
+\hat{R}_{(t=1000)} = \frac{(n-r)}{n} = \frac{(100-2)}{100} = 0.98.
+From the F-distribution, the lower 90% confidence limit is:
+R_{L(\alpha=.10)} = \frac{98}{[98 + 3(1.77)]} = 0.9486.
+ 
+ 
+In Example 10.2, a test on 10 units estimates the MTBF using the exponential distribution. Two units failed at 450 and 800 hours, while the remaining eight units did not fail during the test, which was time-censored at 1000 hours. The total test time is:
+T = 450 + 800 + (8) \times (1000) = 9250 \text{ hours}.
+The estimated MTBF is:
+\hat{\theta} = \frac{T}{r} = \frac{9150}{2} = 4625 \text{ hours}.
+From the \(\chi^2\) distribution, the lower 90% confidence limit is:
+\theta_{L(\alpha = .10)} = \frac{(2) \times (9250)}{(10.645)} = 1740 \text{ hours}.
+ 
+ 
+ACCELERATED LIFE TESTS  
+Accelerated life testing reduces reliability test time by increasing the rate of failures without introducing new failure modes. If failure analysis reveals new modes caused by stress, stress levels should be adjusted.  
+Devices can be accelerated by exceeding normal use rates. For example, testing facilities can simulate one million keypresses on a keyboard in under 6 days or 8 years of dishwasher use in 100 days by cycling every 2 hours.  
+Under increased stress, if 5% of a population fails at \(t(s)\) (shortened time), compared to \(t(n)\) under normal conditions, the acceleration factor is \(AF = t(n) / t(s)\). The equivalent test time is \(t_{Eq} = AF \cdot t\), where \(t\) is the actual test time.
+ 
+ 
+### The Arrhenius Model  
+The Arrhenius acceleration model, based on the Arrhenius equation, explains how the rate of a chemical reaction increases with temperature: 
+\( R = A \cdot \exp(-E_A / KT) \),  
+where \( R \) is the reaction rate (or failure rate), \( A \) is a scaling factor, \( K \) is Boltzmann’s constant (\( 8.617 \times 10^{-5} \) eV/K), \( T \) is temperature in Kelvin (\( °C + 273 \)), and \( E_A \) is activation energy in electron volts.  
+Increasing test temperature accelerates the constant failure rate, effectively shortening test time. The acceleration factor (\( AF \)) is the ratio of reaction rates at the increased (\( T_S \)) and use (\( T_U \)) temperatures:  
+AF = \frac{R_S}{R_U} = \exp\left[\frac{E_A}{K}\left(\frac{1}{T_U} - \frac{1}{T_S}\right)\right].
+ 
+ 
+### The Power Law Model  
+The power law model applies to units subjected to non-thermal accelerating stresses, stating that product life is inversely proportional to increased stress:  
+\frac{\text{life at rated stress}}{\text{life at accelerated stress}} = \left(\frac{\text{accelerated stress}}{\text{rated stress}}\right)^b
+Testing at rated and accelerated stresses provides data to solve for \( b \), which is assumed constant over the stress range.  
+Other models address combined stresses, such as temperature and humidity or temperature and vibration, to accelerate failures and reduce test time.
+ 
+ 
+### Step-Stress Testing (HALT)  
+Highly Accelerated Life Testing (HALT) is a reliability test conducted during early product development to identify design weaknesses by progressively increasing stress until failure occurs. HALT testing builds on step-stress testing strategies.  
+**Phase 1: Pre-HALT**  
+Testing procedures are documented, equipment prepared, data recording methods established, and resources ensured.  
+**Phase 2: HALT**  
+Units are subjected to elevated stresses according to pre-HALT procedures. Tests are monitored, results analyzed, and data recorded. 
+**Phase 3: Post-HALT**  
+Root cause analysis and corrective actions are applied for each issue. Assigned personnel resolve each action until closure by reliability engineering.  
+Phases 2 and 3 may be repeated as needed.  
+ 
+ 
+### Reliability Growth Testing  
+Reliability growth can be tracked using the Duane and AMSAA models, requiring total test time ($T$) and failures ($r$) data. The cumulative MTBF ($\theta_m$) is calculated as $\theta_m = \frac{T}{r}$.  
+In the Duane model, $\theta_m = K(T)^b$ and its logarithmic form, $\log \theta_m = \log K + b \log T$, provides a straight line on log-log paper. The growth rate $b$ can be calculated using $\frac{\log(\theta_1 / \theta_0)}{\log(T_1 / T_0)}$, where $\theta_0$ is the initial MTBF and $\theta_1$ is the MTBF at a later time.  
+The true MTBF is $\theta = \frac{\theta_m}{(1 - b)}$. A growth rate of 0.25 to 0.4 is typical; higher values indicate aggressive reliability efforts, while lower values suggest limited improvement actions. 
+ 
+ 
+### Software Testing  
+Effective software testing, including white box testing, is a function of each development phase. White box testing, or structural testing, focuses on testing internal functions with complete knowledge of the system’s structure, aiming to cover all paths and branches.  
+To predict the number of faults remaining during testing, fault injection can be used by seeding known faults and comparing test times to uncover them. The fault rate helps predict the number of original faults. 
+About 50% of software faults stem from poorly defined specifications, so software reliability should focus on defect prevention. Specification and design reviews should be part of every software development project.  
+ 
+ 
+1. Qualification/Demonstration Testing  
+Qualification testing, or compliance testing, ensures a product meets specific reliability requirements like MTBF/MTTF or failure rate. IEC standards 61124 and 61123 outline procedures for testing failure rates or MTBF/MTTF using fixed-time or fixed-trial test plans with exponential or binomial failure models.
+Tests use an operating characteristic (OC) curve showing the probability of compliance for a given parameter. For time-based tests, the parameter value (failure rate or MTBF) is on the x-axis, with compliance probability on the y-axis. If failure rate is the target, compliance probability decreases as failure rate increases; if MTBF is the target, compliance increases with MTBF.
+An OC curve for failure rate defines accept (l0) and reject (l1) points. Products pass if the true failure rate ≤ l0, and fail if > l1. Risks of type I (α) and type II (β) errors exist. The ratio l0/l1, the discrimination ratio, influences test duration. Similarly, MTBF/MTTF as the compliance value uses m0/m1 to define accept and reject points, where m0/m1 is the discrimination ratio.  
+ 
+ 
+The Basics  
+Fixed-Time Test Plans involve placing units on test to accumulate time (T) while recording failures. Compliance is based on reaching a specific test time and having an acceptable number of failures, usually defined as c. The test continues until the required test time is reached (accept) or the allowable failures are exceeded (reject). The accept and reject points on the OC curve determine the test time T and the allowable failures c.
+The cumulative test time T is the sum of operating times for both failed and non-failed units. A replacement test replaces failed units to keep the same number of units on test, while a non-replacement test reduces the population with each failure. Regardless of the test type, the total operating time counts for both failure and non-failure units.
+To reduce excessive test time, accelerated testing (can be used. For example, if the required cumulative test time is 28,410 hours, 20 units could be tested for 1420 hours (about two months). With non-replacement, the time extends with each failure. Applying an acceleration factor of 60 reduces this to 469 hours (about one day with 20 units).
+ 
+ 
+Sequential Test Plans  
+Sequential or probability ratio sequential test (PRST) plans differ from fixed-time tests. In a fixed-time test, the decision to accept is made only after the required test time is completed. In sequential testing, decisions to accept, reject, or continue testing are made at every point of cumulative test time, aiming to minimize test duration. A graph of sequential tests shows three regions: accept compliance, reject compliance, or continue testing. These regions are defined by m0 (acceptable MTBF), m1 (rejectable MTBF), and the risks a and b from a predetermined OC curve for MTBF, or failure rates (l0, l1).
+To prevent indefinite testing, rules are in place to end the test after a certain time or number of failures if no decision is reached. This is known as a truncated sequential test. A sequential test plan from IEC standard 61124, with risks of 0.10 and a discrimination ratio of 3, can reach an accept/reject decision with less cumulative test time than fixed-time plans.
+ 
+ 
+Product Reliability Acceptance Testing (PRAT) ensures that the design reliability is maintained during production. Conducted on production units, PRAT helps detect process shifts that could affect product reliability, and is used to accept or reject production lots based on specified reliability requirements.
+ 
+ 
+Stress screening is a final test applied to production units before release to detect early-life failures. Burn-in testing helps reduce these failures by accumulating use time, while environmental stress screening (ESS) applies stress to accelerate weak unit failures without damaging acceptable ones. Highly accelerated stress screening (HASS) ensures the product exceeds environmental requirements and detects process shifts, not ongoing issues. HASS is used after HALT testing and requires a capable process with quality control measures. Once process stability is proven, HASS can be replaced by a highly accelerated stress audit (HASA), which reduces costs but may allow some failures to reach customers.
+ 
+ 
+Attribute testing classifies results as success/failure, acceptable/unacceptable, or conforming/nonconforming, often for one-shot items like sensors or igniters. In some cases, continuous variables like time may be recorded as attributes. The binomial distribution is commonly used to estimate reliability in these tests, assuming a constant probability of success. For a test with n units and r failures, the reliability estimate is ^R = (n - r) / n. A confidence limit can be applied using the F distribution: 
+R_L = (n - r) / [(n - r) + (r + 1) * F_{alpha, 2(r+1), 2(n-r)}]
+This uses F values based on degrees of freedom from the F-distribution. Normal distribution approximations may also be used, with confidence graphs available in reliability handbooks.
+ 
+ 
+In a zero-failure test, a point estimate of reliability cannot be made. However, a lower confidence limit can be calculated. For n units with zero failures at a confidence level C, the lower confidence limit RL is:
+RL = (1 - C)^(1/n).
+This can be simplified to:
+RL = a^(1/n),
+where "a" represents the significance of the test. To determine the required number of units to test without failure to achieve a specified reliability (RL) at a given confidence level, the equation is:
+n = log(a) / log(RL).
+ 
+ 
+In solid-state electronics, failure rates rise with temperature. To accelerate testing, heat is added to speed up degradation, effectively increasing the test time. The Arrhenius model is commonly used to determine the equivalent test time based on the increased temperature.
+
+
+Software testing ensures minimal embedded faults before release. The primary goal is to identify and eliminate faults through testing, as many errors stem from poor specification understanding. Testing during development reduces the likelihood of further errors, but complete error-free software is difficult to achieve. The most thorough testing programs typically remove about 95% of faults.
+Black-box testing evaluates software against its specifications, focusing on inputs and outputs. It’s performed in the operating environment, and should be done as programs are written and integrated. White-box testing, by contrast, involves internal function testing, often by the programmers themselves.
+Post-release errors may be discovered by customers, often in unanticipated scenarios. Beta testing can help identify faults before release. Operational profile testing examines the software under typical usage conditions, with remaining faults being harder to detect. Software reliability after release can be modeled with the exponential distribution, assuming a constant fault rate.
+
