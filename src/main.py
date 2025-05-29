@@ -7,8 +7,8 @@ from transformers import BitsAndBytesConfig
 
 # Custom imports.
 from helpers.reproducibility import set_random_seeds
-import model
-import prompter
+import core.model as model
+import core.prompter as prompter
 import benchmarker
 
 # Reproducibility.
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
         # check if benchmark is already calculated for model and skip if neccessary
         std_name = model_name.replace('/',"")
-        if os.path.isfile(f"./experiment_results/results_{std_name}.json"):
+        if os.path.isfile(f"./generated_data/experiment_results/results_{std_name}.json"):
             print(f"{model_name}'s benchmark has already been calculated")
             #continue
 

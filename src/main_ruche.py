@@ -6,16 +6,15 @@ from transformers import BitsAndBytesConfig
 
 # Custom imports.
 from helpers.reproducibility import set_random_seeds
-import model
-import prompter
-import benchmarker
+import core.model as model
+import core.prompter as prompter
+import benchmarking.benchmarker as benchmarker
 
-from taskmanagement import SlurmTask
+from utils.taskmanagement import SlurmTask
 
 # Reproducibility.
-set_random_seeds()
+# set_random_seeds()
 # login ('YOUR_TOKEN_HERE') # Only for models that you need access for (e.g LLama)
-
 
 
 cache_dir = "/gpfs/workdir/baudoinso/.cache/huggingface"
@@ -30,7 +29,7 @@ def benchmark(model_name : str) -> None:
 
     
     # # We call the prompter over the model, save the completions in a file
-    completion_file = f'./data_set/json/completions_{model_name.replace("/", "")}.json'
+    completion_file = f'./experiment_completions/completions_{model_name.replace("/", "")}.json'
     if os.path.isfile(completion_file):
         print(f"Completion file {completion_file} already exists. Skipping generation.")
     else:
@@ -68,6 +67,7 @@ def benchmark(model_name : str) -> None:
             batch=False, # True,
             n=10,
             # batch_size=256,
+            stream=True,
             )
         # We clear memory 
         del prompteur
@@ -94,22 +94,19 @@ if __name__ == "__main__":
     IN_RUCHE = "/gpfs/" in str(os.getcwd())
     if not IN_RUCHE:
         raise Exception("You are not in ruche...") 
-     
+
     # A list of the models that will be benchmarked
     models_list = [
-        # "facebook/MobileLLM-125M",
-        # "facebook/MobileLLM-1B",
-        # "croissantllm/CroissantLLMBase",
-        # "Qwen/Qwen2.5-Coder-7B-Instruct",
-        # "mistralai/Ministral-8B-Instruct-2410",
-        # "meta-llama/Llama-Guard-3-8B",
-        "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
-        # "princeton-nlp/gemma-2-9b-it-SimPO",
-        # "google/gemma-2-9b-it",
-        # "microsoft/Orca-2-13b"
-        # "google/gemma-2-27b-it",
-        "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
-        # "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "croissantllm/CroissantLLMBase",
+        #"Qwen/Qwen2.5-Coder-7B-Instruct",
+        #"mistralai/Ministral-8B-Instruct-2410",
+        #"meta-llama/Llama-Guard-3-8B",  # (1)
+        #"deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+        #"princeton-nlp/gemma-2-9b-it-SimPO",
+        #"google/gemma-2-9b-it",
+        #"microsoft/Orca-2-13b" "google/gemma-2-27b-it",
+        #"deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        #"Qwen/Qwen2.5-Coder-32B-Instruct",  # (2)
         # "nvidia/Llama-3.1-Nemotron-70B-Reward-HF",
         # "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
         # "mistralai/Mistral-Large-Instruct-2407",
@@ -120,6 +117,6 @@ if __name__ == "__main__":
     # We iterate over all the models
     for model_name in models_list:
         SlurmTask(task=lambda : benchmark(model_name), 
-                  check_execution=lambda : os.path.isfile(f"./experiment_results/results_{model_name.replace("/", "")}.json"),
+                  check_execution=lambda : os.path.isfile(f"./generated_data/experiment_results/results_{model_name.replace("/", "")}.json"),
                   name=f'benchmark{model_name}',
                   ).execute()
