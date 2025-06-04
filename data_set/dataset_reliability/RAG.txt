@@ -1,0 +1,971 @@
+# Reliability Function
+- Definition: The reliability function, denoted by \( R(t) \), represents the probability that a system will perform its intended function without failure up to a specific time \( t \). 
+ 
+ It is a measure of the likelihood that a system will survive or operate without failure during a given period.
+ 
+- Also known as: Survival function
+ 
+- How to calculate:
+ 1. **Basic Formula**:
+    \[
+    R(t) = P(T > t)
+    \]
+    - \( R(t) \): Reliability function, the probability that the system survives beyond time \( t \).
+    - \( T \): Random variable representing the failure time.
+    - \( t \): Specific time at which reliability is being evaluated.
+ 
+    Alternatively, \( R(t) \) can be derived using the probability density function (PDF), \( f(t) \), as:
+    \[
+    R(t) = 1 - F(t) = \int_t^\infty f(x) \, dx
+    \]
+    - \( F(t) \): Cumulative distribution function (CDF) of \( T \).
+    - \( f(t) \): Probability density function of \( T \).
+    - This integral computes the area under the PDF curve from \( t \) to infinity, representing the probability of survival beyond \( t \).
+ 
+ 2. **For Exponentially Distributed Failure Times**:
+    \[
+    R(t) = e^{-\lambda t}
+    \]
+    - \( \lambda \): Failure rate (a constant for exponential distribution).
+    - \( t \): Time at which reliability is evaluated.
+    - This model assumes a constant failure rate.
+ 
+ 3. **For Weibull Distribution**:
+    \[
+    R(t) = e^{-(t/\eta)^\beta}
+    \]
+    - \( \eta \): Scale parameter, indicating the characteristic life.
+    - \( \beta \): Shape parameter, determining failure rate behavior (e.g., increasing, constant, or decreasing).
+    - \( t \): Time at which reliability is being calculated.
+ 
+ 4. **For Lognormal Distribution**:
+    \[
+    R(t) = 1 - \Phi \left( \frac{\ln(t) - \mu}{\sigma} \right)
+    \]
+    - \( \mu \): Mean of the logarithm of the failure time.
+    - \( \sigma \): Standard deviation of the logarithm of the failure time.
+    - \( t \): Time at which reliability is evaluated.
+    - \( \Phi \): Cumulative distribution function of the standard normal distribution.
+ 
+
+# Probability Density Function (of Lifetime)
+- Definition: The probability density function (PDF) of lifetime, denoted by \( f(t) \), describes the likelihood of a system failing at a specific time \( t \). It provides the rate of failure occurrences per unit of time.
+ 
+ The PDF is a non-negative function that integrates to 1 over the entire range of possible lifetimes.
+ 
+**Key Interpretation:**For a small time interval \( \delta t \), the product \( f(t) \, \delta t \) approximates the probability that the failure occurs in the interval \( (t, t + \delta t) \).
+ 
+- Also known as: Failure rate density function (context-dependent).
+ 
+- How to calculate:
+ 1. **Basic Formula**:
+    The PDF is typically derived as the derivative of the cumulative distribution function (CDF), \( F(t) \):
+    \[
+    f(t) = \frac{d}{dt} F(t)
+    \]
+    - \( f(t) \): Probability density function, representing the likelihood of failure at time \( t \).
+    - \( F(t) \): Cumulative distribution function, representing the probability that the system fails by time \( t \).
+ 
+    Alternatively, it can be expressed in terms of the reliability function \( R(t) \):
+    \[
+    f(t) = -\frac{d}{dt} R(t)
+    \]
+    - \( R(t) \): Reliability function, representing the probability of survival beyond time \( t \).
+ 
+ 2. **For Exponentially Distributed Lifetimes**:
+    \[
+    f(t) = \lambda e^{-\lambda t}
+    \]
+    - \( \lambda \): Failure rate, a constant for the exponential distribution.
+    - \( t \): Time at which the PDF is evaluated.
+ 
+ 3. **For Weibull Distribution**:
+    \[
+    f(t) = \frac{\beta}{\eta} \left( \frac{t}{\eta} \right)^{\beta - 1} e^{-(t/\eta)^\beta}
+    \]
+    - \( \beta \): Shape parameter, determining the failure rate behavior.
+    - \( \eta \): Scale parameter, indicating the characteristic life.
+    - \( t \): Time at which the PDF is calculated.
+ 
+ 4. **For Lognormal Distribution**:
+    \[
+    f(t) = \frac{1}{t \sigma \sqrt{2\pi}} e^{-\frac{(\ln t - \mu)^2}{2\sigma^2}}
+    \]
+    - \( \mu \): Mean of the logarithm of the failure time.
+    - \( \sigma \): Standard deviation of the logarithm of the failure time.
+    - \( t \): Time at which the PDF is evaluated.
+ 
+- Special cases:
+ - **Uniform Distribution**: For systems with a constant probability of failure within a given interval, the PDF is constant within that interval.
+ - **Delta Function**: For deterministic lifetimes (e.g., guaranteed failure at a specific time), the PDF becomes a delta function centered at that time.
+ 
+
+# Cumulative Distribution Function (of Lifetime Distribution)
+- Definition: The cumulative distribution function (CDF) of a lifetime distribution, denoted by \( F(t) \), represents the probability that a system will fail by a specific time \( t \). It provides a cumulative measure of the likelihood of failure up to time \( t \).
+ 
+ The CDF is a non-decreasing function defined over time, ranging from 0 at \( t = 0 \) to 1 as \( t \to \infty \).
+ 
+- Also known as: CDF
+ 
+- How to calculate:
+ 1. **Basic Formula**:
+    The CDF is the integral of the probability density function (PDF), \( f(t) \), from 0 to \( t \):
+    \[
+    F(t) = \int_0^t f(x) \, dx
+    \]
+    - \( F(t) \): Cumulative distribution function, the probability of failure by time \( t \).
+    - \( f(t) \): Probability density function, the rate of failures at a specific time.
+    - \( x \): Dummy variable of integration.
+ 
+    Alternatively, the CDF can be expressed in terms of the reliability function \( R(t) \):
+    \[
+    F(t) = 1 - R(t)
+    \]
+    - \( R(t) \): Reliability function, representing the probability of survival beyond time \( t \).
+ 
+ 2. **For Exponentially Distributed Lifetimes**:
+    \[
+    F(t) = 1 - e^{-\lambda t}
+    \]
+    - \( \lambda \): Failure rate, a constant for the exponential distribution.
+    - \( t \): Time at which the CDF is evaluated.
+ 
+ 3. **For Weibull Distribution**:
+    \[
+    F(t) = 1 - e^{-(t/\eta)^\beta}
+    \]
+    - \( \beta \): Shape parameter, determining the failure rate behavior.
+    - \( \eta \): Scale parameter, indicating the characteristic life.
+    - \( t \): Time at which the CDF is calculated.
+ 
+ 4. **For Lognormal Distribution**:
+    \[
+    F(t) = \Phi \left( \frac{\ln t - \mu}{\sigma} \right)
+    \]
+    - \( \mu \): Mean of the logarithm of the failure time.
+    - \( \sigma \): Standard deviation of the logarithm of the failure time.
+    - \( t \): Time at which the CDF is evaluated.
+    - \( \Phi \): Cumulative distribution function of the standard normal distribution.
+ 
+##Practical Interpretation:-F(t) gives the probability that a component will fail before or at time t
+
+-The derivative of F(t) gives the probability density function: f(t) = dF(t)/dt
+ 
+ 
+ 
+# Failure Rate
+- Definition: The failure rate, denoted by \( \lambda(t) \), represents the instantaneous rate of failure at a specific time \( t \), given that the system has survived up to that time. It is a measure of the frequency of failure occurrences per unit of time.
+ 
+ Mathematically, the failure rate is defined as the ratio of the probability density function (PDF) to the reliability function \( R(t) \):
+ \[
+ \lambda(t) = \frac{f(t)}{R(t)}
+ \]
+ where \( f(t) \) is the probability density function, and \( R(t) \) is the reliability function.
+ 
+- Also known as: Hazard rate
+ 
+- How to calculate:
+ 1. **Basic Formula**:
+    From the definition:
+    \[
+    \lambda(t) = \frac{f(t)}{R(t)} = \frac{f(t)}{1 - F(t)}
+    \]
+    - \( \lambda(t) \): Failure rate, the rate of failure at time \( t \).
+    - \( f(t) \): Probability density function, representing the likelihood of failure at time \( t \).
+    - \( F(t) \): Cumulative distribution function, representing the probability of failure by time \( t \).
+    - \( R(t) \): Reliability function, representing the probability of survival beyond time \( t \).
+ 
+From Reliability Function:
+\[
+\lambda(t) = -\frac{d}{dt} \ln R(t)
+\]
+ 
+Key properties:
+Interpretation: h(t)Δt ≈ probability of failure in (t, t+Δt) given survival up to t
+Relationship to Reliability Function:
+  \[
+  R(t) = \exp\left( -\int_0^t \lambda(u) du \right)
+  \]
+ 
+ 
+ 
+ 2. **For Exponentially Distributed Lifetimes**:
+    \[
+    \lambda(t) = \lambda
+    \]
+    - \( \lambda \): Constant failure rate, characteristic of the exponential distribution.
+ 
+ 3. **For Weibull Distribution**:
+    \[
+    \lambda(t) = \frac{\beta}{\eta} \left( \frac{t}{\eta} \right)^{\beta - 1}
+    \]
+    - \( \beta \): Shape parameter, determining the failure rate behavior (e.g., increasing, constant, or decreasing).
+    - \( \eta \): Scale parameter, indicating the characteristic life.
+    - \( t \): Time at which the failure rate is calculated.
+ 
+ 4. **For Lognormal Distribution**:
+    The failure rate does not have a simple closed-form expression but can be calculated using the PDF \( f(t) \) and CDF \( F(t) \):
+    \[
+    \lambda(t) = \frac{f(t)}{1 - F(t)}
+    \]
+ 
+#Mean Time To Failure (MTTF)
+##Definition:The Mean Time To Failure (MTTF) represents the expected time until a non-repairable system or component fails for the first time. It is a fundamental reliability metric that provides the average lifetime of components that are not repaired after failure.
+##Also known as:-Mean lifetime
+
+-Expected lifetime
+
+-Mean operating time to failure
+##How to calculate:###1. From Probability Density Function (PDF):\[
+
+MTTF = \int_{0}^{\infty} t \cdot f(t) \, dt
+
+\]
+
+where:
+
+-\( f(t) \): Probability density function of the lifetime distribution
+
+-\( t \): Time variable
+###2. From Reliability Function:\[
+
+MTTF = \int_{0}^{\infty} R(t) \, dt
+
+\]
+
+where \( R(t) \) is the reliability function (probability of survival beyond time t)
+###3. For Exponential Distribution:\[
+
+MTTF = \frac{1}{\lambda}
+
+\]
+
+where \( \lambda \) is the constant failure rate
+###4. For Weibull Distribution:\[
+
+MTTF = \eta \cdot \Gamma\left(1 + \frac{1}{\beta}\right)
+
+\]
+
+where:
+
+-\( \eta \): Scale parameter (characteristic life)
+
+-\( \beta \): Shape parameter
+
+-\( \Gamma \): Gamma function
+###5. For Normal Distribution:\[
+
+MTTF = \mu
+
+\]
+
+where \( \mu \) is the mean of the normal distribution
+##Key Properties:1.Units: Typically measured in hours, cycles, or other time/usage units
+
+2.Applicability: Only for non-repairable systems (for repairable systems, use MTBF)
+
+3.Relationship to failure rate:
+
+   -For constant failure rate: \( MTTF = \frac{1}{\lambda} \)
+
+4.Always exists when \( \int_{0}^{\infty} R(t) \, dt \) is finite
+##Practical Interpretation:-Represents the average time you can expect a component to work before failing
+
+-For a population of components, about 63.2% will fail by the MTTF time when failure rate is constant
+ 
+<https://chat.deepseek.com/a/chat/s/aa3f48c6-3622-4eb0-b884-e50e9ecd7bb2> 
+DeepSeek
+Chat with DeepSeek AI.
+ 
+
+# Mean Residual Life (MRL)
+ 
+## Definition:
+The Mean Residual Life (MRL) function represents the expected remaining lifetime of a system or component that has survived up to a specific time t. It is a crucial reliability metric that helps predict how much longer an operational asset is likely to function before failure.
+ 
+## Also known as:
+- Remaining life expectancy
+- Residual life function
+- Mean remaining lifetime
+ 
+## How to calculate:
+ 
+### 1. General Definition:
+\[
+m(t) = E[T - t | T > t] = \frac{\int_{t}^{\infty} R(u) \, du}{R(t)}
+\]
+where:
+- \( m(t) \): Mean residual life at time t
+- \( T \): Random variable representing lifetime
+- \( R(t) \): Reliability function (probability of survival beyond time t)
+ 
+### 2. For Exponential Distribution (constant failure rate):
+\[
+m(t) = \frac{1}{\lambda}
+\]
+where \( \lambda \) is the constant failure rate
+ 
+### 3. For Weibull Distribution:
+\[
+m(t) = \frac{\int_{t}^{\infty} e^{-\left(\frac{u}{\eta}\right)^\beta} \, du}{e^{-\left(\frac{t}{\eta}\right)^\beta}}
+\]
+where:
+- \( \beta \): Shape parameter
+- \( \eta \): Scale parameter
+ 
+### 4. Relationship with Hazard Rate:
+\[
+m(t) = \frac{1 + \int_{t}^{\infty} [h(u) - h(t)] m(u) h(u) e^{-\int_{t}^{u} h(v) dv} \, du}{h(t)}
+\]
+where \( h(t) \) is the hazard rate function
+ 
+## Relationship to Other Reliability Metrics:
+1. When t = 0, MRL equals MTTF
+2. For exponential distribution, MRL is constant and equals MTTF at all times
+3. The derivative of MRL relates to the hazard rate:
+  \[
+  h(t) = \frac{1 + m'(t)}{m(t)}
+  \]
+
+# Percentile Life (B-percentile Life)
+ 
+## Definition:
+The percentile life (tₚ) is the time by which a specified percentage (p) of a population will have failed. It is a key reliability metric that provides a more comprehensive understanding of failure distribution than mean time metrics alone.
+ 
+## Also known as:
+- B-percentile life (e.g., B10 life)
+- Reliability life
+- Failure percentile
+- Quantile life
+ 
+## How to calculate:
+ 
+### 1. General Definition:
+\[
+F(t_p) = p \quad \text{or equivalently} \quad R(t_p) = 1 - p
+\]
+where:
+- \( t_p \): p-th percentile life (time at which p% have failed)
+- \( F(t) \): Cumulative Distribution Function (CDF)
+- \( R(t) \): Reliability Function
+ 
+### 2. For Exponential Distribution:
+\[
+t_p = -\frac{\ln(1 - p)}{\lambda}
+\]
+where:
+- \( \lambda \): Constant failure rate
+- \( p \): Failure probability (e.g., 0.10 for B10 life)
+ 
+### 3. For Weibull Distribution:
+\[
+t_p = \eta \left[ -\ln(1 - p) \right]^{1/\beta}
+\]
+where:
+- \( \eta \): Scale parameter (characteristic life)
+- \( \beta \): Shape parameter
+ 
+### 4. For Normal Distribution:
+\[
+t_p = \mu + \sigma \cdot \Phi^{-1}(p)
+\]
+where:
+- \( \mu \): Mean life
+- \( \sigma \): Standard deviation
+- \( \Phi^{-1} \): Inverse standard normal CDF
+ 
+## Common Percentile Life Metrics:
+| Notation | Interpretation | Typical Use Case |
+|----------|----------------|------------------|
+| B10 life | Time when 10% fail | Bearing life rating |
+| B50 life | Median life (50% fail) | Product benchmarking |
+| B1 life  | Time when 1% fail | High-reliability systems |
+ 
+## Key Properties:
+1. Non-parametric: Can be determined without assuming a specific distribution
+2. Robustness: Less sensitive to outliers than mean life metrics
+3. Interpretation: Directly relates to population failure percentages
+4. Distribution Shape Sensitivity:
+  - For positively skewed distributions: tₚ < MTTF when p < 0.5
+  - For symmetric distributions: tₚ ≈ MTTF when p = 0.5
+  - For negatively skewed distributions: tₚ > MTTF when p < 0.5
+ 
+## Example Calculation:
+For a Weibull distribution with η = 1000 hours, β = 2.5:
+1. B10 life (p = 0.10):
+  \[
+  t_{0.10} = 1000 \cdot \left[ -\ln(0.9) \right]^{1/2.5} ≈ 1000 \cdot 0.1054^{0.4} ≈ 457 \text{ hours}
+  \]
+2. B50 life (p = 0.50):
+  \[
+  t_{0.50} = 1000 \cdot \left[ -\ln(0.5) \right]^{1/2.5} ≈ 1000 \cdot 0.6931^{0.4} ≈ 874 \text{ hours}
+  \]
+ 
+## Relationship to Other Metrics:
+1. **MTTF**: B50 life equals MTTF for symmetric distributions
+3. **Reliability Function**: Directly related through \( R(t_p) = 1 - p \)
+ 
+## Industry Standards:
+1. **Bearings**: ISO 281 specifies B10 life (L₁₀) as standard rating
+2. **Automotive**: Often uses B10 life for critical components
+3. **Aerospace**: Frequently uses B1 or B0.1 life for safety-critical parts
+ 
+# Log-Likelihood Function (for Lifetime Data)
+ 
+## Definition:
+The log-likelihood function measures how well a statistical model explains observed lifetime data, including complete and censored observations. It is the natural logarithm of the likelihood function, used for parameter estimation in reliability models.
+ 
+## Key Components:
+1. **For complete (uncensored) observations**:
+  \[
+  \ln L_i = \ln f(t_i; \theta)
+  \]
+  where \(f(t_i; \theta)\) is the PDF evaluated at failure time \(t_i\) with parameters \(\theta\)
+ 
+2. **For right-censored observations** (survived beyond \(t_i\)):
+  \[
+  \ln L_i = \ln R(t_i; \theta)
+  \]
+  where \(R(t_i; \theta)\) is the reliability function
+ 
+3. **For left-censored observations** (failed before \(t_i\)):
+  \[
+  \ln L_i = \ln F(t_i; \theta)
+  \]
+  where \(F(t_i; \theta)\) is the CDF
+ 
+4. **For interval-censored observations** (failed between \(t_{i,L}\) and \(t_{i,R}\)):
+  \[
+  \ln L_i = \ln \left[ F(t_{i,R}; \theta) - F(t_{i,L}; \theta) \right]
+  \]
+ 
+## Censoring Types in Reliability Engineering:
+ 
+### 1. Right Censoring (Type I)
+- **Definition**: Observation ends before failure occurs
+- **Examples**:
+ - Test terminated at fixed time
+ - Component still working at end of study
+- **Contribution to likelihood**: Reliability function \(R(t)\)
+ 
+### 2. Left Censoring
+- **Definition**: Failure occurred before observation began
+- **Examples**:
+ - Component already failed at first inspection
+ - Failure time unknown but before first measurement
+- **Contribution to likelihood**: CDF \(F(t)\)
+ 
+### 3. Interval Censoring
+- **Definition**: Failure occurs between two observation points
+- **Examples**:
+ - Component working at inspection time \(t_1\) but failed at \(t_2\)
+ - Periodic condition monitoring
+- **Contribution to likelihood**: \(F(t_2) - F(t_1)\)
+ 
+## Complete Log-Likelihood Function:
+\[
+\ln L(\theta) = \sum_{i \in \text{uncensored}} \ln f(t_i; \theta)
++ \sum_{i \in \text{right-censored}} \ln R(t_i; \theta)
++ \sum_{i \in \text{left-censored}} \ln F(t_i; \theta)
++ \sum_{i \in \text{interval-censored}} \ln [F(t_{i,R}; \theta) - F(t_{i,L}; \theta)]
+\]
+ 
+## Example (Weibull Distribution):
+For Weibull(\(\eta,\beta\)) with:
+- 3 failures at {120, 250, 300} hours
+- 2 right-censored at 400 hours
+- 1 interval-censored in [200,300] hours
+ 
+\[
+\ln L = \sum_{i=1}^3 \left[ \ln(\beta) - \beta\ln(\eta) + (\beta-1)\ln(t_i) - \left(\frac{t_i}{\eta}\right)^\beta \right]
++ 2 \times -\left(\frac{400}{\eta}\right)^\beta
++ \ln \left[ e^{-(200/\eta)^\beta} - e^{-(300/\eta)^\beta} \right]
+\]
+ 
+## Applications:
+1. Parameter estimation (MLE)
+2. Model selection/comparison (AIC/BIC)
+3. Reliability curve fitting
+4. Accelerated life testing analysis
+ 
+## Advantages:
+- Handles all censoring types simultaneously
+- Provides statistically efficient estimates
+- Enables comparison of different distributions
+ 
+## Computational Notes:
+1. Numerical optimization often required
+2. Right-censored data most common in reliability
+3. Interval censoring provides more information than right censoring alone
+4. Left censoring rare in controlled tests but common in field data
+ 
+# Maximum Likelihood Estimation (MLE)
+ 
+## Definition:
+Maximum Likelihood Estimation is a statistical method for estimating parameters of a probability distribution by maximizing the likelihood function, making the observed data most probable under the assumed model. It is the most widely used parameter estimation method in reliability engineering.
+ 
+## Also known as:
+- ML estimation
+- Likelihood maximization
+- Fisher's maximum likelihood method
+ 
+## Implementation:
+ 
+### Step 1: Define the Likelihood Function
+1. For complete (uncensored) data:
+  \[
+  L(\theta) = \prod_{i=1}^n f(t_i; \theta)
+  \]
+  where \(f(t_i; \theta)\) is the PDF evaluated at observation \(t_i\) with parameters \(\theta\)
+ 
+2. For censored data (mixed):
+  \[
+  L(\theta) = \prod_{\text{uncensored}} f(t_i; \theta) \times \prod_{\text{right-censored}} R(t_i; \theta) \times \prod_{\text{left-censored}} F(t_i; \theta)
+  \]
+ 
+### Step 2: Form the Log-Likelihood
+Convert to log form for numerical stability:
+\[
+\ln L(\theta) = \sum_{i=1}^n \ln f(t_i; \theta) \quad \text{(for complete data)}
+\]
+For censored data, use the appropriate terms from each observation type.
+ 
+### Step 3: Derive the Score Function
+Calculate first derivatives of \(\ln L(\theta)\) with respect to each parameter:
+\[
+\frac{\partial \ln L(\theta)}{\partial \theta} = 0
+\]
+ 
+### Step 4: Solve the Optimization Problem
+Find \(\hat{\theta}\) that maximizes \(\ln L(\theta)\):
+1. **Analytical Solution** (when possible):
+  Solve the score equations directly
+  Example: For exponential distribution, \(\hat{\lambda} = n/\sum t_i\)
+ 
+2. **Numerical Methods** (most cases):
+  ```python
+  from scipy.optimize import minimize
+ 
+  def neg_log_likelihood(params, data):
+      # params: vector of parameters to estimate
+      # data: observed failure times (including censored)
+      # Return negative log-likelihood for minimization
+      ...
+  
+  result = minimize(neg_log_likelihood, 
+                   x0=initial_guess, 
+                   args=(data,),
+                   method='BFGS')
+ 
+ 
+# Kaplan-Meier Estimator
+ 
+## Definition:
+The Kaplan-Meier estimator is a non-parametric statistic used to estimate the survival function from lifetime data, particularly in the presence of censored observations. It provides a step-function representation of the survival probability over time.
+ 
+## Also known as:
+- Product-limit estimator
+- KM estimator
+- Survival function estimator
+ 
+## Implementation:
+ 
+### Step 1: Prepare the Data
+1. Organize observed times in ascending order: 
+  `t₁ ≤ t₂ ≤ ... ≤ tₙ`
+2. Mark each observation as either:
+  - Event (failure/died) or
+  - Censored (still alive at last follow-up)
+ 
+### Step 2: Calculate at Each Time Point
+For each distinct event time tᵢ:
+1. Compute:
+  - nᵢ = Number at risk just before tᵢ
+    (includes those who haven't failed or been censored yet)
+  - dᵢ = Number of events (failures) at tᵢ
+ 
+2. Calculate survival probability increment:
+  \[
+  S(t_i) = S(t_{i-1}) \times \left(1 - \frac{d_i}{n_i}\right)
+  \]
+ 
+### Step 3: Build the Survival Curve
+1. Initialize S(0) = 1 (100% survival at time 0)
+2. For each event time tᵢ:
+  - Multiply previous survival by (1 - dᵢ/nᵢ)
+3. For censored times:
+  - No change in survival estimate
+  - Mark as a vertical tick on the curve
+ 
+### Step 4: Variance Estimation (Greenwood's Formula)
+\[
+\hat{Var}[\hat{S}(t)] = [\hat{S}(t)]^2 \sum_{t_i ≤ t} \frac{d_i}{n_i(n_i - d_i)}
+\]
+ 
+### Example Calculation:
+| Time (tᵢ) | Status (1=event) | nᵢ | dᵢ | Survival S(tᵢ) |
+|-----------|------------------|----|----|----------------|
+| 2         | 1                | 10 | 1  | 1×(1-1/10)=0.9  |
+| 5         | 1                | 9  | 1  | 0.9×(1-1/9)=0.8 |
+| 6         | 0 (censored)      | 8 | 0  | 0.8            |
+| 8         | 1                | 7  | 1  | 0.8×(1-1/7)≈0.69|
+ 
+### Python Implementation:
+```python
+from lifelines import KaplanMeierFitter
+ 
+# Sample data: time and event_observed (1=event, 0=censored)
+kmf = KaplanMeierFitter()
+kmf.fit(durations=[2,5,6,8],
+       event_observed=[1,1,0,1])
+ 
+kmf.plot_survival_function()
+print(kmf.survival_function_)
+
+# Bayesian Updating
+ 
+## Definition:
+Bayesian updating is a statistical method that combines prior knowledge about parameters with observed data to produce posterior distributions, enabling sequential refinement of beliefs as new evidence becomes available.
+ 
+## Also known as:
+- Bayesian inference
+- Posterior updating
+- Bayes' rule application
+ 
+## Implementation:
+ 
+### Step 1: Specify the Conjugate Prior
+Choose a prior distribution that combines analytically with your likelihood:
+\[
+p(\theta) \sim \text{ConjugatePrior}(\alpha_0, \beta_0)
+\]
+where \(\alpha_0, \beta_0\) are hyperparameters
+ 
+### Step 2: Define the Likelihood Function
+Formulate the probability of observing data \(D\) given parameter \(\theta\):
+\[
+p(D|\theta) = \prod_{i=1}^n \text{Dist}(x_i|\theta)
+\]
+ 
+### Step 3: Compute Closed-Form Posterior
+Update hyperparameters directly:
+\[
+p(\theta|D) \sim \text{ConjugatePrior}(\alpha_n, \beta_n)
+\]
+where:
+\[
+\alpha_n = \alpha_0 + \text{data\_count}
+\]
+\[
+\beta_n = \beta_0 + \text{data\_sum}
+\]
+ 
+### Example (Exponential Failure Times):
+**Scenario**: Estimate failure rate \(\lambda\) of components
+ 
+1. **Prior**: Gamma distribution (conjugate for exponential)
+  \[
+  \lambda \sim \text{Gamma}(\alpha_0=2, \beta_0=100\,\text{hrs})
+  \]
+  (Equivalent to observing 2 failures in 100 hours)
+ 
+2. **Observed Data**:
+  - 5 failures
+  - Total operating time = 300 hours
+ 
+3. **Posterior Update**:
+  \[
+  \alpha_n = 2 + 5 = 7
+  \]
+  \[
+  \beta_n = 100 + 300 = 400\,\text{hrs}
+  \]
+  \[
+  \lambda|D \sim \text{Gamma}(7, 400)
+  \]
+ 
+4. **Results**:
+  - Posterior mean: \(E[\lambda|D] = 7/400 = 0.0175\) failures/hour
+  - 95% credible interval: `(0.0071, 0.0342)` (from Gamma quantiles)
+ 
+```python
+# Python verification
+from scipy.stats import gamma
+alpha_n, beta_n = 7, 400
+print(f"Mean: {alpha_n/beta_n:.4f} failures/hour")
+print(f"95% CI: ({gamma.ppf(0.025,alpha_n,scale=1/beta_n):.4f}, {gamma.ppf(0.975,alpha_n,scale=1/beta_n):.4f})")
+
+
+# Markov Chain Monte Carlo (MCMC)
+ 
+## Definition:
+MCMC is a class of computational algorithms that sample from probability distributions by constructing a Markov chain that has the desired distribution as its equilibrium distribution. It is particularly useful for Bayesian inference when closed-form solutions are unavailable.
+ 
+## Also known as:
+- Monte Carlo Markov Chain
+- Bayesian sampling methods
+- Stochastic simulation
+ 
+## Implementation:
+ 
+### Step 1: Define the Posterior Distribution
+Specify the unnormalized posterior density:
+\[
+p^*(\theta|D) \propto p(D|\theta) \times p(\theta)
+\]
+where:
+- \(p(D|\theta)\) is the likelihood
+- \(p(\theta)\) is the prior
+ 
+### Step 2: Choose an MCMC Algorithm
+Common variants:
+1. **Metropolis-Hastings**:
+  - Proposal distribution \(q(\theta^*|\theta^{(t-1)})\)
+  - Acceptance probability:
+    \[
+    \alpha = \min\left(1, \frac{p^*(\theta^*)q(\theta^{(t-1)}|\theta^*)}{p^*(\theta^{(t-1)})q(\theta^*|\theta^{(t-1)})}\right)
+    \]
+ 
+2. **Gibbs Sampling** (for conditional conjugacy):
+  Sample each parameter sequentially from its full conditional distribution:
+  \[
+  \theta_j^{(t)} \sim p(\theta_j|\theta_{-j}^{(t)}, D)
+  \]
+ 
+### Step 3: Run the Chain
+1. Initialize parameters \(\theta^{(0)}\)
+2. For \(t = 1\) to \(N\):
+  - Generate candidate \(\theta^*\)
+  - Compute acceptance probability \(\alpha\)
+  - Set \(\theta^{(t)} = \theta^*\) with probability \(\alpha\), else \(\theta^{(t)} = \theta^{(t-1)}\)
+ 
+### Step 4: Diagnostics
+1. **Convergence checks**:
+  - Trace plots
+  - R-hat statistic (target < 1.05)
+  - Effective sample size (ESS)
+2. **Burn-in removal**
+3. **Thinning** (if autocorrelation high)
+ 
+### Example (Weibull Reliability Analysis):
+Estimate shape (\(\beta\)) and scale (\(\eta\)) parameters:
+ 
+```python
+import pymc3 as pm
+ 
+with pm.Model():
+   # Priors
+   beta = pm.Gamma('beta', alpha=1, beta=1)
+   eta = pm.Uniform('eta', lower=0, upper=1000)
+  
+   # Likelihood
+   likelihood = pm.Weibull('likelihood', 
+                         alpha=beta, 
+                         beta=eta,
+                        observed=failure_data)
+  
+   # MCMC
+   trace = pm.sample(
+       draws=5000,
+       tune=2000,
+       chains=4,
+       target_accept=0.95
+   )
+  
+   pm.plot_trace(trace)
+   pm.summary(trace)
+ 
+ 
+# Expected Number of Renewals (of a Renewal Process)
+ 
+## Definition:
+The expected number of renewals, denoted as \( m(t) \), represents the average number of times a component or system will be replaced (renewed) up to time \( t \) in a renewal process. It is a fundamental quantity in reliability engineering for maintenance planning and spare parts provisioning.
+ 
+## Also known as:
+- Renewal function
+- Mean number of renewals
+- Cumulative hazard for recurrent events
+ 
+## How to calculate:
+ 
+### 1. Integral Equation (General Form):
+\[
+m(t) = F(t) + \int_0^t m(t - x) f(x) dx
+\]
+where:
+- \( F(t) \): Cumulative distribution function (CDF) of the failure time distribution
+- \( f(x) \): Probability density function (PDF) of the failure time distribution
+- \( t \): Total operating time period
+ 
+### 2. Laplace Transform Method:
+For any distribution, the renewal function can be found via:
+\[
+m^*(s) = \frac{F^*(s)}{1 - F^*(s)}
+\]
+where:
+- \( m^*(s) \): Laplace transform of \( m(t) \)
+- \( F^*(s) \): Laplace transform of \( F(t) \)
+ 
+### 3. Exact Solution for Exponential Distribution:
+\[
+m(t) = \lambda t
+\]
+where \( \lambda \) is the constant failure rate (inverse of mean time between failures)
+ 
+### 4. Approximate Solution for Large \( t \) (Elementary Renewal Theorem):
+\[
+m(t) \approx \frac{t}{\mu} + \frac{\sigma^2 - \mu^2}{2\mu^2}
+\]
+where:
+- \( \mu \): Mean time between failures (MTBF)
+- \( \sigma \): Standard deviation of time between failures
+ 
+### 5. Series Expansion for Weibull Distribution:
+For Weibull(\( \beta, \eta \)):
+\[
+m(t) = \sum_{k=1}^{\infty} F_k(t)
+\]
+where \( F_k(t) \) is the k-fold convolution of the Weibull CDF
+ 
+###6. n-Fold Convolution Method (Exact Solution):\[
+
+m(t) = \sum_{n=1}^\infty F_n(t)
+
+\]
+
+where:
+
+-\( F_n(t) \): n-fold convolution of the lifetime CDF \( F(t) \), calculated recursively as:
+
+  \[
+
+  F_n(t) = \int_0^t F_{n-1}(t-x) dF(x) \quad \text{with} \quad F_1(t) = F(t)
+
+  \]
+
+-Interpretation:
+
+  -\( F_1(t) \): Probability of 1+ renewals by \( t \)
+
+  -\( F_2(t) \): Probability of 2+ renewals by \( t \)
+
+  -\( F_n(t) \): Probability of n+ renewals by \( t \)
+**Practical Implementation**(Discretized Version):
+
+```python
+
+import numpy as np
+
+from scipy.integrate import quad
+def n_fold_convolution(t, F, n_max=10):
+
+    """Compute m(t) via n-fold convolution summation"""
+
+    if n_max < 1:
+
+        return 0
+
+    # Base case (n=1)
+
+    Fn = [F(t)]  # F_1(t) = F(t)    # Recursive cases (n=2 to n_max)
+
+    for n in range(2, n_max+1):
+
+        def integrand(x):
+
+            return Fn[-1](t - x) * F(x, deriv=True)  # F_{n-1}(t-x)*f(x)
+
+        Fn.append(lambda s: quad(integrand, 0, s)[0])    return sum(fn(t) for fn in Fn)
+ 
+## Practical Computation Methods:
+1. **Discretization Approach**:
+  \[
+  m(t_i) = F(t_i) + \sum_{j=1}^{i-1} m(t_{i-j}) [F(t_j) - F(t_{j-1})]
+  \]
+  for \( t_i = i\Delta t \) with small \( \Delta t \)
+ 
+2. **Monte Carlo Simulation**:
+  ```python
+  def simulate_renewals(t, failure_dist, n_sim=10000):
+      counts = np.zeros(n_sim)
+      for i in range(n_sim):
+          time = 0
+          while time < t:
+              time += failure_dist.rvs()
+              if time < t: counts[i] += 1
+      return np.mean(counts)
+# Expected Cost Rate (of a Renewal Process)
+ 
+## Definition:
+The expected cost rate represents the long-run average cost per unit time for a maintained system under a renewal process, where costs are incurred at each renewal event and possibly during operation.
+ 
+## Also known as:
+- Average cost rate
+- Cost rate function
+- Renewal-reward rate
+ 
+## How to calculate:
+ 
+### 1. Basic Renewal-Reward Theorem:
+\[
+\text{Expected Cost Rate} = \frac{\text{Expected Cost per Cycle}}{\text{Expected Cycle Length}} = \frac{E[C]}{E[T]}
+\]
+where:
+- \( E[C] \): Expected total cost per renewal cycle
+- \( E[T] \): Expected time between renewals (MTBF)
+ 
+### 2. Age Replacement Policy:
+For a system replaced at failure or age \( \tau \) (whichever comes first):
+\[
+\text{Cost Rate} = \frac{c_f F(\tau) + c_p R(\tau)}{\int_0^\tau R(t) dt}
+\]
+where:
+- \( c_f \): Cost of failure replacement
+- \( c_p \): Cost of preventive replacement (\( c_p < c_f \))
+- \( F(t) \): Lifetime CDF
+- \( R(t) \): Reliability function (\( =1-F(t) \))
+ 
+### 3. Block Replacement Policy:
+For periodic replacements at fixed intervals \( T \) with minimal repairs at failures:
+\[
+\text{Cost Rate} = \frac{c_p + c_f m(T)}{T}
+\]
+where:
+- \( m(T) \): Expected number of failures in \( (0,T] \)
+- \( c_p \): Planned replacement cost
+- \( c_f \): Minimal repair cost
+ 
+### 4. General Repair Model:
+\[
+\text{Cost Rate} = \frac{c_0 + \sum_{i=1}^N c_i}{E[\text{Cycle Length}]}
+\]
+where:
+- \( c_0 \): Fixed cost per renewal
+- \( c_i \): Variable costs associated with i-th event
+- \( N \): Random number of events per cycle
+ 
+### 5. Monte Carlo Estimation:
+```python
+def simulate_cost_rate(total_time, cost_function, failure_dist, n_sim=10000):
+   total_costs = 0
+   total_durations = 0
+  
+   for _ in range(n_sim):
+       time = 0
+       cost = 0
+       while time < total_time:
+           # Simulate time to next failure
+           tt_failure = failure_dist.rvs()
+           time += tt_failure
+           if time > total_time:
+               cost += cost_function(tt_failure, partial=True)
+               break
+           cost += cost_function(tt_failure)
+           total_durations += min(tt_failure, total_time - time)
+      
+       total_costs += cost
+  
+   return total_costs / total_durations
+ 
+ 
