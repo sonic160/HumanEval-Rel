@@ -67,6 +67,7 @@ current_model = AgenticModel(
     summarizer_model=main_model,
     selector_model=EmbeddingModel(embedding_name),
     use_rag=args.f,
+    rag_data_base_path='./data_set/dataset_reliability/RAG.txt'
     selection=args.s
 )
 
