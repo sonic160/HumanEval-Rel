@@ -122,22 +122,19 @@ class SandboxCodeRunner:
     
     
     def __execute(self, *code_and_context) -> bool:
-        try:
-            with multiprocessing.Pool(processes=1) as pool:
-                result = pool.apply_async(exec_with_context, [*code_and_context])
-                
-                try:
-                    test_result = result.get(timeout=TIMEOUT_SECONDS)
-                    return self.convert_to_bool(test_result)
-                
-                except multiprocessing.TimeoutError:
-                    if self.__timeout_warnings:
-                        print(bcolors.WARNING + "\nWARNING[SandboxCodeRunner]: TIMEOUT error (you may want to check the LLM's code)" + bcolors.ENDC)
-                        print("\ncode that timed out at execution:\n\n", *code_and_context, "\n\n\n")
-                    return False
-                
-        except Exception as e:
-            return False
+        with multiprocessing.Pool(processes=1) as pool:
+            result = pool.apply_async(exec_with_context, [*code_and_context])
+            
+            try:
+                test_result = result.get(timeout=TIMEOUT_SECONDS)
+                return self.convert_to_bool(test_result)
+            
+            except multiprocessing.TimeoutError:
+                if self.__timeout_warnings:
+                    print(bcolors.WARNING + "\nWARNING[SandboxCodeRunner]: TIMEOUT error (you may want to check the LLM's code)" + bcolors.ENDC)
+                    print("\ncode that timed out at execution:\n\n", *code_and_context, "\n\n\n")
+                return False
+
         
     
     
