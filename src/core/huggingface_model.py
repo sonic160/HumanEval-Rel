@@ -1,0 +1,231 @@
+from typing import Annotated
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
+import os
+
+from .model import Model
+
+class HuggingFace(Model):
+    # This class can be used to use an open source model that is available on the HuggingFace library
+    def __init__(
+            self,
+            model_name: str,
+            model_path: str,
+            quantization_config=None,
+            cache_dir=None
+        ):
+        """
+        Initializes the HuggingFace model with the given model name and path.
+
+        Args:
+            model_name (str): The name of the model.
+            model_path (str): The full path of the model on HuggingFace, e.g. croissantllm/CroissantLLMBase.
+            quantization_config (optional): A QuantizationConfig object to specify the quantization configuration if the model is too big for your computer. Defaults to None.
+        """
+        self.name = model_name
+        self.model_path = model_path
+        self.quantization_config = quantization_config
+        self.__cache_dir = cache_dir
+
+    def __str__(self):
+        return f"HuggingFace:{self.model_name}"
+
+    def model_init(self):
+        """
+        Initializes the model by loading the tokenizer and the model itself.
+
+        Parameters:
+        - cachedir (str): The directory path to cache the pretrained model and tokenizer. Defaults to None.
+
+        Returns:
+        - None
+        """
+        # We initialize the tokenizer
+        self.__tokenizer = AutoTokenizer.from_pretrained(
+            self.model_path, 
+            cache_dir=self.__cache_dir, 
+            use_fast=not (self.model_name in ("facebookMobileLLM-125M","facebookMobileLLM-1B")),# has pb with this particular model
+            trust_remote_code=True
+        )
+
+        
+        # Determine if CUDA is available
+        cuda_available = torch.cuda.is_available()
+        
+        # Prevent from using other users GPUs
+        #https://mesocentre.pages.centralesupelec.fr/user_doc/ruche/06_slurm_jobs_management/
+        # Check for SLURM GPU allocation
+        slurm_gpus = os.environ.get('SLURM_JOB_GPUS') or os.environ.get('SLURM_STEP_GPUS')
+        if cuda_available and slurm_gpus:
+            print(f"SLURM assigned GPUs: {slurm_gpus}")
+            # Use the SLURM assigned GPUs
+            # Note: depending on format of SLURM_JOB_GPUS, parsing might need adjustment
+            if ',' in slurm_gpus:
+                # Multiple GPUs case
+                gpu_ids = slurm_gpus.split(',')
+            elif '-' in slurm_gpus:
+                # Range format (e.g., "0-3")
+                start, end = map(int, slurm_gpus.split('-'))
+                gpu_ids = [str(i) for i in range(start, end + 1)]
+            else:
+                # Single GPU
+                gpu_ids = [slurm_gpus]
+                
+            # Set environment variable for PyTorch
+            os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(gpu_ids)
+            print(f"Set CUDA_VISIBLE_DEVICES to {os.environ['CUDA_VISIBLE_DEVICES']}")
+            device = torch.device('cuda')
+        else:
+            device = torch.device('cuda') if cuda_available else torch.device('cpu')
+        
+        if not cuda_available:
+            print("CUDA is not available. Using CPU.")
+        # We check if a quantization config was passed.
+        if device == torch.device('cuda'):
+            if self.quantization_config is None:
+                self.__model = AutoModelForCausalLM.from_pretrained(
+                self.model_path, 
+                cache_dir=self.__cache_dir,
+                device_map='auto',  
+                attn_implementation='flash_attention_2', 
+                torch_dtype=torch.float16,
+                trust_remote_code=True
+                )
+            else:
+                self.__model = AutoModelForCausalLM.from_pretrained(
+                self.model_path, 
+                cache_dir=self.__cache_dir,
+                device_map='auto',  
+                attn_implementation='flash_attention_2', 
+                torch_dtype=torch.float16,
+                quantization_config=self.quantization_config
+                ).to(device)
+        elif device == torch.device('cpu'):
+            self.__model = AutoModelForCausalLM.from_pretrained(
+                self.model_path, 
+                cache_dir=self.__cache_dir,
+                torch_dtype=torch.float16
+                ).to(device)
+        else:
+            raise Exception(f"Unexpected device: {device}")
+        #We the add padding tokens if none is defined
+        if self.__tokenizer.pad_token is None:
+            self.__tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+            self.__model.resize_token_embeddings(len(self.__tokenizer))
+
+    def generate(self, 
+                 prompt : str, 
+                 max_tokens : int =1000, 
+                 top_p : float =0.95, 
+                 top_k : int =60, 
+                 temperature : float=0.3,
+                 prompt_prefix : Annotated[str, "passed by the prompter"] ="",
+                 prompt_suffix : Annotated[str, "passed by the prompter"] ="",
+                 stream: bool =False) -> tuple[str, str]:
+        """This function is deprecated, we now use only the generate_batch method
+        
+        Args:
+            prompt (str): The prompt to generate code from.
+            max_tokens (int, optional): The maximum number of tokens to generate. Defaults to 500.
+            top_p (float, optional): The cumulative probability for nucleus sampling. Defaults to 0.95.
+            top_k (int, optional): The number of highest probability tokens to consider for top-k sampling. Defaults to 60.
+            temperature (float, optional): The temperature value for controlling randomness in sampling. Defaults to 0.3.
+
+        Returns:
+            str: The generated code.
+
+        Raises:
+            None
+
+        Notes:
+            - This method is used for generating code from a prompt in the chat model.
+            - Do not use this method for batch generation.
+        """
+        # We tokenize the prompt
+        inputs = self.__tokenizer(
+            prompt_prefix+prompt+prompt_suffix,
+            return_tensors="pt",
+            add_special_tokens=True
+        ).to(self.__model.device)
+
+        # We generate an output token with the model
+        tokens = None
+        try:
+            if stream:
+                streamer = TextStreamer(self.__tokenizer, )
+                tokens = self.__model.generate(
+                    **inputs,
+                    max_new_tokens=max_tokens,
+                    do_sample=True,
+                    top_p=top_p,
+                    top_k=top_k,
+                    temperature=temperature,
+                    pad_token_id=self.__tokenizer.eos_token_id,
+                    streamer=streamer
+                )
+            else:
+                tokens = self.__model.generate(
+                    **inputs,
+                    max_new_tokens=max_tokens,
+                    do_sample=True,
+                    top_p=top_p,
+                    top_k=top_k,
+                    temperature=temperature,
+                    pad_token_id=self.__tokenizer.eos_token_id,
+                )
+        except Exception as e:
+            print(f"Error while generating LLM answer for {self.model_name}:")
+            print(e)
+
+        # We then use the extract method to return only the code
+        try:
+            whole_answer = self.__tokenizer.decode(tokens[0], skip_special_tokens=True)
+            extracted_code = self.extract(whole_answer)
+        except Exception as e:
+            print(f"Error extracting code from LLM answer for {self.model_name}:")
+            print(e)
+
+        return extracted_code, whole_answer
+
+    def generate_batch(
+        self, prompts, max_tokens=100, top_p=0.95, top_k=60, temperature=0.3
+    ):
+        """
+        Generate code from a list of prompts in the chat model.
+
+        Args:
+            prompts (list): A list of prompts to generate code from.
+            max_tokens (int, optional): The maximum number of tokens to generate. Defaults to 100.
+            top_p (float, optional): The cumulative probability for nucleus sampling. Defaults to 0.95.
+            top_k (int, optional): The number of highest probability tokens to consider for top-k sampling. Defaults to 60.
+            temperature (float, optional): The temperature value for controlling the randomness of the generated code. Defaults to 0.3.
+
+        Returns:
+            list: A list of generated code snippets corresponding to each prompt.
+
+        """
+        # We tokenise the prompt
+
+        inputs = self.__tokenizer(
+            prompts, return_tensors="pt", add_special_tokens=True, padding=True
+        ).to(self.__model.device)
+
+        # We generate an output token with the model
+
+        tokens = self.__model.generate(
+            **inputs,
+            max_new_tokens=max_tokens,
+            do_sample=True,
+            top_p=top_p,
+            top_k=top_k,
+            temperature=temperature,
+        )
+        #We then decode the generated token
+
+        decoded = self.__tokenizer.batch_decode(tokens, skip_special_tokens=True)
+        #We then use the extract method to return only the code
+
+        return [self.extract(decoded[i]) for i in range(len(tokens))]
+
+    def extract(self, text):
+        return Model.extract_code(text)
