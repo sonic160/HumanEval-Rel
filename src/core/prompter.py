@@ -9,22 +9,22 @@ from functools import partial
 tqdm.tqdm = partial(tqdm.tqdm, dynamic_ncols=True)
 
 # Custom imports.
-from core.model import Model, TestModel
-from core.sandbox_code_runner import bcolors
+from core.system import System
+from core.model import TestModel
 import traceback
 
 class Prompter:
     """
-    The Prompter class is responsible for prompting a language model with a set of challenges,
-    collecting the model's responses, and saving them to a JSON file.
+    The Prompter class is responsible for prompting a completion_system with a set of challenges,
+    collecting the systems's responses, and saving them to a JSON file.
 
-    The class is initialized with a model, a path to a JSON file containing the challenges, and an optional save path.
+    The class is initialized with a completion_system, a path to a JSON file containing the challenges, and an optional save path.
     If no save path is provided, the responses will be saved in a default location.
     """
 
     def __init__(
         self,
-        model: Model,
+        completion_system: System,
         challenges_file: str,
         savepath: str=None,
         batch: bool=False,
@@ -45,13 +45,13 @@ class Prompter:
         Initializes the Prompter with a given model, challenges file, and an optional save path.
 
         Args:
-            model (Model): The language model to use for generating completions.
+            completion_system (System): The language model to use for generating completions.
             challenges_file (str): The path to the JSON file containing the benchmark.
             savepath (str, optional): The path where the output JSON will be saved. Defaults to None.
             show_example (bool): Flag to indicate if examples should be shown during prompting. Defaults to True.
             recovery_file (str, optional): Path to the recovery file. Defaults to None.
         """
-        self.model : Model = model
+        self.completion_system: System = completion_system
         self.savepath = savepath
         self.n = n
         self.temperature = temperature
@@ -161,7 +161,7 @@ class Prompter:
             prompts = list(map(lambda l : l['prompt'], batch))
             task_ids = list(map(lambda l : l['task_id'], batch))
             try:
-                completions = self.model.generate_batch(prompts)
+                completions = self.completion_system.generate_batch(prompts)
                 for i in range(len(batch)):
                     if i < len(completions):  # Safety check
                         self.completions.append({'task_id': task_ids[i], 'completion': completions[i]})
@@ -169,7 +169,7 @@ class Prompter:
                 self.save_recovery_state()
                     
             except Exception as e:
-                print(f"error in batched generation for {self.model.name}")
+                print(f"error in batched generation for {self.completion_system.model_name}")
                 print(e)
                 # Save recovery state on error
                 self.save_recovery_state()
@@ -178,8 +178,8 @@ class Prompter:
         """
         Iterates over challenges, generates answers using the model, and stores them in the completions list.
         """
-        print(f"Prompting {self.model.model_name} for answers...\n")
-        
+        print(f"Prompting {self.completion_system.model_name} for answers...\n")
+
         # Filter out challenges that have already been completed
         completed_task_ids = set(item['task_id'] for item in self.completions)
         unprocessed_challenges = [c for c in self.challenges if c['task_id'] not in completed_task_ids]
@@ -191,7 +191,7 @@ class Prompter:
 
             for _ in tqdm.tqdm(range(self.n), desc=f"collecting {self.n} samples for challenge{id}", position=1, leave=False):
                 try:
-                    completion, whole_answer = self.model.generate(
+                    completion, whole_answer = self.completion_system.generate(
                                 prompt=challenge_prompt, 
                                 max_tokens=self.max_tokens, 
                                 top_p=self.top_p, 
@@ -199,7 +199,7 @@ class Prompter:
                                 temperature=self.temperature,
                                 prompt_prefix=self.prompt_prefix,
                                 prompt_suffix=self.prompt_suffix,
-                                stream=self.stream
+                                stream=self.stream,
                  )
                     self.completions.append({
                             'task_id': id, 
