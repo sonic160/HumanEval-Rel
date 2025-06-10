@@ -10,7 +10,7 @@ from agentic import AgenticModel, HuggingFace, LitellmModel, EmbeddingModel
 main_llm_name = "princeton-nlp/gemma-2-9b-it-SimPO"
 embedding_name="Alibaba-NLP/gte-base-en-v1.5"
 
-main_llm=HuggingFace(model_name=main_llm_name model_path=main_llm_name, cache_dir=cache_dir)
+main_llm=HuggingFace(model_name=main_llm_name ,model_path=main_llm_name, cache_dir=cache_dir)
 # main_llm=LitellmModel(model_name=main_llm_name, api_token=...)
 
 challenge = """

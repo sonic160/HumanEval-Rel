@@ -5,10 +5,10 @@ parser = argparse.ArgumentParser("benchmarks a specific model")
 
 parser.add_argument('model', type=str, help='The model to be tested')
 parser.add_argument('-n', type=int, help='The number of answers to generate for every question', default=50)
-parser.add_argument('-t', type=float, help='Tempreture', default=0.3)
-parser.add_argument('--max-tokens', type=int, help='Tempreture', default=1000)
+parser.add_argument('-t', type=float, help='Temperature', default=0.3)
+parser.add_argument('--max-tokens', type=int, help='newly_generated_tokens', default=1000)
 parser.add_argument('-s', type=str, help='selection_rag', default="emb")
-parser.add_argument('-f', type=bool, help='True: fusion , False : agentic_only', default=False)
+parser.add_argument('-f', type=bool, help='True: agentic+RAG , False : agentic_only', default=False)
 
 args = parser.parse_args()
 
@@ -49,7 +49,7 @@ if  "/gpfs/" in str(os.getcwd()):
 
 main_model=GenerationModel(model_name=main_model_name,model_path=main_model_name, cache_dir=cache_dir)
 
-model_name = f"agentic_allmodels_{main_model_name}_{embedding_name}"
+model_name = f"agentic_with_RAG_{main_model_name}_{embedding_name}"
 
 # check if benchmark is already calculated for model and skip if neccessary
 std_name = model_name.replace("/", "")
@@ -57,23 +57,22 @@ if os.path.isfile(f"./experiment_results/results_{std_name}.json"):
     print(f"{model_name}'s benchmark has already been calculated")
     # continue
 
-print(f"Now benchmarking the following model : {model_name}")
 
 current_model = AgenticModel(
-    "agentic_fusion",
+    "agentic_with_RAG",
     resoning_model=main_model,
     coding_medel=main_model,
     knowledge_model=main_model,
     summarizer_model=main_model,
     selector_model=EmbeddingModel(embedding_name),
     use_rag=args.f,
-    rag_data_base_path='./data_set/dataset_reliability/RAG.txt'
+    rag_data_base_path='./data_set/dataset_reliability/RAG.txt',
     selection=args.s
 )
 
 now = time.time_ns()
-completion_file = f"./data_set/json/completions_fusion_{std_name}_embTitle_T={args.t}_N={args.n}_{now}.json"
-results_file = f"./data_set/results/results_fusion_{std_name}_embTitle_T={args.t}_N={args.n}_{now}.json"
+completion_file = f"./data_set/json/completions_{std_name}_T={args.t}_N={args.n}_{now}.json"
+results_file = f"./data_set/results/results_{std_name}_T={args.t}_N={args.n}_{now}.json"
 
 # We call the prompter over the model, save the completions in a file
 prompteur = prompter.Prompter(
@@ -87,7 +86,7 @@ prompteur = prompter.Prompter(
     # batch_size=256,
 )
 
-# With the completion's file, it run the functions and compute the score
+# With the completion's file, it runs the functions and computes the score
 benchmarkeur = benchmarker.Benchmarker(
     "./data_set/benchmark.json",
     completion_file=completion_file,
