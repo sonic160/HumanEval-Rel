@@ -3,16 +3,49 @@ from ..models.generation_model import GenerationModel
 from ..special_tokens import *
 
 class CodingAgent(Agent):
+    """
+    Agent specialized in generating Python code based on function signatures and step-by-step instructions.
+
+    This agent formats a prompt combining the function signature and instructions,
+    sends it to a language model for code generation, and extracts the resulting
+    Python function code from the response.
+
+    Args:
+        llm_model (GenerationModel): Language model used to generate code.
+        name (str): Optional name for the agent (default is "coding agent").
+    """
     def __init__(self, llm_model: GenerationModel, name: str="coding agent"):
         super().__init__(name)
         self.model = llm_model
 
     def generate_code(self, signature: str, instructions: str):
+        """
+        Generate a complete Python function based on a function signature and instructions.
+
+        Args:
+            signature (str): The function signature to be implemented.
+            instructions (str): Step-by-step instructions describing the function's behavior.
+
+        Returns:
+            str: The Python code for the function extracted from the language model's output.
+        """
         prompt = GENERATION_PROMPT.format(signature = signature, instructions = instructions)
         output = self.model.generate_response(prompt)
         return self._extract_code(output)
     
     def _extract_code(self, output:str):
+        """
+        Internal method. Extracts the Python code snippet enclosed in triple backticks from the model
+        output.
+
+        If the code block is annotated with 'python', it is excluded from the result.
+
+        Args:
+            output (str): The raw output text from the language model.
+
+        Returns:
+            code (str): Extracted Python code as a string.
+        """
         end = output.rfind('```')
         start = output.rfind('```', 0, end) + 3
         if output[start:].startswith('python'):

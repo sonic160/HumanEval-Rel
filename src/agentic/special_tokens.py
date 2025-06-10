@@ -1,3 +1,7 @@
+"""
+Definition of some special tokens used by Agentic Reasoning
+"""
+
 CODING_QUERY_BEGIN = "<coding_assistant>"
 CODING_QUERY_END = "</coding_assistant>"
 KNOWLEDGE_QUERY_BEGIN = "<knowledge_query>"

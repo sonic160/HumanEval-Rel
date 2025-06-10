@@ -10,6 +10,12 @@ from transformers import (
 
 
 class GenerationModel(ABC):
+    """
+    Abstract base class for language generation models.
+
+    Args:
+        model_name (str): Identifier or name of the language model.
+    """
     def __init__(self, model_name="gpt-3.5-turbo"):
         self.model_name = model_name
 
@@ -22,10 +28,31 @@ class GenerationModel(ABC):
         temperature: int = 0.3,
         stop_tokens: list = None,
     ) -> str:
-        pass
+        """
+        Generates a response from the model given an input prompt.
+
+        Args:
+            prompt (str): The input prompt for generation.
+            max_tokens (int): Maximum number of tokens to generate.
+            top_p (float): Top-p (nucleus) sampling parameter.
+            temperature (float): Sampling temperature.
+            stop_tokens (list, optional): List of stop tokens to truncate the response.
+
+        Returns:
+            str: The generated text response.
+        """
 
 
 class LitellmModel(GenerationModel):
+    """
+    A concrete implementation of GenerationModel using the LiteLLM API.
+
+    A list of the supported models can be found [here](https://github.com/BerriAI/litellm).
+
+    Args:
+        model_name (str): Name or identifier of the model (e.g., 'gpt-3.5-turbo').
+        api_token (str, optional): API key for authenticating with LiteLLM.
+    """
     def __init__(self, model_name="gpt-3.5-turbo", api_token=None):
         self.model_name = model_name
         self.api_token = api_token
@@ -38,6 +65,19 @@ class LitellmModel(GenerationModel):
         temperature: int = 0.3,
         stop_tokens: list = None,
     ) -> str:
+        """
+        Generates a response from the LiteLLM model given an input prompt.
+
+        Args:
+            prompt (str): The input prompt for generation.
+            max_tokens (int): Maximum number of tokens to generate.
+            top_p (float): Cumulative probability for nucleus sampling.
+            temperature (float): Sampling temperature.
+            stop_tokens (list, optional): List of tokens to stop generation.
+
+        Returns:
+            str: The generated text response.
+        """
         # print number of token with autotokenizer
         tokenizer = AutoTokenizer.from_pretrained("gpt2")
         # print("===========token count", len(tokenizer.tokenize(messages[0]["content"])))
@@ -45,28 +85,15 @@ class LitellmModel(GenerationModel):
 
         messages = [{"role": "user", "content": prompt}]
 
-        if self.model_name.startswith("ollama/"):
-            response = completion(
-                model=self.model_name,
-                messages=messages,
-                temperature=temperature,
-                top_p=top_p,
-                max_tokens=max_tokens,
-                stop=stop_tokens,
-                api_base="http://localhost:11434",
-                api_key=self.api_token,
-            )
-
-        else:
-            response = completion(
-                model=self.model_name,
-                messages=messages,
-                temperature=temperature,
-                top_p=top_p,
-                max_tokens=max_tokens,
-                stop=stop_tokens,
-                api_key=self.api_token,
-            )
+        response = completion(
+            model=self.model_name,
+            messages=messages,
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
+            stop=stop_tokens,
+            api_key=self.api_token,
+        )
 
         response = response.choices[0].message.content
 
@@ -158,14 +185,14 @@ class HuggingFace(GenerationModel):
         stop_tokens=None,
     ):
         """
-        Generates a response for a given prompt using the model.
+        Generates a response for a given prompt using the Hugging Face model.
 
         Args:
             prompt (str): The prompt to generate code from.
             max_tokens (int, optional): Maximum number of tokens to generate.
             top_p (float, optional): Cumulative probability for nucleus sampling.
             top_k (int, optional): Number of top tokens to sample from.
-            temperature (float, optional): Controls randomness.
+            temperature (float, optional): Simpling tempreture.
             stop_tokens (list[str], optional): If provided, generation will stop at the first stop token.
 
         Returns:

@@ -173,7 +173,7 @@ class Benchmarker:
 
         for result in self.tests.values():
             result.sort()
-            passed = [r[0] for r in result]
+            passed = [r[0] for r in result] 
             total.append(len(passed))
             correct.append(sum(passed))
 
