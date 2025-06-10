@@ -27,11 +27,11 @@ if args.max_tokens <= 0:
 import os
 
 # Custom imports.
-from .helpers.reproducibility import set_random_seeds
-from .agentic import AgenticModel, HuggingFace as GenerationModel, EmbeddingModel
+from helpers.reproducibility import set_random_seeds
+from agentic import AgenticModel, HuggingFace as GenerationModel, EmbeddingModel
 
-from .core import prompter
-from .benchmarking import benchmarker
+from core import prompter
+from benchmarking import benchmarker
 
 # Reproducibility.
 set_random_seeds()
