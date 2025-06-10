@@ -1,7 +1,7 @@
 from .agent import Agent
 from ..models.generation_model import GenerationModel
 
-class Summerizer:
+class Summarizer:
     """
     Summarizer component that uses a language model to generate a summary based on a question
     and supporting context.

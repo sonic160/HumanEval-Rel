@@ -1,7 +1,7 @@
 from .agent import Agent
 from ..models.generation_model import GenerationModel
 from .rag import RAG
-from .summer import Summerizer
+from .summer import Summarizer
 
 
 class KnowledgeDatabaseAgent(Agent):
@@ -9,21 +9,21 @@ class KnowledgeDatabaseAgent(Agent):
         self,
         llm_model: GenerationModel,
         rag_agent: RAG,
-        summerizer_llm: GenerationModel,
+        summarizer_llm: GenerationModel,
         name: str = "knowledge agent",
     ):
         super().__init__(name)
         self.model = llm_model
         self.rag = rag_agent
-        self.summerizer = Summerizer(summerizer_llm)
+        self.summarizer = Summarizer(summarizer_llm)
 
     def generate_answer(self, question: str):
         help_info = ""
         # Documents selection (a concatenation of retrieved documents)
-        infor = self.rag.corresponding_documents_emb(question)
+        infor = self.rag.corresponding_documents(question)
 
-        # Preparing the help_info using the query and the selected documents
-        helping_info = self.summerizer.generate_answer(question, infor)
+        # Preparing the helping_info using the query and the selected documents
+        helping_info = self.summarizer.generate_answer(question, infor)
         prompt = KNOWLEDGE_PROMPT_HELP.format(
             question=question, helping_info=helping_info
         )

@@ -85,7 +85,7 @@ class AgenticModel(Model):
                 selection=self.selection,
             )
             self.knowledge_agent = KnowledgeDatabaseAgent(
-                knowledge_model, rag, summerizer_llm=summarizer_model
+                knowledge_model, rag, summarizer_llm=summarizer_model
             )
         else:
             self.knowledge_agent = KnowledgeLLMAgent(knowledge_model)

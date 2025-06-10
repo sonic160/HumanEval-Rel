@@ -1,4 +1,3 @@
-from ..models.generation_model import GenerationModel
 from ..models.embedding_model import EmbeddingModel
 import numpy as np
 import re
@@ -24,7 +23,20 @@ class RAG:
             self.emb_titles = []
             self._compute_emb_titles()
 
+    ## The main function
+
+    def corresponding_documents(self, question: str):
+        if self.selection=="emb":
+            return self.corresponding_documents_emb(question)
+        if self.selection=="freq":
+            return self.corresponding_documents_freq(question)
+        raise ValueError(f"Invalid selection: {self.selection}. Expected 'emb' or 'freq'.")
+   
+
+    ## Embedding technique
+
     def similarity(self, vec1: list, vec2: list) -> float:
+
         vec1 = np.array(vec1)
         vec2 = np.array(vec2)
         norm1 = np.linalg.norm(vec1)
@@ -33,61 +45,54 @@ class RAG:
             return 0.0
         return np.dot(vec1, vec2) / (norm1 * norm2)
 
-    def corresponding_documents_emb(self, question: str):
-        question_emb = self.emb_model.generate_embedding(question)
+    def corresponding_documents_emb(self,question: str):
 
-        n = len(self.documents)
-        infor_doc = ""
-        scores = []
-        indices = [j for j in range(n)]
+        question_emb=self.emb_model.generate_embedding(question)
+
+        n=len(self.documents)
+        infor_doc=""
+        scores=[]
+        indices=[j for j in range(n)]
         for i in range(n):
-            emb = self.emb_titles[i]
-            score = self.similarity(question_emb, emb)
+            emb=self.emb_titles[i]
+            score=self.similarity(question_emb,emb)
             scores.append(score)
-        indices.sort(reverse=True, key=lambda i: scores[i])
+        indices.sort(reverse=True, key= lambda i :scores[i] )
 
-        for k in range(3):  # only the top 3 documents
-            infor_doc += self.documents[indices[k]][1] + "\n\n"
 
-        print("selected documents (embedding-based) : ", indices[:3])
+        for k in range(3):# only the top 3 documents
+            infor_doc+=self.documents[indices[k]][1]+ "\n\n"
+
+        print("selected documents (embedding-based) : ",indices[:3])
         return infor_doc
-
+    
     def _compute_emb_titles(self):
 
-        title_embeddings = self.emb_model.generate_embeddings(
-            [doc[0] for doc in self.documents]
-        )
+        title_embeddings=self.emb_model.generate_embeddings([doc[0] for doc in self.documents])
         self.emb_titles.extend(title_embeddings)
 
+
+
+    ## Keywords frequency technique
+
+
+    # stemming process
     def stem_custom(self, word):
         if word.isupper() and len(word) >= 3:  # Preserve acronyms like MCMC
             return word.lower()
         return self.stemmer.stem(word)
+    
 
     def _extract_keywords(self, text: str) -> list[str]:
         """Extracts meaningful keywords (removes stopwords)."""
-        words = re.findall(r"\w+", text.lower())
-
+        words = re.findall(r'\w+', text.lower())
+        
         # Basic stopwords list (expand as needed)
         stop_set = {
-            "what",
-            "how",
-            "why",
-            "when",
-            "where",
-            "who",
-            "is",
-            "are",
-            "the",
-            "a",
-            "an",
-            "and",
-            "or",
-            "of",
-            "in",
-            "to",
+            "what", "how", "why", "when", "where", "who", 
+            "is", "are", "the", "a", "an", "and", "or", "of", "in", "to"
         }
-
+        
         return [word for word in words if word not in stop_set]
 
     def corresponding_documents_freq(self, question: str):
@@ -102,19 +107,16 @@ class RAG:
         scores = []
         for i, (title, content) in enumerate(self.documents):
 
-            content_words = [
-                self.stem_custom(w) for w in re.findall(r"\w+", content.lower())
-            ]
+            content_words=[self.stem_custom(w) for w in re.findall(r'\w+', content.lower())]
             content_word_counts = Counter(content_words)
 
             score = sum(
-                (content_word_counts[word] / len(content_words))
-                * self.idf.get(word, 1.0)
-                for word in keywords
+                (content_word_counts[word]/len(content_words))*self.idf.get(word, 1.0) 
+                for word in keywords 
                 if word in content_word_counts
             )
             scores.append((score, i))
-
+        
         scores.sort(reverse=True, key=lambda x: x[0])
         top_indices = [idx for (score, idx) in scores[:3]]
 
@@ -125,22 +127,16 @@ class RAG:
     def _compute_idf(self):
         """Precompute IDF with stemmed terms."""
         doc_count = len(self.documents)
-
-        all_terms = []
+    
+        all_terms=[]
         for title, content in self.documents:
-
-            content_terms = [
-                self.stem_custom(word) for word in re.findall(r"\w+", content.lower())
-            ]
+            
+            content_terms = [self.stem_custom(word) for word in re.findall(r'\w+', content.lower())]
             all_terms.extend(content_terms)
 
-        unique_terms = set(all_terms)
-
+        unique_terms=set(all_terms)
+        
         for term in unique_terms:
-            docs_with_term = sum(
-                1
-                for title, content in self.documents
-                if term
-                in [self.stem_custom(w) for w in re.findall(r"\w+", content.lower())]
-            )
-            self.idf[term] = np.log(doc_count / (1 + docs_with_term))
+            docs_with_term = sum(1 for title, content in self.documents
+                               if term in [self.stem_custom(w) for w in re.findall(r'\w+', content.lower())])
+            self.idf[term] = np.log(doc_count / (1 + docs_with_term)) 

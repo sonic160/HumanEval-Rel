@@ -27,8 +27,9 @@ def load_documents(path) -> list[tuple[str, str]]:
                 line[0] == "#"
                 and line[1] != "#"
                 and not line.startswith("# Python verification")
-            ):  # on arrive à un nouveau document
-                documents.append((title, doc))  # terminer le doc précédent
+            ):  # we have reached another document
+                
+                documents.append((title, doc))  # add it to the list
                 title = line[1:-1]
                 doc = line
 
