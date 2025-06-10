@@ -18,7 +18,7 @@ class KnowledgeDatabaseAgent(Agent):
         self.summarizer = Summarizer(summarizer_llm)
 
     def generate_answer(self, question: str):
-        help_info = ""
+
         # Documents selection (a concatenation of retrieved documents)
         infor = self.rag.corresponding_documents(question)
 

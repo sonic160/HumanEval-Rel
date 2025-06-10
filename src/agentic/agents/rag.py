@@ -5,6 +5,35 @@ from collections import Counter
 from nltk.stem import PorterStemmer  # For stemming
 
 
+'''
+========================= RAG CLASS OVERVIEW =========================
+
+The RAG (Retrieval-Augmented Generation) class aims to retrieve relevant 
+information to a question that can help another agent to generate a response.
+
+It supports two main document retrieval strategies:
+
+1. Embedding-based similarity ("emb"):
+   - Uses an embedding model to represent document titles and the 
+     input question as vectors.
+   - Computes the cosine similarity between the question vector 
+     and each title vector.
+   - Selects the top 3 documents with the highest similarity scores.
+
+2. Keyword frequency-based selection ("freq"):
+   - Extracts meaningful keywords from the question (ignores common stopwords).
+   - Applies light stemming (preserving acronyms like MCMC).
+   - Computes a TF-IDF-like score for each document based on keyword overlap.
+   - Selects the top 3 documents with the highest scores.
+
+Usage:
+- The method `corresponding_documents(question)` automatically selects 
+  the appropriate retrieval method based on the `selection` parameter 
+  defined when the object is instantiated (either "emb" or "freq").
+'''
+
+
+
 class RAG:
     def __init__(
         self,
