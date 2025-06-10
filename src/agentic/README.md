@@ -32,6 +32,11 @@ model = AgenticModel(
     selection="emb"
 )
 
+# selection="emb": Enables embedding-based document selection when using RAG.
+# The alternative, "freq", uses keyword frequency (TF-IDF) and does not rely on the selector model.
+# For more details, refer to ./agents/rag.py
+
+
 completion, reasoning = model.generate(challenge)
 print(f'{completion = }')
 print(f'{reasoning = }')
