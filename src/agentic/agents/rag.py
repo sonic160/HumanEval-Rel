@@ -40,7 +40,15 @@ class RAG:
         embedding_model: EmbeddingModel,
         documents: list[str] = [],
         selection: str = "emb",
-    ):
+    ):       
+        """
+        Initialize the RAG system.
+
+        Args:
+            embedding_model (EmbeddingModel): Model used for generating embeddings.
+            documents (list[str]): A list of (title, content) tuples.
+            selection (str): Retrieval strategy: "emb" for embeddings or "freq" for TF-IDF.
+        """
         self.emb_model = embedding_model
         self.documents = documents  # list of tuples (title, content)
         self.selection = selection
@@ -56,6 +64,15 @@ class RAG:
     ## The main function
 
     def corresponding_documents(self, question: str):
+        """
+        Retrieve documents relevant to the input question based on the selected retrieval strategy.
+
+        Args:
+            question (str): User input question.
+
+        Returns:
+            str: Concatenated top 3 relevant documents.
+        """
         if self.selection=="emb":
             return self.corresponding_documents_emb(question)
         if self.selection=="freq":
@@ -66,7 +83,16 @@ class RAG:
     ## Embedding technique
 
     def similarity(self, vec1: list, vec2: list) -> float:
+        """
+        Compute cosine similarity between two vectors.
 
+        Args:
+            vec1 (list): First embedding vector.
+            vec2 (list): Second embedding vector.
+
+        Returns:
+            float: Cosine similarity score.
+        """
         vec1 = np.array(vec1)
         vec2 = np.array(vec2)
         norm1 = np.linalg.norm(vec1)
@@ -76,7 +102,15 @@ class RAG:
         return np.dot(vec1, vec2) / (norm1 * norm2)
 
     def corresponding_documents_emb(self,question: str):
+        """
+        Retrieve top documents using embedding-based similarity.
 
+        Args:
+            question (str): User input question.
+
+        Returns:
+            str: Top 3 relevant documents concatenated.
+        """
         question_emb=self.emb_model.generate_embedding(question)
 
         n=len(self.documents)
@@ -97,7 +131,9 @@ class RAG:
         return infor_doc
     
     def _compute_emb_titles(self):
-
+        """
+        Precompute title embeddings for all documents.
+        """
         title_embeddings=self.emb_model.generate_embeddings([doc[0] for doc in self.documents])
         self.emb_titles.extend(title_embeddings)
 
@@ -108,13 +144,30 @@ class RAG:
 
     # stemming process
     def stem_custom(self, word):
+        """
+        Custom stemming: lowercase acronyms (like MCMC), otherwise use Porter stemmer.
+
+        Args:
+            word (str): Word to stem.
+
+        Returns:
+            str: Stemmed or normalized word.
+        """
         if word.isupper() and len(word) >= 3:  # Preserve acronyms like MCMC
             return word.lower()
         return self.stemmer.stem(word)
     
 
     def _extract_keywords(self, text: str) -> list[str]:
-        """Extracts meaningful keywords (removes stopwords)."""
+        """
+        Extract keywords from a text by removing basic stopwords.
+
+        Args:
+            text (str): Input text.
+
+        Returns:
+            list[str]: List of non-stopword keywords.
+        """
         words = re.findall(r'\w+', text.lower())
         
         # Basic stopwords list (expand as needed)
@@ -126,6 +179,15 @@ class RAG:
         return [word for word in words if word not in stop_set]
 
     def corresponding_documents_freq(self, question: str):
+        """
+        Retrieve top documents using keyword frequency with TF-IDF weighting.
+
+        Args:
+            question (str): User input question.
+
+        Returns:
+            str: Top 3 relevant documents concatenated.
+        """
         # Step 1: Extract stemmed keywords (remove stopwords)
         keywords = [self.stem_custom(word) for word in self._extract_keywords(question)]
 
