@@ -35,20 +35,21 @@ Usage:
 
 
 class RAG:
+    """
+    Initialize the RAG system.
+
+    Args:
+        embedding_model (EmbeddingModel): Model used for generating embeddings.
+        documents (list[str]): A list of (title, content) tuples.
+        selection (str): Retrieval strategy: "emb" for embeddings or "freq" for TF-IDF.
+    """
     def __init__(
         self,
         embedding_model: EmbeddingModel,
         documents: list[str] = [],
         selection: str = "emb",
     ):       
-        """
-        Initialize the RAG system.
-
-        Args:
-            embedding_model (EmbeddingModel): Model used for generating embeddings.
-            documents (list[str]): A list of (title, content) tuples.
-            selection (str): Retrieval strategy: "emb" for embeddings or "freq" for TF-IDF.
-        """
+        
         self.emb_model = embedding_model
         self.documents = documents  # list of tuples (title, content)
         self.selection = selection

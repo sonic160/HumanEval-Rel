@@ -2,6 +2,21 @@
 
 This project implements an Agentic Model combining reasoning, coding, and knowledge retrieval agents powered by large language models (LLMs). It is designed to generate code, answer questions, and summarize information through modular components.
 
+## Components Overview
+`AgenticModel`: Coordinates reasoning steps.
+
+`CodingAgent`: Generates Python functions from signatures and instructions. Extracts and returns clean Python code from model outputs.
+
+`KnowledgeDatabaseAgent`: Answer specific question based on a provided context from a database. 
+
+`KnowledgeLLMAgent`: Answer specific question by directly passing it to an LLM. 
+
+`GenerationModel`: Abstract base class for LLM wrappers. It has two concrete implementations `HuggingFace` for a localy hosted huggingface model, and `LitellmModel` to use an LLM through an API (GPT-4o-mini, ...)
+
+`EmbeddingModel`: Generates dense vector embeddings for texts. Supports retrieval-augmented generation with RAG.
+
+`Summarizer`: A wrapper around an LLM that summarizes a text with rispect to a question.
+
 ## Example Usage
 
 ```py
@@ -42,18 +57,10 @@ print(f'{completion = }')
 print(f'{reasoning = }')
 ```
 
-## Components Overview
-`AgenticModel`: Coordinates reasoning steps.
 
-`CodingAgent`: Generates Python functions from signatures and instructions. Extracts and returns clean Python code from model outputs.
+## 🧪 Example: Benchmarking `gpt-4o-mini` and Princeton Models
 
-`GenerationModel`: Abstract base class for LLM wrappers. It has two concrete implementations `HuggingFace` for a localy hosted huggingface model, and `LitellmModel` to use an LLM through an API (GPT-4o-mini, ...)
-
-`EmbeddingModel`: Generates dense vector embeddings for texts. Supports retrieval-augmented generation with RAG.
-
-## 🧪 Benchmarking `gpt-4o-mini` and Princeton Models
-
-This guide explains how to benchmark agentic models with and without RAG, using Hugging Face and OpenAI models on the dataset.
+This guide explains how to benchmark agentic models with and without RAG, using Hugging Face and OpenAI models on the dataset on _La Ruche_.
 
 ---
 
@@ -89,7 +96,5 @@ python src/benchmark_agentic.py "princeton-nlp/gemma-2-9b-it-SimPO" -n 1 -t 0.3 
 python src/benchmark_gpt.py  -n 1 -t 0.3 -f True
 ```
 
-N.B : Before running benchmark_gpt.py, make sure to:
-
-✏️ Replace the first line of src/benchmark_gpt.py with your actual OpenAI API token.
+✏️ N.B : Before running benchmark_gpt.py, make sure to replace the first line of src/benchmark_gpt.py with your actual OpenAI API token.
 
