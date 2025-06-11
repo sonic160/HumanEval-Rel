@@ -1,4 +1,4 @@
-from ..core.model import Model
+from core.model import Model
 from .models.generation_model import GenerationModel
 from .models.embedding_model import EmbeddingModel
 from enum import Enum

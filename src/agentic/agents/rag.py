@@ -43,6 +43,7 @@ class RAG:
     ):
         self.emb_model = embedding_model
         self.documents = documents  # list of tuples (title, content)
+        self.selection = selection
         if selection == "freq":
             self.stemmer = PorterStemmer()
             self.idf = {}
