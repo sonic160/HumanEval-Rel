@@ -29,8 +29,9 @@ class KnowledgeDatabaseAgent(Agent):
         )
 
         output = self.model.generate_response(prompt)
-
-        return helping_info + "\n" + output
+        if len(output.split(" ")) < 30 :
+            return helping_info + "\n" + output
+        return output
 
 
 class KnowledgeLLMAgent(Agent):
