@@ -49,7 +49,10 @@ if  "/gpfs/" in str(os.getcwd()):
 
 main_model=GenerationModel(model_name=main_model_name,model_path=main_model_name, cache_dir=cache_dir)
 
-model_name = f"agentic_with_RAG_{main_model_name}_{embedding_name}"
+if args.f:
+    model_name = f"agentic_with_RAG_{main_model_name}_{embedding_name}"
+else:
+    model_name = f"agentic_{main_model_name}_{embedding_name}"
 
 # check if benchmark is already calculated for model and skip if neccessary
 std_name = model_name.replace("/", "")

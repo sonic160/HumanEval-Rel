@@ -50,9 +50,12 @@ if  "/gpfs/" in str(os.getcwd()):
     cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
 
 
-main_model=GenerationModel(api_token=TOKEN)
+main_model=GenerationModel(model_name="gpt-4o-mini",api_token=TOKEN)
 
-model_name = f"agentic_with_RAG_gpt_{embedding_name}"
+if args.f :
+    model_name = f"agentic_with_RAG_gpt_{embedding_name}"
+else :
+    model_name = f"agentic_gpt_{embedding_name}"
 
 # check if benchmark is already calculated for model and skip if neccessary
 std_name = model_name.replace("/", "")

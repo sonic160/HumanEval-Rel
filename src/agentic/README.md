@@ -50,3 +50,46 @@ print(f'{reasoning = }')
 `GenerationModel`: Abstract base class for LLM wrappers. It has two concrete implementations `HuggingFace` for a localy hosted huggingface model, and `LitellmModel` to use an LLM through an API (GPT-4o-mini, ...)
 
 `EmbeddingModel`: Generates dense vector embeddings for texts. Supports retrieval-augmented generation with RAG.
+
+## 🧪 Benchmarking `gpt-4o-mini` and Princeton Models
+
+This guide explains how to benchmark agentic models with and without RAG, using Hugging Face and OpenAI models on the dataset.
+
+---
+
+### ✅ Environment Setup
+
+Ensure you're on a **GPU A100 node**, then run the following commands:
+
+```bash
+module purge
+module load anaconda3/2024.06/gcc-13.2.0
+module load cuda/11.8.0/gcc-11.2.0
+source activate benchmark
+
+cd HumanEval-Rel1
+
+```
+### Benchmarking Modes (n=1, temperature=0.3)
+🧠 Agentic Only (No RAG)
+
+```bash
+python src/benchmark_agentic.py "princeton-nlp/gemma-2-9b-it-SimPO" -n 1 -t 0.3
+
+```
+🧠 Agentic + RAG (Embedding-based)
+
+```bash
+python src/benchmark_agentic.py "princeton-nlp/gemma-2-9b-it-SimPO" -n 1 -t 0.3 -f True
+```
+
+🤖 GPT-4o-mini (Agentic + RAG)
+
+```bash
+python src/benchmark_gpt.py  -n 1 -t 0.3 -f True
+```
+
+N.B : Before running benchmark_gpt.py, make sure to:
+
+✏️ Replace the first line of src/benchmark_gpt.py with your actual OpenAI API token.
+
