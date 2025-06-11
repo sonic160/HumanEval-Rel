@@ -50,7 +50,7 @@ if  "/gpfs/" in str(os.getcwd()):
     cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
 
 
-main_model=GenerationModel(model_name="gpt-4o-mini",api_token=TOKEN)
+main_model=GenerationModel(model_name="gpt-4o-mini",api_token=TOKEN, temperature=args.t, max_tokens=args.max_tokens)
 
 if args.f :
     model_name = f"agentic_with_RAG_gpt_{embedding_name}"

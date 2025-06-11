@@ -47,7 +47,7 @@ cache_dir = None
 if  "/gpfs/" in str(os.getcwd()):
     cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
 
-main_model=GenerationModel(model_name=main_model_name,model_path=main_model_name, cache_dir=cache_dir)
+main_model=GenerationModel(model_name=main_model_name,model_path=main_model_name, cache_dir=cache_dir,temperature=args.t,max_tokens=args.max_tokens)
 
 if args.f:
     model_name = f"agentic_with_RAG_{main_model_name}_{embedding_name}"
