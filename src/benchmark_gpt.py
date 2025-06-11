@@ -1,9 +1,12 @@
+TOKEN=""
+
+
 import argparse
 import time
 
 parser = argparse.ArgumentParser("benchmarks a specific model")
 
-parser.add_argument('model', type=str, help='The model to be tested')
+
 parser.add_argument('-n', type=int, help='The number of answers to generate for every question', default=50)
 parser.add_argument('-t', type=float, help='Temperature', default=0.3)
 parser.add_argument('--max-tokens', type=int, help='newly_generated_tokens', default=1000)
@@ -38,20 +41,18 @@ set_random_seeds()
 
 embedding_name="Alibaba-NLP/gte-base-en-v1.5"
 
-print(f"Benchmarking {args.model} with N={args.n} T={args.t} Max_Tokens={args.max_tokens}")
+print(f"Benchmarking gpt with N={args.n} T={args.t} Max_Tokens={args.max_tokens}")
 
-main_model_name=args.model
 
 # determine cache dir (test if we are in ruche)
 cache_dir = None
 if  "/gpfs/" in str(os.getcwd()):
     cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
 
-TOKEN=""
 
 main_model=GenerationModel(api_token=TOKEN)
 
-model_name = f"agentic_with_RAG_{main_model_name}_{embedding_name}"
+model_name = f"agentic_with_RAG_gpt_{embedding_name}"
 
 # check if benchmark is already calculated for model and skip if neccessary
 std_name = model_name.replace("/", "")
