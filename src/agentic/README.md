@@ -71,17 +71,23 @@ cd HumanEval-Rel1
 
 ```
 ### Benchmarking Modes (n=1, temperature=0.3)
+
+Before running benchmark_agentic.py, make sure to:
+
+✏️ Replace the 8th line of src/benchmark_agentic.py with your actual cache directory.
+
+
 🧠 Agentic Only (No RAG)
 
 ```bash
 python src/benchmark_agentic.py "princeton-nlp/gemma-2-9b-it-SimPO" -n 1 -t 0.3
-
 ```
 🧠 Agentic + RAG (Embedding-based)
 
 ```bash
 python src/benchmark_agentic.py "princeton-nlp/gemma-2-9b-it-SimPO" -n 1 -t 0.3 -f True
 ```
+
 
 🤖 GPT-4o-mini (Agentic + RAG)
 
@@ -91,5 +97,7 @@ python src/benchmark_gpt.py  -n 1 -t 0.3 -f True
 
 N.B : Before running benchmark_gpt.py, make sure to:
 
-✏️ Replace the first line of src/benchmark_gpt.py with your actual OpenAI API token.
+✏️ Replace the 1st line of src/benchmark_gpt.py with your actual OpenAI API token.
+
+✏️ Replace the 7th line of src/benchmark_gpt.py with your actual cache directory.
 

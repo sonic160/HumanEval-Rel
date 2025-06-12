@@ -1,3 +1,12 @@
+import os
+import argparse
+import time
+
+# determine cache dir (test if we are in ruche)
+cache_dir = None
+if  "/gpfs/" in str(os.getcwd()):
+    cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
+
 import argparse
 import time
 
@@ -24,7 +33,6 @@ if args.max_tokens <= 0:
     exit(1)
 
 
-import os
 
 # Custom imports.
 from helpers.reproducibility import set_random_seeds
@@ -41,11 +49,6 @@ embedding_name="Alibaba-NLP/gte-base-en-v1.5"
 print(f"Benchmarking {args.model} with N={args.n} T={args.t} Max_Tokens={args.max_tokens}")
 
 main_model_name=args.model
-
-# determine cache dir (test if we are in ruche)
-cache_dir = None
-if  "/gpfs/" in str(os.getcwd()):
-    cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
 
 main_model=GenerationModel(model_name=main_model_name,model_path=main_model_name, cache_dir=cache_dir,temperature=args.t,max_tokens=args.max_tokens)
 
