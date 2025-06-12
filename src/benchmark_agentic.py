@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser("benchmarks a specific model")
 parser.add_argument('model', type=str, help='The model to be tested')
 parser.add_argument('-n', type=int, help='The number of answers to generate for every question', default=50)
 parser.add_argument('-t', type=float, help='Temperature', default=0.3)
-parser.add_argument('--max-tokens', type=int, help='newly_generated_tokens', default=1000)
+parser.add_argument('--max_tokens', type=int, help='newly_generated_tokens', default=1000)
 parser.add_argument('-s', type=str, help='selection_rag', default="emb")
 parser.add_argument('-f', type=bool, help='True: agentic+RAG , False : agentic_only', default=False)
 
@@ -20,7 +20,7 @@ if args.t <= 0:
     exit(1)
 
 if args.max_tokens <= 0:
-    print("invalid value for max_tokens -max-tokens")
+    print("invalid value for max_tokens -max_tokens")
     exit(1)
 
 
