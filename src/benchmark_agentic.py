@@ -1,3 +1,12 @@
+import os
+import argparse
+import time
+
+# determine cache dir (test if we are in ruche)
+cache_dir = None
+if  "/gpfs/" in str(os.getcwd()):
+    cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
+
 import argparse
 import time
 
@@ -6,7 +15,7 @@ parser = argparse.ArgumentParser("benchmarks a specific model")
 parser.add_argument('model', type=str, help='The model to be tested')
 parser.add_argument('-n', type=int, help='The number of answers to generate for every question', default=50)
 parser.add_argument('-t', type=float, help='Temperature', default=0.3)
-parser.add_argument('--max-tokens', type=int, help='newly_generated_tokens', default=1000)
+parser.add_argument('--max_tokens', type=int, help='newly_generated_tokens', default=1000)
 parser.add_argument('-s', type=str, help='selection_rag', default="emb")
 parser.add_argument('-f', type=bool, help='True: agentic+RAG , False : agentic_only', default=False)
 
@@ -20,11 +29,10 @@ if args.t <= 0:
     exit(1)
 
 if args.max_tokens <= 0:
-    print("invalid value for max_tokens -max-tokens")
+    print("invalid value for max_tokens -max_tokens")
     exit(1)
 
 
-import os
 
 # Custom imports.
 from helpers.reproducibility import set_random_seeds
@@ -42,12 +50,7 @@ print(f"Benchmarking {args.model} with N={args.n} T={args.t} Max_Tokens={args.ma
 
 main_model_name=args.model
 
-# determine cache dir (test if we are in ruche)
-cache_dir = None
-if  "/gpfs/" in str(os.getcwd()):
-    cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
-
-main_model=GenerationModel(model_name=main_model_name,model_path=main_model_name, cache_dir=cache_dir)
+main_model=GenerationModel(model_name=main_model_name,model_path=main_model_name, cache_dir=cache_dir,temperature=args.t,max_tokens=args.max_tokens)
 
 if args.f:
     model_name = f"agentic_with_RAG_{main_model_name}_{embedding_name}"

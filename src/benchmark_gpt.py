@@ -1,5 +1,11 @@
 TOKEN=""
 
+import os
+# determine cache dir (test if we are in ruche)
+cache_dir = None
+if  "/gpfs/" in str(os.getcwd()):
+    cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
+
 
 import argparse
 import time
@@ -9,7 +15,7 @@ parser = argparse.ArgumentParser("benchmarks a specific model")
 
 parser.add_argument('-n', type=int, help='The number of answers to generate for every question', default=50)
 parser.add_argument('-t', type=float, help='Temperature', default=0.3)
-parser.add_argument('--max-tokens', type=int, help='newly_generated_tokens', default=1000)
+parser.add_argument('--max_tokens', type=int, help='newly_generated_tokens', default=1000)
 parser.add_argument('-s', type=str, help='selection_rag', default="emb")
 parser.add_argument('-f', type=bool, help='True: agentic+RAG , False : agentic_only', default=False)
 
@@ -23,11 +29,10 @@ if args.t <= 0:
     exit(1)
 
 if args.max_tokens <= 0:
-    print("invalid value for max_tokens -max-tokens")
+    print("invalid value for max_tokens -max_tokens")
     exit(1)
 
 
-import os
 
 # Custom imports.
 from helpers.reproducibility import set_random_seeds
@@ -44,13 +49,8 @@ embedding_name="Alibaba-NLP/gte-base-en-v1.5"
 print(f"Benchmarking gpt with N={args.n} T={args.t} Max_Tokens={args.max_tokens}")
 
 
-# determine cache dir (test if we are in ruche)
-cache_dir = None
-if  "/gpfs/" in str(os.getcwd()):
-    cache_dir = "/gpfs/workdir/elkhattou2/.cache/huggingface"
 
-
-main_model=GenerationModel(model_name="gpt-4o-mini",api_token=TOKEN)
+main_model=GenerationModel(model_name="gpt-4o-mini",api_token=TOKEN, temperature=args.t, max_tokens=args.max_tokens)
 
 if args.f :
     model_name = f"agentic_with_RAG_gpt_{embedding_name}"

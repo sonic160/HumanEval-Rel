@@ -53,9 +53,11 @@ class LitellmModel(GenerationModel):
         model_name (str): Name or identifier of the model (e.g., 'gpt-3.5-turbo').
         api_token (str, optional): API key for authenticating with LiteLLM.
     """
-    def __init__(self, model_name="gpt-3.5-turbo", api_token=None):
+    def __init__(self, model_name="gpt-3.5-turbo", api_token=None, temperature : float=0.3, max_tokens : int=1000):
         self.model_name = model_name
         self.api_token = api_token
+        self.temperature=temperature
+        self.max_tokens=max_tokens
 
     def generate_response(
         self,
@@ -88,9 +90,9 @@ class LitellmModel(GenerationModel):
         response = completion(
             model=self.model_name,
             messages=messages,
-            temperature=temperature,
+            temperature=self.temperature,
             top_p=top_p,
-            max_tokens=max_tokens,
+            max_tokens=self.max_tokens,
             stop=stop_tokens,
             api_key=self.api_token,
         )
@@ -108,6 +110,8 @@ class HuggingFace(GenerationModel):
         model_path: str = None,
         quantization_config=None,
         cache_dir=None,
+        temperature : float=0.3,
+        max_tokens : int=1000
     ):
         """
         Initializes the HuggingFace model with the given model name and path.
@@ -121,6 +125,8 @@ class HuggingFace(GenerationModel):
         self.model_path = model_path
         self.quantization_config = quantization_config
         self._cache_dir = cache_dir
+        self.temperature=temperature
+        self.max_tokens=max_tokens
 
         self.model_init()
 
@@ -205,10 +211,10 @@ class HuggingFace(GenerationModel):
         print("Generating LLM answer.")
         tokens = self._model.generate(
             **inputs,
-            max_new_tokens=max_tokens,
+            max_new_tokens=self.max_tokens,
             do_sample=True,
             top_p=top_p,
-            temperature=temperature,
+            temperature=self.temperature,
             pad_token_id=self._tokenizer.eos_token_id,
             stop_strings=stop_tokens,
             tokenizer=self._tokenizer,
