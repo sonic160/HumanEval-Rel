@@ -136,7 +136,7 @@ class SandboxCodeRunner:
                     print(bcolors.WARNING + "\nWARNING[SandboxCodeRunner]: TIMEOUT error (you may want to check the LLM's code)" + bcolors.ENDC)
                     print("\ncode that timed out at execution:\n\n", *code_and_context, "\n\n\n")
                 return False
-    
+
     
     def run_tests(
         self, prompt: str, completion: str, tests: str, entry_point: str

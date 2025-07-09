@@ -22,7 +22,7 @@ class Benchmarker:
     and saves the results to a JSON file.
     """
 
-    def __init__(self, chal_file, completion_file=None, timeout_warnings=False, model_name=None, save_result_filepath=None):
+    def __init__(self, chal_file, completion_file=None, timeout_warnings=False, model_name=None, save_result_filepath=None, parallel=False,N_WORKERS=20):
         """
         Initializes the Benchmarker with a challenges file and an optional completions file.
 
@@ -43,7 +43,10 @@ class Benchmarker:
         self.generations = self.load_gen_file()
 
         print("Starting benchmark...")
-        self.result = self.benchmark_linear()
+        if parallel:
+            self.result = self.benchmark_parallel(N_WORKERS=N_WORKERS)  
+        else:
+            self.result = self.benchmark_linear()
 
         print("Saving results...")
         self.save_results()
@@ -59,7 +62,7 @@ class Benchmarker:
         try:
             f = open(self.chalfile)
         except FileNotFoundError:
-            print("File not found")
+            print(f"Challenge file not found: {self.chalfile}")
             exit(1)
 
         x = json.load(f)
@@ -76,7 +79,7 @@ class Benchmarker:
         try:
             f = open(self.completion_file)
         except FileNotFoundError:
-            print("File not found")
+            print(f"Completion file not found: {self.completion_file}")
             exit(1)
 
         x = json.load(f)
@@ -112,55 +115,44 @@ class Benchmarker:
                 else:
                     self.tests[id].append((result, completion))
         return self.score_model()
-
-    def benchmark_parallel(self):
+    
+    
+    def benchmark_parallel(self, N_WORKERS=20):
         """
         Runs tests on the model's responses in parallel, scores the model, and stores the results.
         """
-        with tqdm.tqdm(total=len(self.challenges)) as pbar:
+        
+        total_generations = sum(len(gens) for gens in self.generations.values())
+        
+        with tqdm.tqdm(total=total_generations) as pbar:
             with ThreadPoolExecutor(max_workers=N_WORKERS) as executor:
                 futures = []
-                completion_id = Counter()
 
                 for challenge in self.challenges:
-                    future = executor.submit(
-                        self.benchmark_worker, challenge, completion_id
+                    task_id, prompt, tests, entry_point = (
+                        challenge["task_id"],
+                        challenge["prompt"],
+                        challenge["test"],
+                        challenge["entry_point"],
                     )
-                    futures.append(future)
+                    for gen in self.generations[task_id]:
+                        completion = gen["completion"]
+                        future = executor.submit(
+                            self.sandbox.run_tests, prompt, completion, tests, entry_point
+                        )
+                        future.task_id = task_id
+                        futures.append(future)
 
                 for future in as_completed(futures):
                     pbar.update(1)
-                    id, answers = future.result()
-                    self.tests[id] = answers
+                    result, completion = future.result()
+                    task_id = future.task_id
+                    if task_id not in self.tests:
+                        self.tests[task_id] = [(result, completion)]
+                    else:
+                        self.tests[task_id].append((result, completion))
 
-        self.score_model()
-
-    def benchmark_worker(self, challenge, completion_id):
-        """
-        A worker function for running tests on the model's responses in parallel.
-
-        Args:
-            challenge (dict): A dictionary containing a single challenge.
-            completion_id (Counter): A counter for tracking the number of completions for each challenge.
-
-        Returns:
-            tuple: A tuple containing the challenge ID and a list of results.
-        """
-        id = challenge["task_id"]
-        answers = []
-        for gen in self.generations[challenge["task_id"]]:
-            completion = gen["completion"] #Model.extract_code(gen['whole_answer']) if 'whole_answer' in gen else gen["completion"] 
-            args = (
-                challenge["prompt"],
-                completion,
-                challenge["test"],
-                challenge["entry_point"],
-            )
-            result, completion = self.sandbox.run_tests(*args)
-
-            completion_id[challenge["task_id"]] += 1
-            answers.append((result, completion))
-        return id, answers
+        return self.score_model()
 
     def score_model(self) -> dict[int, float]:
         """
