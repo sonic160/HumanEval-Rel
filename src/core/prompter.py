@@ -5,7 +5,6 @@ from datetime import datetime
 import json
 import sys
 import tqdm
-import os
 # make sure progress bars resize with terminal size
 from functools import partial
 tqdm.tqdm = partial(tqdm.tqdm, dynamic_ncols=True)
@@ -51,8 +50,6 @@ class Prompter:
             completion_system (System): The language model to use for generating completions.
             challenges_file (str): The path to the JSON file containing the benchmark.
             savepath (str, optional): The path where the output JSON will be saved. Defaults to None.
-            show_example (bool): Flag to indicate if examples should be shown during prompting. Defaults to True.
-            recovery_file (str, optional): Path to the recovery file. Defaults to None.
         """
         self.completion_system: System = completion_system
         self.savepath = savepath
@@ -160,6 +157,7 @@ class Prompter:
                     output_list.append(challenge[i:i + size])
             return output_list
 
+
         # Filter out challenges that have already been completed
         completed_task_ids = set(item['task_id'] for item in self.completions)
         unprocessed_challenges = [c for c in self.challenges if c['task_id'] not in completed_task_ids]
@@ -179,8 +177,6 @@ class Prompter:
             except Exception as e:
                 print(f"error in batched generation for {self.completion_system.model_name}")
                 print(e)
-                # Save recovery state on error
-                self.save_recovery_state()
 
     def prompt(self) -> None:
         """
@@ -194,16 +190,13 @@ class Prompter:
 
         for i, challenge in enumerate(tqdm.tqdm(unprocessed_challenges, position=0, desc="challenges")):
             id, challenge_prompt = challenge['task_id'], challenge['prompt']
-            if not self.show_example:
-                challenge_prompt = self.remove_prompt_examples(challenge_prompt)  
-
             for _ in tqdm.tqdm(range(self.n), desc=f"collecting {self.n} samples for challenge{id}", position=1, leave=False):
                 try:
                     completion, whole_answer = self.completion_system.generate(
                                 prompt=challenge_prompt, 
                                 max_tokens=self.max_tokens, 
-                                top_p=self.top_p, 
-                                top_k=self.top_k, 
+                                top_p=0.95, 
+                                top_k=60, 
                                 temperature=self.temperature,
                                 prompt_prefix=self.prompt_prefix,
                                 prompt_suffix=self.prompt_suffix,
@@ -285,7 +278,7 @@ class Prompter:
             new_lines.append(lines[i])
         challenge_prompt = "\n".join(new_lines)
         return challenge_prompt
-
+      
     def output_json(self) -> None:
         """
         Saves the LLM's answers to the benchmark questions as a json file
@@ -302,7 +295,7 @@ class Prompter:
         json.dump(self.completions, open(self.savepath, 'w'))
 
 
-def parse_args() -> tuple[bool, str, str, str]:
+def parse_args() -> tuple[bool, str, str]:
     """
     Parses the command line arguments and returns them as a tuple.
     """
@@ -327,18 +320,11 @@ def parse_args() -> tuple[bool, str, str, str]:
         required=False,
         help="Use batched prompting to generate completions more quickly.",
     )
-    parser.add_argument(
-        "-r",
-        "--recovery",
-        required=False,
-        help="Path to the recovery file to use for job recovery.",
-    )
 
     return parser.parse_args()
 
 
 if __name__ == '__main__':
-    args = parse_args()
     model = TestModel("test")
     prompter = Prompter(model, "../data_set/json/example_problem.json", batch=False, n=1, 
                         recovery_file=args.recovery if hasattr(args, 'recovery') else None)

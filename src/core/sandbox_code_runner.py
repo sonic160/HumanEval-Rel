@@ -5,6 +5,8 @@ import os
 from typing import Optional, Callable, Dict, List
 import traceback
 import multiprocessing
+import numpy as np
+import pandas as pd
 
 
 TIMEOUT_SECONDS = 10
@@ -135,16 +137,15 @@ class SandboxCodeRunner:
                     print("\ncode that timed out at execution:\n\n", *code_and_context, "\n\n\n")
                 return False
 
-        
-    
     
     def run_tests(
         self, prompt: str, completion: str, tests: str, entry_point: str
-    ) -> bool:
+    ) -> tuple[bool, str]:
         #TODO: Delete the prompt argument
         # This method is used to run the tests in a sandbox environment
         code = (
             "from typing import List\n"
+            "import numpy as np\n"
             + str(completion)
             + "\n"
             + tests

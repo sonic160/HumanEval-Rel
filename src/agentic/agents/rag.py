@@ -1,0 +1,235 @@
+from ..models.embedding_model import EmbeddingModel
+import numpy as np
+import re
+from collections import Counter
+from nltk.stem import PorterStemmer  # For stemming
+
+
+'''
+========================= RAG CLASS OVERVIEW =========================
+
+The RAG (Retrieval-Augmented Generation) class aims to retrieve relevant 
+information to a question that can help another agent to generate a response.
+
+It supports two main document retrieval strategies:
+
+1. Embedding-based similarity ("emb"):
+   - Uses an embedding model to represent document titles and the 
+     input question as vectors.
+   - Computes the cosine similarity between the question vector 
+     and each title vector.
+   - Selects the top 3 documents with the highest similarity scores.
+
+2. Keyword frequency-based selection ("freq"):
+   - Extracts meaningful keywords from the question (ignores common stopwords).
+   - Applies light stemming (preserving acronyms like MCMC).
+   - Computes a TF-IDF-like score for each document based on keyword overlap.
+   - Selects the top 3 documents with the highest scores.
+
+Usage:
+- The method `corresponding_documents(question)` automatically selects 
+  the appropriate retrieval method based on the `selection` parameter 
+  defined when the object is instantiated (either "emb" or "freq").
+'''
+
+
+
+class RAG:
+    """
+    Initialize the RAG system.
+
+    Args:
+        embedding_model (EmbeddingModel): Model used for generating embeddings.
+        documents (list[str]): A list of (title, content) tuples.
+        selection (str): Retrieval strategy: "emb" for embeddings or "freq" for TF-IDF.
+    """
+    def __init__(
+        self,
+        embedding_model: EmbeddingModel,
+        documents: list[str] = [],
+        selection: str = "emb",
+    ):       
+        
+        self.emb_model = embedding_model
+        self.documents = documents  # list of tuples (title, content)
+        self.selection = selection
+        if selection == "freq":
+            self.stemmer = PorterStemmer()
+            self.idf = {}
+            self._compute_idf()
+
+        else:  # the else case is just : =="emb"
+            self.emb_titles = []
+            self._compute_emb_titles()
+
+    ## The main function
+
+    def corresponding_documents(self, question: str):
+        """
+        Retrieve documents relevant to the input question based on the selected retrieval strategy.
+
+        Args:
+            question (str): User input question.
+
+        Returns:
+            str: Concatenated top 3 relevant documents.
+        """
+        if self.selection=="emb":
+            return self.corresponding_documents_emb(question)
+        if self.selection=="freq":
+            return self.corresponding_documents_freq(question)
+        raise ValueError(f"Invalid selection: {self.selection}. Expected 'emb' or 'freq'.")
+   
+
+    ## Embedding technique
+
+    def similarity(self, vec1: list, vec2: list) -> float:
+        """
+        Compute cosine similarity between two vectors.
+
+        Args:
+            vec1 (list): First embedding vector.
+            vec2 (list): Second embedding vector.
+
+        Returns:
+            float: Cosine similarity score.
+        """
+        vec1 = np.array(vec1)
+        vec2 = np.array(vec2)
+        norm1 = np.linalg.norm(vec1)
+        norm2 = np.linalg.norm(vec2)
+        if norm1 == 0 or norm2 == 0:
+            return 0.0
+        return np.dot(vec1, vec2) / (norm1 * norm2)
+
+    def corresponding_documents_emb(self,question: str):
+        """
+        Retrieve top documents using embedding-based similarity.
+
+        Args:
+            question (str): User input question.
+
+        Returns:
+            str: Top 3 relevant documents concatenated.
+        """
+        question_emb=self.emb_model.generate_embedding(question)
+
+        n=len(self.documents)
+        infor_doc=""
+        scores=[]
+        indices=[j for j in range(n)]
+        for i in range(n):
+            emb=self.emb_titles[i]
+            score=self.similarity(question_emb,emb)
+            scores.append(score)
+        indices.sort(reverse=True, key= lambda i :scores[i] )
+
+
+        for k in range(3):# only the top 3 documents
+            infor_doc+=self.documents[indices[k]][1]+ "\n\n"
+
+        print("selected documents (embedding-based) : ",indices[:3])
+        return infor_doc
+    
+    def _compute_emb_titles(self):
+        """
+        Precompute title embeddings for all documents.
+        """
+        title_embeddings=self.emb_model.generate_embeddings([doc[0] for doc in self.documents])
+        self.emb_titles.extend(title_embeddings)
+
+
+
+    ## Keywords frequency technique
+
+
+    # stemming process
+    def stem_custom(self, word):
+        """
+        Custom stemming: lowercase acronyms (like MCMC), otherwise use Porter stemmer.
+
+        Args:
+            word (str): Word to stem.
+
+        Returns:
+            str: Stemmed or normalized word.
+        """
+        if word.isupper() and len(word) >= 3:  # Preserve acronyms like MCMC
+            return word.lower()
+        return self.stemmer.stem(word)
+    
+
+    def _extract_keywords(self, text: str) -> list[str]:
+        """
+        Extract keywords from a text by removing basic stopwords.
+
+        Args:
+            text (str): Input text.
+
+        Returns:
+            list[str]: List of non-stopword keywords.
+        """
+        words = re.findall(r'\w+', text.lower())
+        
+        # Basic stopwords list (expand as needed)
+        stop_set = {
+            "what", "how", "why", "when", "where", "who", 
+            "is", "are", "the", "a", "an", "and", "or", "of", "in", "to"
+        }
+        
+        return [word for word in words if word not in stop_set]
+
+    def corresponding_documents_freq(self, question: str):
+        """
+        Retrieve top documents using keyword frequency with TF-IDF weighting.
+
+        Args:
+            question (str): User input question.
+
+        Returns:
+            str: Top 3 relevant documents concatenated.
+        """
+        # Step 1: Extract stemmed keywords (remove stopwords)
+        keywords = [self.stem_custom(word) for word in self._extract_keywords(question)]
+
+        if not keywords:
+            print("no keywords found ! ")
+            return
+
+        # Step 2: Rank documents by keyword overlap
+        scores = []
+        for i, (title, content) in enumerate(self.documents):
+
+            content_words=[self.stem_custom(w) for w in re.findall(r'\w+', content.lower())]
+            content_word_counts = Counter(content_words)
+
+            score = sum(
+                (content_word_counts[word]/len(content_words))*self.idf.get(word, 1.0) 
+                for word in keywords 
+                if word in content_word_counts
+            )
+            scores.append((score, i))
+        
+        scores.sort(reverse=True, key=lambda x: x[0])
+        top_indices = [idx for (score, idx) in scores[:3]]
+
+        print("Selected documents (keyword-based):", top_indices)
+
+        return "\n\n".join(self.documents[idx][1] for idx in top_indices)
+
+    def _compute_idf(self):
+        """Precompute IDF with stemmed terms."""
+        doc_count = len(self.documents)
+    
+        all_terms=[]
+        for title, content in self.documents:
+            
+            content_terms = [self.stem_custom(word) for word in re.findall(r'\w+', content.lower())]
+            all_terms.extend(content_terms)
+
+        unique_terms=set(all_terms)
+        
+        for term in unique_terms:
+            docs_with_term = sum(1 for title, content in self.documents
+                               if term in [self.stem_custom(w) for w in re.findall(r'\w+', content.lower())])
+            self.idf[term] = np.log(doc_count / (1 + docs_with_term)) 

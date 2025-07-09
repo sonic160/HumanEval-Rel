@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 from openai import OpenAI
 from benchmarker import Benchmarker
 from core.model import Model
@@ -14,20 +13,13 @@ def retrieve_and_format_batch_results(batch_id: str, output_file: str) -> None:
         batch_id (str): The ID of the batch job.
         output_file (str): The path to the output file where formatted results will be saved.
     """
-    # check if the batch job is already downloaded
+    client = OpenAI(api_key="INSERT API KEY")
+    batch_job = client.batches.retrieve(batch_id)
+    result_file_id = batch_job.output_file_id
+    result = client.files.content(result_file_id).content
     raw_result_file_name =  output_file+"l" # jsonl format
-    print(raw_result_file_name)
-    if not os.path.exists(raw_result_file_name):
-        print("Downloading batch results...")
-        #client = OpenAI(api_key="INSERT API KEY")
-        batch_job = client.batches.retrieve(batch_id)
-        result_file_id = batch_job.output_file_id
-        result = client.files.content(result_file_id).content
-        with open(raw_result_file_name, 'wb') as file:
-            file.write(result)
-    else:
-        print("Batch results already downloaded.")
-        print("Loading batch results from local file...")
+    with open(raw_result_file_name, 'wb') as file:
+        file.write(result)
 
     formatted_results = []
     with open(raw_result_file_name, 'r') as file:
@@ -51,7 +43,7 @@ def main():
     
     args = parser.parse_args()
     batch_id = args.batchid
-    output_file = f"./batches/results_batch_{batch_id}_{args.modelname}.json"
+    output_file = f"./batches/results_{batch_id}_{args.modelname}.json"
     
     if args.action in ['download', 'both']:
         print("retrieving and formatting batch results...")
@@ -65,7 +57,7 @@ def main():
             timeout_warnings=True,
             model_name=args.modelname
         )
-       
+        bm.run_benchmark()  # Ajout de l'appel à run_benchmark qui manquait
 
 if __name__ == "__main__":
     main()
