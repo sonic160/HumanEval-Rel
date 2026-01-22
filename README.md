@@ -30,7 +30,7 @@ Built on the [Inspect AI](https://inspect.aisi.org.uk/) framework, HumanEval-Rel
 
 ## Features
 
-- **40 Handcrafted Problems** - Each with comprehensive test cases and reference solutions
+- **40 Handcrafted Problems** - With test cases 
 - **Built on Inspect AI** - Leverages industry-standard evaluation framework
 - **Comprehensive Analysis Tools** - Generate pass@k curves, heatmaps, error breakdowns
 - **Safe Code Execution** - Sandboxed testing environment with timeout protection
