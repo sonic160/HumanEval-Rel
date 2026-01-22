@@ -1,0 +1,362 @@
+[
+    {
+        "prompt": "def p_f_interval(cdf: callable, t: float, delta_t: float) -> float:\n    '''\n    You will be given a callable cdf, which is a cumulative distribution function of a random variable T, representing a lifetime distribution of an item.\n    You will be given two floats t and delta_t.\n    Your task is to develop a python script to calculate the probability that the item fails in a interval [t, t + delta_t].\n    Examples:\n    >>> p_f_interval(lambda x: 1 - np.exp(-x), 1, 2)\n    0.3180923728035784\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q0]",
+        "entry_point": "p_f_interval",
+        "tests": "def check(candidate):\n    import numpy as np\n\n    tol = 1e-6\n\n    def weibull_cdf(x, scale=2, shape=3):\n        return 1 - np.exp(-((x / scale) ** shape))\n\n    try:\n        assert abs(candidate(lambda x: weibull_cdf(x), 1, .5) - weibull_cdf(1.5) + weibull_cdf(1)) <= tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def p_f_interval(reliability: callable, t: float, delta_t: float) -> float:\n    '''\n    You will be given a callable reliability, which is a reliability function a lifetime distribution T, representing the lifetime of an item.\n    You will be given two floats t and delta_t.\n    Your task is to develop a python script to calculate the probability that the item fails either before t or after t + delta_t.\n    Examples:\n    >>> p_f_interval(lambda x: np.exp(-x), 1, 2)\n    0.6819076271964216\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q1]",
+        "entry_point": "p_f_interval",
+        "tests": "def check(candidate):\n    import numpy as np\n\n    def weibull_reliability(x, scale=2, shape=3):\n        return np.exp(-((x / scale) ** shape))\n\n    tol = 1e-6\n    try:\n        assert abs(candidate(lambda x: weibull_reliability(x), 1, .5) - 1 + weibull_reliability(1) - weibull_reliability(1.5)) <= tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def failure_speed(pdf: callable, t: float) -> float:\n    \"\"\" Given a callable pdf, which represents the probability density function of a lifetime distribution T, return the speed of failure probability at time t for the entire population with a lifetime T.\n    Example:\n    >>> import numpy as np\n    >>> failure_speed(lambda x: np.exp(-x), 1)\n    0.36787944117144233\n    \"\"\"\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q2]",
+        "entry_point": "failure_speed",
+        "tests": "def check(candidate):\n    import numpy as np\n    tol = 1e-6\n    try:\n        # test 1\n        pdf = lambda x: 1/np.sqrt(2*np.pi) * np.exp(-x**2/2)\n        assert abs(candidate(pdf, 10) - pdf(10)) <= tol\n\n        # test 2\n        pdf = lambda x: np.exp(-x**2-x)\n        assert abs(candidate(pdf, 2) - pdf(2)) <= tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def condition_failure_speed(failure_rate: callable, t: float) -> float:\n    ''' Given a callable failure_rate, which represents the failure rate function of a lifetime distribution, calculate the speed of failure probability for the samples that suvive up to t.\n    Example:\n    >>> condition_failure_speed(lambda x: x, 10)\n    10\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q3]",
+        "entry_point": "condition_failure_speed",
+        "tests": "def check(candidate):\n    import numpy as np\n\n    tol = 1e-6\n    try:\n        # test 1 \n        assert abs(candidate(lambda x: np.exp(-x**2), 10) - np.exp(-10**2)) <= tol\n\n        # test 2\n        assert candidate(lambda x: x, 10) == 10\n\n        # test 3\n        assert candidate(lambda x: 5, 20) == 5\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def condition_failure_speed(reliability: callable, t: float) -> float:\n    ''' Given a callable reliability, which represents the reliability function of a lifetime distribution, calculate the speed of failure probability for the samples that suvive up to t.\n    Example:\n    >>> import numpy as np\n    >>> condition_failure_speed(lambda x: np.exp(-x), 10)\n    1\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q4]",
+        "entry_point": "condition_failure_speed",
+        "tests": "def check(candidate):\n    import numpy as np\n\n    try:\n        tol = 1e-6\n        \n        # test 1\n        assert abs(candidate(lambda x: np.exp(-x**2), 10) - 2*10) <= tol\n        # test 2\n        reliability = lambda x: 1-.1*x\n        failure_rate = lambda x: .1/(1-.1*x)        \n        assert abs(candidate(reliability, 5) - failure_rate(5)) <= tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def failure_prob(failure_rate:callable, t: float, delta_t: float) -> float:\n    ''' Given a callable failure_rate, which represents the failure rate function of a lifetime distribution, return the probability that a sample would fail in the interval [t, t + delta_t].\n    Example:\n    >>> import numpy as np\n    >>> failure_prob(lambda t: 1, 10, 1)\n    2.8698228972239195e-05\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q5]",
+        "entry_point": "failure_prob",
+        "tests": "def check(candidate):\n    import numpy as np\n\n    try:\n        tol = 1e-6\n        # For an exponential distribution\n        assert abs(candidate(lambda t: 1, 10, 1) - np.exp(-10) + np.exp(-11)) <= tol\n\n        # For a Weibull distribution\n        beta = .8\n        eta = 100\n        # pdf = lambda t: beta/eta * (t/eta)**(beta-1) * np.exp(-(t/eta)**beta)\n        cdf = lambda t: 1 - np.exp(-(t/eta)**beta)\n\n        assert abs(candidate(lambda t: beta/eta * (t/eta)**(beta-1), 10, 1) - cdf(11) + cdf(10)) <= tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def failure_rate(failure_times: list, t: float, delta_t: float) -> float:\n    ''' Given a list of failure times in \"failure_times\", calculate the empirical estimator of the failure rate at time t. Use delta_t as the time interval for evaluating the failure rate.\n    Example:\n    >>> failure_rate([1, 2, 3, 4, 5], 2.5, 1)\n    >>> 1/3\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q6]",
+        "entry_point": "failure_rate",
+        "tests": "def check(failure_rate):\n    tol = 1e-6\n    try:\n      assert abs(failure_rate([1, 2, 3, 4, 5], 4.5, 1) - 1) < tol, \"Test failed\"\n      assert abs(failure_rate([0.5, 1.5, 2.5, 3.5, 4.5], 0, 2) - 2/5/2) < tol, \"Test failed\"\n      assert abs(failure_rate([10, 20, 30, 40, 50], 15, 20) - 2/4/20) < tol, \"Test failed\"\n      assert abs(failure_rate([2, 3, 5, 8, 13], 2.9, 5) - 2/4/5) < tol, \"Test failed\"\n\n      return \"pass\"\n    except AssertionError:\n      return \"fail\"",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def mrl_empirical(data: list[float], t: float) -> float:\n    ''' Given a list (data) of time to failure data, estimate empirically the mean residual life (MRL) at time t.\n    Examples:\n    >>> mrl_empirical([1, 2, 2, 3, 4, 5, 6], 3.5)\n    1.5\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q7]",
+        "entry_point": "mrl_empirical",
+        "tests": "def check(candidate):\n    import numpy as np\n\n    tol = 1e-6\n    try:\n        assert abs(candidate([1, 2, 2, 3, 4, 5, 6], 3.5) - 1.5) < tol\n        assert abs(candidate([4,5,1,2,2,2,2,3,3.5,4],2.5) - (np.asarray([4,5,1,2,2,2,2,3,3.5,4])[ (np.asarray([4,5,1,2,2,2,2,3,3.5,4]) >= 2.5)] -2.5).mean()) < tol\n        assert abs(candidate([3,1,4,5,6,2,1,4,7,8,9,5,2,1],4.1) - (np.asarray([3,1,4,5,6,2,1,4,7,8,9,5,2,1])[ (np.asarray([3,1,4,5,6,2,1,4,7,8,9,5,2,1]) >= 4.1)] -4.1).mean()) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def mrl(failure_rate: callable, t: float) -> float:\n    ''' Given a failure rate function failure rate and a time t, return the mean residual life of the system from time t.\n    Example:\n    >>> mrl(lambda t: t/(t+1), 9)\n    >>> 1.1\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q8]",
+        "entry_point": "mrl",
+        "tests": "def check(candidate):\n    tol = 1e-6\n    try:\n        assert(abs(candidate(lambda t: t/(t+1), 9) - 1.1)<tol)\n        assert(abs(candidate(lambda t: t/(t+1), 1) - 1.5)<tol)\n        assert(abs(candidate(lambda t: t/(t+1), 7) - 1.125)<tol)\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def failure_rate(mrl: callable, t: float) -> float:\n    ''' Given a mean residual life function, return the failure rate at time t\n    Example:\n    >>> failure_rate(lambda t: 1+1/(t+1), 9)\n    >>> .9\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q9]",
+        "entry_point": "failure_rate",
+        "tests": "def check(candidate):\n    tol = 1e-6\n    try:\n        assert abs(candidate(lambda x: 1 + 1 / (x + 1), 2) - 2 / 3)<tol\n        assert abs(candidate(lambda x: 1 + 1 / (x + 1), 3) - 3 / 4)<tol\n        assert abs(candidate(lambda x: 1 + 1 / (x + 1), 5) - 5 / 6)<tol\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def failure_prob(mrl: callable, t_1: float, t_2: float) -> float:\n    ''' Suppose the lifetime of a pump follows an exponential distribution, and the mean residual life function is mrl. Calculate the probability that a pump that survives t_1 will fail in the next t_2 unit of time.\n    Example:\n    >>> failure_prob(lambda t: 2336, 1460, 730)\n    .268\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q10]",
+        "entry_point": "failure_prob",
+        "tests": "def check(candidate):\n    import numpy as np\n    tol = 1e-6\n    try:\n        assert abs(candidate(lambda t: 2336, 1460, 730) - 0.2683843710533582 ) < tol\n        assert abs(candidate(lambda t: 145, 260, 150) -( 1 - np.exp(- (1/145)* 150))) < tol\n        assert abs(candidate(lambda t: 348, 423, 785) -( 1 - np.exp(- (1/348)* 785))) < tol\n\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def failure_rate(reliabilities: list[callable], fraction: list[float], t: float) -> float:\n    ''' Given a list reliabilities of callables where each element in reliabilities is a functional handle to a reliability function of a lifetime distribution. Suppose a new population is constructed by mixing the samples from the lifetime distributions in reliabilities following the fractions defined in a list fraction. Calculate the failure rate of the new population after time t.\n    Example:\n    >>> from scipy.stats import expon\n    >>> failure_rate([expon(scale=1/.1).sf, expon(scale=1/.2).sf, [0.4, 0.6], 10)\n    >>> 0.1355595\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q11]",
+        "entry_point": "failure_rate",
+        "tests": "def check(candidate):\n    import numpy as np\n    lambda1 = 1\n    lambda2 = 2\n    lambda3 = 5\n    lambdas = [lambda1, lambda2, lambda3]\n    reliabilities = [lambda t: np.exp(-lambda1 * t), lambda t: np.exp(-lambda2 * t), lambda t: np.exp(-lambda3 * t)]\n    fractions = [0.2, 0.5, 0.3]\n    tol = 1e-6\n    try:\n        t = 10\n        assert abs(candidate(reliabilities, fractions, t) - sum([f * l * r(t) for f, r, l in zip(fractions, lambdas, reliabilities)]) / sum([f * r(t) for f, r in zip(fractions, reliabilities)])) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def median_life_wbl(percentile_life: list[float], reliability: list[float]) -> float:\n    ''' Assume the lifetime follows a Weibull distribution. Given a list percentile_life, where the elements are the percentile life, and the corresponding reliability are given in another list reliability. Calculate the median life.\n    Example:\n    >>> median_life_wbl([86956.52173913045, 4380], [1/e, 0.807557891915148])\n    7388.5279425301605\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q12]",
+        "entry_point": "median_life_wbl",
+        "tests": "def check(candidate):\n  import numpy as np\n  tol = 1e-6\n  try:\n    assert(abs(candidate([86956.52173913045, 4380], [np.exp(-1), 0.807557891915148]) - 7388.5279425301605) < tol)\n    return 'pass'\n  except AssertionError:\n    return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def limit_failure_rate(percentile_life: list[float]) -> float:\n    ''' Assume the lifetime follows a Birnbaum-Saunders distribution. Given a list percentile_life, where the first element is the median life, and the second element is the percentile life corresponding to reliability of 0.1610870595108309. Calculate the limit failure rate when time goes to infinity.\n    Example:\n    >>> limit_failure_rate([1, 100])\n    .005\n    '''\n",
+        "task_id": "0_reliability_metrics_and_evaluation[Q13]",
+        "entry_point": "limit_failure_rate",
+        "tests": "def check(candidate):\n  import numpy as np\n  tol = 1e-6\n  try:\n    assert(abs(candidate([1, 100])) - .005)<tol\n    return 'pass'\n  except AssertionError:\n    return 'fail'",
+        "metadata": {
+            "origin": "0_reliability_metrics_and_evaluation"
+        }
+    },
+    {
+        "prompt": "def cal_series_sys_rel(comp_rel: np.array) -> float:\n    '''\n    You will be given a numpy array comp_rel. \n    Your task is to calculate the system reliability of a series system, where the reliability of the components in the system is given in comp_rel.\n\n    Examples:\n    >>> cal_series_sys_rel(np.array([.9])\n    .9\n    >>> cal_series_sys_rel(np.array([.9, .8])\n    .72\n    '''\n",
+        "task_id": "1_reliability_modeling[Q0]",
+        "entry_point": "cal_series_sys_rel",
+        "tests": "def check(candidate):\n    import numpy as np\n    try:\n        assert candidate(np.array([.9])) == .9\n        assert candidate(np.array([.9, .8])) == .9 * .8\n        assert candidate(np.array([.9, .8, .7])) == .9 * .8 * .7\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def cal_parallel_sys_rel(comp_rel: np.array) -> float:\n    '''\n    You will be given a numpy array comp_rel. \n    Your task is to calculate the system reliability of a parallel system, where the reliability of the components in the system is given in comp_rel.\n\n    Examples:\n    >>> cal_parallel_sys_rel(np.array([.9])\n    .9\n    >>> cal_parallel_sys_rel(np.array([.9, .8])\n    .98\n    '''\n",
+        "task_id": "1_reliability_modeling[Q1]",
+        "entry_point": "cal_parallel_sys_rel",
+        "tests": "def check(candidate):\n    import numpy as np\n    try:\n        assert candidate(np.array([.9])) == .9\n        assert candidate(np.array([.9, .8])) == 1-(1-.9)*(1-.8)\n        assert candidate(np.array([.9, .8, .7])) == 1-(1-.9)*(1-.8)*(1-.7)\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def cal_k_out_of_n_F(comp_rel: np.array, k: int) -> float:\n    '''\n    You will be given a numpy array comp_rel with length n, where i-th element in the arrary corresponds to the reliability of the i-th component.\n    Your task is to develop a code to calculate the system reliability of a k-out-of-n:F system.\n    In a k-out-of-n:F system, we need at least k out of the n components to fail in order to have a failing system.\n\n    Examples:\n    >>> cal_k_out_of_n_F(np.array([1, 1, 1]), 2)\n    0\n    >>> cal_k_out_of_n_F(np.array([.9, .9, .9]), 2)\n    .972\n    '''\n",
+        "task_id": "1_reliability_modeling[Q2]",
+        "entry_point": "cal_k_out_of_n_F",
+        "tests": "def check(candidate):\n    import numpy as np\n    tolerance = 1e-9  # Set a tolerance value, adjust as needed\n\n    def check_result(answer, expected):\n        if abs(answer - expected) <= tolerance:\n            return True\n        else:\n            return False\n\n    try:\n        assert check_result(candidate(np.array([1, 1, 1]), 2), 1)\n        assert check_result(candidate(np.array([.9, .9, .9]), 0), 0)\n        assert check_result(candidate(np.array([.9, .9, .9]), 1), .729)\n        assert check_result(candidate(np.array([.9, .9, .9]), 2), .972)\n        assert check_result(candidate(np.array([.9, .9, .9]), 3), .999)\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def cal_mcs(mcs: list, comp_rel: np.array) -> float:\n    '''\n    You will be given a list mcs, where each element represents a Minimal Cut Set of a system. The elements in mcs are lists containing the index of the components in the MCS. The reliabilities of the components are contained in the input parameter comp_rel. Comp_rel is a numpy array where each element in comp_rel is the reliability of the corresponding component. Please write a function to calculate the reliability of the system, whose minimal cut sets are contained in mcs.\n\n    Examples:\n    >>> cal_mcs([[1, 2, 3], [1, 2, 4], [1, 3, 4]], np.array([0.9, 0.8, 0.7, 0.6]))\n    0.9788\n    '''\n",
+        "task_id": "1_reliability_modeling[Q3]",
+        "entry_point": "cal_mcs",
+        "tests": "def check(candidate):\n    import numpy as np\n    tol = 1e-6\n    try:\n        assert abs(candidate([[1,2,3], [1,2,4], [1,3,4]], np.array([[.9, .8, .7, .6]])) - .9788)<tol\n        assert abs(candidate([[1, 2], [4, 5], [1, 3, 5], [2, 3, 4]], np.array([.9, .9, .9, .9, .9])) - 0.97848)<tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def mttf_time_dep_series(comp_rel: list) -> float:\n    '''\n    You will be given a list comp_rel. In this list, each element is a function handle, representing the reliability function of a component at a given time $t$. \n    Assume that we have a series system whose components correspond to the ones in comp_rel. Your task is to develop a python code to calculate the MTTF of the system.\n\n    Examples:\n    >>> from scipy.stats import expon\n    >>> mttf_time_dep_series([expon(scale=1/.1).sf, expon(scale=1/.2).sf, expon(scale=1/.3).sf])\n    1/.6\n    '''\n",
+        "task_id": "1_reliability_modeling[Q4]",
+        "entry_point": "mttf_time_dep_series",
+        "tests": "def check(candidate):\n    from scipy.stats import expon\n\n    tol = 1e-6\n    try:\n        # Define a callable to calculate the survival function of the exponential distribution\n        def survival_function_exp_1(x):\n            exponential_dist = expon(scale=1/.01)\n            return exponential_dist.sf(x)\n        \n        def survival_function_exp_2(x):\n            exponential_dist = expon(scale=1/.02)\n            return exponential_dist.sf(x)\n\n        assert abs(candidate([survival_function_exp_1, survival_function_exp_2]) - 1/(.01+.02)) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def median_life_parallel_time_dep(comp_rel: list) -> float:\n    '''\n    You will be given a list comp_rel. In this list, each element is a function handle, representing the reliability function of a component at a given time $t$. \n    Assume that we have a parallel system whose components correspond to the ones in comp_rel. Your task is to develop a python code to calculate the median life of the system.\n\n    Examples:\n    >>> from scipy.stats import expon\n    >>> median_life_parallel_time_dep([expon(scale=1/.01).sf, expon(scale=1/.01).sf])\n    122.8\n    '''\n",
+        "task_id": "1_reliability_modeling[Q5]",
+        "entry_point": "median_life_parallel_time_dep",
+        "tests": "def check(candidate):\n    from scipy.stats import expon\n\n    tol = 1e-6\n    try:\n        # Define a callable to calculate the survival function of the exponential distribution\n        def survival_function_exp_1(x):\n            exponential_dist = expon(scale=1/.01)\n            return exponential_dist.sf(x)\n        \n        def survival_function_exp_2(x):\n            exponential_dist = expon(scale=1/.01)\n            return exponential_dist.sf(x)\n\n        assert abs(candidate([survival_function_exp_1, survival_function_exp_2]) - 122.79471772995157) <= tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def failure_rate_k_out_of_n_g_time_dep(comp_rel: list, t: float) -> float:\n    '''\n    You will be given a list comp_rel. In this list, each element is a function handle, representing the reliability function of a component at a given time $t$.\n    Assume that we have a k-out-of-n:G system whose components correspond to the ones in comp_rel. Your task is to develop a python code to calculate the value of the failure rate of the system, at a time instant t given as the second input of the function. In a k-out-of-n:G system, we need at least k out of the n components to be working in order to have a working system.\n\n    Examples:\n    >>> from scipy.stats import expon\n    >>> exponential_dist = expon(scale=1/.01)\n    >>> comp_rel = [exponential_dist.sf, exponential_dist.sf, exponential_dist.sf]\n    >>> failure_rate_k_out_of_n_g_time_dep(comp_rel, 0.01)\n    6.0057072188951254e-06\n    '''\n",
+        "task_id": "1_reliability_modeling[Q6]",
+        "entry_point": "failure_rate_k_out_of_n_g_time_dep",
+        "tests": "def check(candidate):\n    from scipy.stats import expon\n    tol = 1e-6\n    try:\n        # Define a callable to calculate the survival function of the exponential distribution\n        def survival_function_exp(x):\n            exponential_dist = expon(scale=1/.01)\n            return exponential_dist.sf(x)\n\n        assert abs(candidate([survival_function_exp, survival_function_exp, survival_function_exp], 1) - 0.0006652234458582987) <= tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def birnbaum_im(func_sys_r: callable, comp_rel: np.array, idx: int) -> float:\n    '''\n    You will be given a function handle func_sys_r, which takes as input a numpy array comp_rel, whose elements are the reliability of the components in a system, and calculate the reliability of the system. The second input of the function is comp_rel, a numpy array of the same length as the number of components in the system and each element correspond to the reliability of the corresponding component. The third input of the function, idx, is an integer that represents the index of a component. Please write a python function to calculate the birnbaum importance measure of the component with index idx. idx starts from 0 to n-1, where n is the number of elements in comp_rel.\n\n    Examples:\n    >>> def func_sys_r(comp_rel):\n    >>>     return np.prod(comp_rel)\n    >>> birnbaum_im(func_sys_r, np.array([0.9, 0.9, 0.9]), 0)\n    0.81\n    '''\n",
+        "task_id": "1_reliability_modeling[Q7]",
+        "entry_point": "birnbaum_im",
+        "tests": "def check(candidate):\n    import numpy as np\n    def cal_series_sys_rel(comp_rel: np.array) -> float:\n        '''\n        You will be given a numpy array comp_rel. \n        Your task is to calculate the system reliability of a series system, where the reliability of the components in the system is given in comp_rel.\n\n        Examples:\n        >>> cal_series_sys_rel(np.array([.9])\n        .9\n        >>> cal_series_sys_rel(np.array([.9, .8])\n        .72\n        '''\n\n        return np.prod(comp_rel)\n    \n    \n    def cal_parallel_sys_rel(comp_rel: np.array) -> float:\n        '''\n        You will be given a numpy array comp_rel. \n        Your task is to calculate the system reliability of a parallel system, where the reliability of the components in the system is given in comp_rel.\n\n        Examples:\n        >>> cal_parallel_sys_rel(np.array([.9])\n        .9\n        >>> cal_parallel_sys_rel(np.array([.9, .8])\n        .98\n        '''\n\n        return 1 - np.prod(1 - comp_rel)\n    \n    def cal_2_out_of_3_g(comp_rel: np.array) -> float:\n        r_1 = comp_rel[0]\n        r_2 = comp_rel[1]\n        r_3 = comp_rel[2]\n\n        return r_1*r_2 + r_2*r_3 + r_1*r_3 - 2*r_1*r_2*r_3 \n\n    tol = 1e-6\n    try:\n        assert abs(candidate(cal_series_sys_rel, np.array([.9, .8, .7, .6]), 0) - .8*.7*.6)<tol\n        assert abs(candidate(cal_parallel_sys_rel, np.array([.9, .9, .9, .9, .9]), 0) - .1**4)<tol\n        assert abs(candidate(cal_2_out_of_3_g, np.array([.98, .96, .94]), 0) - .0952)<tol\n        assert abs(candidate(cal_2_out_of_3_g, np.array([.98, .96, .94]), 1) - .0776)<tol\n        assert abs(candidate(cal_2_out_of_3_g, np.array([.98, .96, .94]), 2) - .0584)<tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def criticality_im(func_sys_r: callable, comp_rel: np.array, idx: int) -> float:\n    '''\n    You will be given a function handle func_sys_r, which takes as input a numpy array comp_rel, whose elements are the reliability of the components in a system, and calculate the reliability of the system. The second input of the function is comp_rel, a numpy array of the same length as the number of components in the system and each element correspond to the reliability of the corresponding component. The third input of the function, idx, is an integer that represents the index of a component. Please write a python function to calculate the criticality importance measure of the component with index idx. idx starts from 0 to n-1, where n is the number of elements in comp_rel.\n\n    Examples:\n    >>> def func_sys_r(comp_rel):\n    >>>     return np.prod(comp_rel)\n    >>> criticality_im(func_sys_r, np.array([.98, .96]), 0)\n    .3243\n    '''\n",
+        "task_id": "1_reliability_modeling[Q8]",
+        "entry_point": "criticality_im",
+        "tests": "def check(candidate):\n    import numpy as np\n    def cal_series_sys_rel(comp_rel: np.array) -> float:\n        '''\n        You will be given a numpy array comp_rel. \n        Your task is to calculate the system reliability of a series system, where the reliability of the components in the system is given in comp_rel.\n\n        Examples:\n        >>> cal_series_sys_rel(np.array([.9])\n        .9\n        >>> cal_series_sys_rel(np.array([.9, .8])\n        .72\n        '''\n\n        return np.prod(comp_rel)\n    \n    \n    def cal_parallel_sys_rel(comp_rel: np.array) -> float:\n        '''\n        You will be given a numpy array comp_rel. \n        Your task is to calculate the system reliability of a parallel system, where the reliability of the components in the system is given in comp_rel.\n\n        Examples:\n        >>> cal_parallel_sys_rel(np.array([.9])\n        .9\n        >>> cal_parallel_sys_rel(np.array([.9, .8])\n        .98\n        '''\n\n        return 1 - np.prod(1 - comp_rel)\n    \n    def cal_2_out_of_3_g(comp_rel: np.array) -> float:\n        r_1 = comp_rel[0]\n        r_2 = comp_rel[1]\n        r_3 = comp_rel[2]\n\n        return r_1*r_2 + r_2*r_3 + r_1*r_3 - 2*r_1*r_2*r_3 \n\n    tol = 1e-4\n    try:\n        assert abs(candidate(cal_series_sys_rel, np.array([.98, .96]), 0) - .3243)<tol\n        assert abs(candidate(cal_series_sys_rel, np.array([.98, .96]), 1) - .6622)<tol\n        assert abs(candidate(cal_parallel_sys_rel, np.array([.98, .96]), 0) - 1)<tol\n        assert abs(candidate(cal_parallel_sys_rel, np.array([.98, .96]), 1) - 1)<tol\n        assert abs(candidate(cal_2_out_of_3_g, np.array([.98, .96, .94]), 0) - .4424)<tol\n        assert abs(candidate(cal_2_out_of_3_g, np.array([.98, .96, .94]), 1) - .7212)<tol\n        assert abs(candidate(cal_2_out_of_3_g, np.array([.98, .96, .94]), 2) - .8141)<tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "1_reliability_modeling"
+        }
+    },
+    {
+        "prompt": "def expected_number_of_failures(reliability: callable, t: float) -> float:\n    ''' Given a reliability function (reliability) of a lifetime distribution, calculate the expected number of failures before time t, if a failed item is replaced imediately with the same one, and the replacement time can be negligible.\n    Example:\n    >>> expected_number_of_failures(lambda t: np.exp(-.001*t), 4320)\n    4.32\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q0]",
+        "entry_point": "expected_number_of_failures",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t: np.exp(-.01*t), 1000) - 10) < tol\n\n        # Test 2\n        eta = 100\n        beta = .8\n        reliabilty = lambda t: np.exp(-(t/eta)**beta)\n\n        assert abs(candidate(reliabilty, 300) - 2.923486) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def prob_n_t(reliability: callable, t: float, n: int) -> float:\n    ''' Given a reliability function (reliability) of a lifetime distribution, calculate the probablity that more than n failures occur before time t, if a failed item is replaced imediately with the same one, and the replacement time can be negligible.\n    Example:\n    >>> expected_number_of_failures(lambda t: np.exp(-.001*t), 4320, 5)\n    0.2667\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q1]",
+        "entry_point": "prob_n_t",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t: np.exp(-.01*t), 1000, 5) - 0.93291) < tol\n\n        # Test 2\n        eta = 100\n        beta = .8\n        reliabilty = lambda t: np.exp(-(t/eta)**beta)\n\n        assert abs(candidate(reliabilty, 1000, 5) - 0.83701) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def expected_cost_rate(reliability: callable, cost: float) -> float:\n    ''' Given a reliability function (reliability) of a lifetime distribution and the cost of a new item, calculate the expected cost rate, if a failed item is replaced imediately with the same one, and the replacement time can be negligible.\n    Example:\n    >>> expected_cost_rate(lambda t: np.exp(-.001*t), 1000)\n    1\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q2]",
+        "entry_point": "expected_cost_rate",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t: np.exp(-.01*t), 100) - 1) < tol\n\n        # Test 2\n        eta = 100\n        beta = .8\n        reliabilty = lambda t: np.exp(-(t/eta)**beta)\n\n        assert abs(candidate(reliabilty, 1000) - 8.826101) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def availability(reliability: callable, t: float) -> float:\n    ''' Given a reliability function (reliability) of a lifetime distribution, calculate the availability at time t, if a failed item is replaced imediately with the same one, and the replacement time can be negligible.\n    Example:\n    >>> expected_cost_rate(lambda t: np.exp(-.001*t), 1000)\n    1\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q3]",
+        "entry_point": "availability",
+        "tests": "def check(candidate):\n    import numpy as np\n    tol = 1e-8\n    try:\n        assert abs(candidate(lambda t: np.exp(-.01*t), 1000) - 1) < tol\n        assert abs(candidate(lambda t: np.exp(-.01*t), 10) - 1) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def age_replacement_reliability(reliability: callable, t_pm: float, t: float) -> float:\n    ''' Given the reliability function of the lifetime distribution of an item in \"reliability\", calculate the reliability of the system at t (t>t_pm), suppose an age replacement strategy is implemented: The system is replaced when its age reached t_pm or a failure occurs.\n    Example:\n    >>> age_replacement_reliability(lambda t: np.exp(-.001*t), 100, 210)\n    0.810584245970187\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q4]",
+        "entry_point": "age_replacement_reliability",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t: np.exp(-.001*t), 100, 210) - 0.8105842) < tol\n\n        # Test 2\n        eta = 100\n        beta = .8\n        reliabilty = lambda t: np.exp(-(t/eta)**beta)\n\n        assert abs(candidate(reliabilty, 10, 100) - 0.204969684) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def age_replacement_ecr(reliability: callable, t_pm: float, c_1: float, c_2: float) -> float:\n    ''' Given the reliability function of the lifetime distribution of an item in \"reliability\", calculate the expected cost rate of the system, if an age replacement strategy is implemented: The system is replaced when its age reached t_pm or a failure occurs. The corrective and preventive maintenance costs are c_1 and c_2, respectively.\n    Example:\n    >>> age_replacement_ecr(lambda t: np.exp(-(t/100)**1.5), 37.81444946338333, 1000, 100)\n    8.30161632386323\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q5]",
+        "entry_point": "age_replacement_ecr",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        t_pm = 80\n        c_1 = 1000\n        c_2 = 100\n\n        eta = 100\n        beta = 1.5\n        reliability = lambda t: np.exp(-(t/eta)**beta)\n\n        assert abs(candidate(reliability, t_pm, c_1, c_2) - 9.113130943) < tol\n\n        # Test 2\n        assert abs(candidate(lambda t: np.exp(-(t/100)**1.5), 37.81444946338333, 1000, 100) - 8.301616323) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def age_replacement_optimization(reliability: callable, c_1: float, c_2: float) -> float:\n    ''' Given the reliability function of the lifetime distribution of an item in \"reliability\", calculate the optimal value of t_pm to minimize the expected cost rate, if an age replacement strategy is implemented: The system is replaced when its age reached t_pm or a failure occurs. The corrective and preventive maintenance costs are c_1 and c_2, respectively.\n    Example:\n    >>> age_replacement_optimization(lambda t: np.exp(-(t/100)**1.5), 1000, 100)\n    37.81444946338333\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q6]",
+        "entry_point": "age_replacement_optimization",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        c_1 = 1000\n        c_2 = 100\n\n        eta = 200\n        beta = 1.1\n        reliability = lambda t: np.exp(-(t/eta)**beta)\n\n        assert abs(candidate(reliability, c_1, c_2) - 292.55375) < tol\n\n        # Test 2\n        assert abs(candidate(lambda t: np.exp(-(t/100)**1.5), 1000, 100) - 37.81445002) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def average_cost_rate(generate_ttf: callable, t_pm: float, c_1: float, c_2: float, n_s: int, t: float) -> float:\n    ''' Suppose an age replacement strategy is implemented: The system is replaced with a new one with the same lifetime distribution T when its age reached t_pm or a failure occurs. The corrective and preventive maintenance costs are c_1 and c_2, respectively. Given a function generate_ttf that generate a random sample from the distribution of T, calculate the average cost rate in [0, t] of the system through Monte Carlo simulation with sample size n_s. The average cost rate is defined as the total cost in [0, t] divided by t.\n    Example:\n    >>> average_cost_rate(lambda t: np.exp(-(t/100)**1.5), 37.81444946338333, 1000, 100, 1e4)\n    9.02852\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q7]",
+        "entry_point": "average_cost_rate",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 3e-2\n\n    try:\n        from reliability.Distributions import Weibull_Distribution\n    \n        lifetime_dist = Weibull_Distribution(alpha=100, beta=1.5)\n        generate_ttf = lambda: lifetime_dist.random_samples(number_of_samples=1)\n\n        t_pm = 80\n        c_1 = 1000\n        c_2 = 100\n        n_s = 100000\n        evaluation_horizon = 1000\n\n        assert abs(candidate(generate_ttf, t_pm, c_1, c_2, n_s, evaluation_horizon) - 8.98) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def block_replacement_ecr(reliability: callable, t_pm: float, c_1: float, c_2: float) -> float:\n    ''' Given the reliability function of the lifetime distribution of an item in \"reliability\", calculate the expected cost rate of the system, if a block replacement strategy is implemented: The system is replaced every t_pm units of time or a failure occurs. The corrective and preventive maintenance costs are c_1 and c_2, respectively.\n    Example:\n    >>> block_replacement_ecr(lambda t: np.exp(-(t/100)**1.5), 38.9466950707395, 1000, 100)\n    8.51687052111067\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q8]",
+        "entry_point": "block_replacement_ecr",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t: np.exp(-(t/100)**1.5), 38.9466950707395, 1000, 100) - 8.516873) < tol\n\n        # Test 2\n        assert abs(candidate(lambda t: np.exp(-(t/200)**1.5), 100, 1000, 100) - 4.302108963) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def limit_availability(reliability: callable, tau: float) -> float:\n    ''' Assume we replace a system with a new one that has the same lifetime distribution, and the replacement takes a constant time tau. Assume the process has been running for a long time. Given a callable reliability, representing the reliability function of the system, calculate the probability that a user needs to use the system, but the system is not available.\n    Example:    \n    limit_availability(lambda t: np.exp(-(t/100)**1.5), 100)\n    >>> 0.47444358227836264\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q9]",
+        "entry_point": "limit_availability",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t: np.exp(-(t/100)**1.5), 100) - 0.474443582278) < tol\n\n        # Test 2\n        assert abs(candidate(lambda t: np.exp(-(t/200)**.8), 100) - 0.693815644) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def interval_availability(interval: list, _lambda: float, _mu, float) -> float:\n    ''' Given a list of interval of the form [start, end], return the interval availability in [start, end]. The failure time and repair times are both exponentially distributed with rate _lambda and _mu respectively.\n    Example:\n    >>> interval_availability([0, 100], .001, .0001)\n    >>> 0.951784\n    '''\n",
+        "task_id": "2_maintenance_repairable_systems[Q10]",
+        "entry_point": "interval_availability",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate([1, 2], .1, 1) - 0.92744) < tol\n\n        # Test 2\n        assert abs(candidate([0, 100], .001, .0001) - 0.951784) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "2_maintenance_repairable_systems"
+        }
+    },
+    {
+        "prompt": "def km_estimate(ttf_data: list[float], censored_data: list[float], t: float) -> float:\n    ''' Given a list of time-to-failure data ttf_data, and a list of censoring time in censored_data, calculate the Kaplan-Meier estimate of reliability function at time t. \n    Example,\n    >>> km_estimate([31.7, 39.2, 57.5, 65.8, 70.0, 105.8, 110.0], [65.0, 75.0, 75.2, 87.5, 88.3, 94.2, 101.7, 109.2, 130.0], 58)\n    0.813\n    '''\n",
+        "task_id": "3_reliability_estimation_and_data_analysis[Q0]",
+        "entry_point": "km_estimate",
+        "tests": "def check(candidate):\n    import numpy as np\n    \n    tol = 1e-3\n\n    # Test.\n    ttf_data_1 = [22.5, 34.7, 40.1, 78.2, 79.3]\n    censored_data_1 = [54.3, 62.5, 85.4, 90.8]\n    t_1 = 52 # test regular time.\n    t_2 = 34.7 # test an exact match on time from failure data.\n    t_3 = 91 # test after censoring and failure upper bound.\n    t_4 = 22 # test before censoring and failure lower bound.\n\n    try:\n        # Test 1\n        assert abs(candidate(ttf_data_1, censored_data_1, t_1) - 0.6666666) < tol\n        assert abs(candidate(ttf_data_1, censored_data_1, t_2) - 0.7777777777) < tol\n        assert abs(candidate(ttf_data_1, censored_data_1, t_3) - 0.33333333) < tol\n        assert abs(candidate(ttf_data_1, censored_data_1, t_4) - 1) < tol\n\n        ttf_data_2 = [22.5, 40.1, 34.7, 78.2, 79.3] # test non-sorted failure \n        assert abs(candidate(ttf_data_2, censored_data_1, t_1) - 0.66666666) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "3_reliability_estimation_and_data_analysis"
+        }
+    },
+    {
+        "prompt": "def loglikelihood(pdf: callable, theta: list, data: list[float], right_censored: list[float], left_censored: list[float], interval_censor: list[list[float, float]]) -> float:\n    ''' Given a callable `pdf`, which represents the probability density function of a lifetime distribution and take as inputs parameters t (time) and theta (a list of model parameters), a list `theta`, which represents the parameter values of pdf, a list `data` representing $n$ complete time-to-failure data, a list `right_censored`, representing the censoring time of $n_rc$ right-censored data, a list `left_censored`, representing the censoring time of $n_lc$ left-censored data, and a list `interval_censor` whose elements are list [ll, ul], representing the lower and upper bounds of the interval censoring data, calculate the value of the loglikelihood function of given `data`, `right_censored`, `left_censored` at the parameter value `theta`.\n    Example:\n    >>> loglikelihood(lambda t, theta: 1/theta*np.exp(-t / theta), 10, [10], [5], [10], [[5, 10]])\n    >>> -5.6940123679\n    '''\n",
+        "task_id": "3_reliability_estimation_and_data_analysis[Q1]",
+        "entry_point": "loglikelihood",
+        "tests": "def check(candidate):\n    import numpy as np\n    from scipy.stats import weibull_min\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        pdf = lambda t, theta: 1/theta*np.exp(-t / theta)\n        theta = 10\n\n        assert abs(candidate(pdf, theta, [10], [5], [10], [[5, 10]]) + 5.6940123679) < tol\n        # Test 2\n        def pdf(t, theta):\n            eta = theta[0]\n            beta = theta[1]\n\n            return weibull_min.pdf(t, beta, scale=eta)\n        theta = [100, 1]\n\n        data = [10, 15]\n        right_censored = [5, 6]\n        left_censored = [1, 2]\n        interval_censor = [[5, 10], [3, 5]]\n\n        assert abs(candidate(pdf, theta, data, right_censored, left_censored, interval_censor) + 25.1251471) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "3_reliability_estimation_and_data_analysis"
+        }
+    },
+    {
+        "prompt": "def loglikelihood(reliability: callable, theta: list, data: list[float], right_censored: list[float], left_censored: list[float], interval_censor: list[list[float, float]]) -> float:\n    ''' Given a callable `reliability`, which represents the reliability function of a lifetime distribution and take as inputs parameters t (time) and theta (a list of model parameters), a list `theta`, which represents the parameter values of pdf, a list `data` representing $n$ complete time-to-failure data, a list `right_censored`, representing the censoring time of $n_rc$ right-censored data, a list `left_censored`, representing the censoring time of $n_lc$ left-censored data, and a list `interval_censor` whose elements are list [ll, ul], representing the lower and upper bounds of the interval censoring data, calculate the value of the loglikelihood function of given `data`, `right_censored`, `left_censored` at the parameter value `theta`.\n    Example:\n    >>> loglikelihood(lambda t, theta: np.exp(-t / theta), 10, [10], [5], [10], [[5, 10]])\n    >>> -5.6940123679\n    '''\n",
+        "task_id": "3_reliability_estimation_and_data_analysis[Q2]",
+        "entry_point": "loglikelihood",
+        "tests": "def check(candidate):\n    import numpy as np\n    from scipy.stats import weibull_min\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t, theta: np.exp(-t / theta), 10, [10], [5], [10], [[5, 10]]) + 5.6940123679) < tol\n        \n        # Test 2\n        def reliability(t, theta):\n            eta = theta[0]\n            beta = theta[1]\n\n            return 1-weibull_min.cdf(t, beta, scale=eta)\n        theta = [100, 1]\n\n        data = [10, 15]\n        right_censored = [5, 6]\n        left_censored = [1, 2]\n        interval_censor = [[5, 10], [3, 5]]\n\n        assert abs(candidate(reliability, theta, data, right_censored, left_censored, interval_censor) + 25.1251471) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "3_reliability_estimation_and_data_analysis"
+        }
+    },
+    {
+        "prompt": "def mle_censored(density: callable, initial_guess: list[float], data: list[float], right_censored: list[float]=None, left_censored: list[float]=None, interval_censored: list[list[float, float]]=None) -> list:\n    ''' Given a density function `density` with inputs t (time) and theta (parameter vector), a list of initial guess of the parameter theta, a list of complete time-to-failure data in `data`, a list of right censored data in `right_censored`, and a list of left censored data in `left_censored`, and a list of interval cenored data (interval_censor), which is in the format of [[lower, upper]], return the MLE of the parameter theta of the density function. \n    Example:\n    >>> mle_censored(lambda t,_lambda: _lambda * np.exp(-_lambda * t), \n    >>>                   [.01], [1.2, 2.2, 4.1, 5.6, 8.4, 16.2, 21.7, 41, 49.3, 60.5, 94, 98],\n    >>>                   [1.8, 11.8, 13.4, 29, 42, 42.4, 61, 99.2])\n    >>> 0.01707468\n    '''\n",
+        "task_id": "3_reliability_estimation_and_data_analysis[Q3]",
+        "entry_point": "mle_censored",
+        "tests": "def check(candidate):\n    import numpy as np\n    from scipy.stats import weibull_min\n    \n    tol = 1e-3\n\n    try:\n        # Test 1\n        assert abs(candidate(lambda t,_lambda: _lambda * np.exp(-_lambda * t), \n                       [.01], [1.2, 2.2, 4.1, 5.6, 8.4, 16.2, 21.7, 41, 49.3, 60.5, 94, 98],\n                       [1.8, 11.8, 13.4, 29, 42, 42.4, 61, 99.2])[0] - 0.01707468) < tol\n        # Test 2\n        pdf = lambda t, theta: 1/theta*np.exp(-t / theta)\n        assert abs(candidate(pdf, [.1], [10, 5, 3, 5, 9], [15, 16], [12], [[10, 11]])[0] - 11.20241411) < tol\n\n        # Test 3\n        def pdf(t, theta):\n            eta = theta[0]\n            beta = theta[1]\n\n            return weibull_min.pdf(t, beta, scale=eta)\n        \n        initial_guess = [100, 1]\n        data = [58,75,36,52,63,65,22,17,28,64,23,40,73,45,52,36,52,60,13,55,82,55,34,57,23,42,66,35,34,25]\n        assert abs(candidate(pdf, initial_guess, data)[0] - 51.85858775) < tol\n        assert abs(candidate(pdf, initial_guess, data)[1] - 2.80074465) < tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "3_reliability_estimation_and_data_analysis"
+        }
+    },
+    {
+        "prompt": "def failure_rate_updating(alpha: float, beta: float, observed_failure_time: list[float]) -> float:\n    ''' Assume that the lifetime follows an exponential distribution and the prior distribution of failure rate is a gamma distribution with parameters alpha and beta. Given alpha, beta and a list of observed failure times in `observed_failure_time`, return the posterior mean of the failure rate.\n    >>> Examples: failure_rate_updating(2, 1, [10, 20])\n    >>> 0.129032\n    '''\n",
+        "task_id": "3_reliability_estimation_and_data_analysis[Q4]",
+        "entry_point": "failure_rate_updating",
+        "tests": "def check(candidate):\n    import numpy as np\n    from scipy.stats import weibull_min\n    \n    tol = 1e-3\n\n    try:\n        assert abs(candidate(2, 1, [10, 20])-4/31)<tol\n        # Test 1\n        assert abs(candidate(10, 2, [100, 200, 300, 400])-0.0139720)<tol\n\n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "3_reliability_estimation_and_data_analysis"
+        }
+    },
+    {
+        "prompt": "def gpm(t_measure: float, data: float, y_th: float, t_pred: float) -> float:\n    ''' Assume that the degradation follows a general path model with a linear degradation model and a white noise. Given a list of `t_measure` and a list of floats `data`, representing the measurement time and measured degradation, respectively; a float `y_th` reprsenting the failure threshold (when the degradation is larger than `y_th`, the system fails). Calculate the probability of failure at a future moment `t_pred`.\n    >>> Examples: gpm([10, 20, 30, 40, 50, 60], [9.8, 12.5, 13.6, 12.8, 15.6, 14.2], 40, 340)\n    >>> 0.36501126\n    '''\n",
+        "task_id": "3_reliability_estimation_and_data_analysis[Q5]",
+        "entry_point": "gpm",
+        "tests": "def check(candidate):    \n    tol = 1e-3\n\n    try:\n        assert abs(candidate([10, 20, 30, 40, 50, 60], [9.8, 12.5, 13.6, 12.8, 15.6, 14.2], 40, 340)-0.365011260)<tol\n        \n        return 'pass'\n    except AssertionError:\n        return 'fail'",
+        "metadata": {
+            "origin": "3_reliability_estimation_and_data_analysis"
+        }
+    }
+]

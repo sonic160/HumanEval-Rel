@@ -1,0 +1,39 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.pytest_cache
+.vscode
+.env
+
+
+#evals
+logs/
+results/.cache
+evals.parquet
+
+# Analysis
+analysis_data.jsonl
+categorized_errors.jsonl
+error_analysis.json
+dashboard.html
+pass_at_k_analysis.csv
+dashboard.html
+assets
+artifacts
+solutions
+token_usage_analysis.csv
+
+#dev
+analysis_scripts/ 
+results
+ONBOARDING.md
+
+# article drafts
+article_draft

@@ -1,0 +1,49 @@
+reformulate: |-
+  STEP 1 - REFORMULATE THE PROBLEM:
+
+  Please carefully analyze the given problem and reformulate it in a clear, structured way.
+  - Identify the key requirements and constraints
+  - Clarify any ambiguous aspects
+  - Rephrase the problem in a more precise mathematical or algorithmic language
+  - Define the input and expected output clearly
+
+  Reformulated Problem:
+
+math_model: |-
+  STEP 2 - CREATE A MATHEMATICAL MODEL:
+
+  Based on the reformulated problem above, create a mathematical model or algorithmic approach.
+  - Define mathematical variables and relationships
+  - Identify relevant formulas, algorithms, or data structures
+  - Describe the mathematical approach to solve the problem
+  - Specify any mathematical constraints or conditions
+
+  Mathematical Model:
+
+formal_solution: |-
+  STEP 3 - FORMALLY SOLVE THE MODEL:
+
+  Using the mathematical model defined above, provide a formal solution.
+  - Apply the mathematical approach step by step
+  - Show the logical reasoning and calculations
+  - Derive the solution methodology
+  - Explain the algorithm or procedure in detail
+
+  Formal Solution:
+
+python_implementation: |-
+  STEP 4 - IMPLEMENT THE FORMAL SOLUTION IN PYTHON:
+
+  Based on the formal solution above, implement the solution in Python code.
+  - Write clean, efficient Python code
+  - Include appropriate comments explaining the logic
+  - Handle edge cases and error conditions
+  - Ensure the code follows the mathematical model and formal solution
+  - Make sure that at the end of your response, you include the Python code block
+  - Make sure to import any necessary libraries inside the function and that the function name matches the one given in the problem statement
+
+  Python Implementation:
+
+  ```python
+  # Your Python code here
+  ```
