@@ -9,6 +9,8 @@ from he_rel.utils.code_extraction import extract_markdown_block
 default_humaneval_scorer = verify( extract_markdown_block )
 
 from he_rel.solvers.chain_of_prompts import chain_of_prompts
+from he_rel.solvers.self_debugging import self_debugging, self_debugging_rd
+from he_rel.solvers.alphacodium import alphacodium
 
 ########################
 # MonkeyPatch OpenRouterAPI to support extra_body and extra_headers this is useful from some models that support max_reasoning token settings.
@@ -40,4 +42,11 @@ OpenRouterAPI._generate_completion = _new_generate_completion  # ty:ignore[inval
 ########################
 
 
-__all__ = ["humanevalrel", "default_humaneval_scorer", "chain_of_prompts"]
+__all__ = [
+    "humanevalrel",
+    "default_humaneval_scorer",
+    "chain_of_prompts",
+    "self_debugging",
+    "self_debugging_rd",
+    "alphacodium",
+]

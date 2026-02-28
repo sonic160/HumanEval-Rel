@@ -149,6 +149,10 @@ class SandboxCodeRunner:
         except Exception:
             return False, "Execution error: failed to retrieve result"
 
+    def execute(self, code: str) -> tuple[bool, str | None]:
+        """Public wrapper for executing arbitrary code. Returns (passed, error)."""
+        return self.__execute(code)
+
     def run_tests(
         self, completion: str, tests: str, entry_point: str
     ) -> tuple[bool, str | None]:

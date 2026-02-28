@@ -1,0 +1,123 @@
+self_reflection: |-
+  STEP 1 - SELF-REFLECTION:
+
+  Please carefully analyze the given problem and reformulate it in your own words.
+  - Restate the problem clearly, identifying inputs, outputs, and constraints
+  - Identify potential pitfalls and tricky aspects (e.g., confusing hazard rate with CDF, reliability = 1 - CDF, cumulative vs density, etc.)
+  - List edge cases that could cause issues (empty arrays, zero values, boundary conditions)
+  - Identify domain-specific conventions that are important
+
+  Self-Reflection:
+
+solution_candidates: |-
+  STEP 2 - GENERATE SOLUTION CANDIDATES:
+
+  Based on your self-reflection above, propose 2-3 different approaches to solve this problem.
+  For each approach:
+  - Describe the method (e.g., analytical formula, numerical integration, scipy function, manual implementation)
+  - List advantages and risks
+  - Rate robustness (high/medium/low)
+
+  Rank the approaches by robustness and recommend the best one.
+
+  Solution Candidates:
+
+generate_tests: |-
+  STEP 3 - GENERATE ADDITIONAL TEST CASES:
+
+  Based on the problem description and examples in the docstring, generate 3-5 additional test cases.
+  These should include:
+  - Edge cases (e.g., t=0, delta_t=0, empty input, reliability=0 or 1)
+  - Intermediate cases that can be verified by hand or with simple calculations
+  - Cases that test common pitfalls you identified in Step 1
+
+  For each test case, provide:
+  1. The input values
+  2. The expected output (computed by hand or reasoning)
+  3. A brief explanation of why this test is useful
+
+  Format each test as a Python assertion:
+  ```python
+  # Test description
+  assert abs(function_name(args) - expected) < 1e-6, "description"
+  ```
+
+  Additional Test Cases:
+
+python_implementation: |-
+  STEP 4 - IMPLEMENT THE SOLUTION IN PYTHON:
+
+  Using the top-ranked approach from Step 2, implement the solution in Python code.
+  - Use the self-reflection from Step 1 to avoid identified pitfalls
+  - Write clean, efficient Python code
+  - Make sure to import any necessary libraries inside the function
+  - Ensure the function name matches the one given in the problem statement
+
+  Provide the code in a Python code block:
+
+  ```python
+  # Your Python code here
+  ```
+
+debug_public: |-
+  DEBUG (PUBLIC TESTS FAILED):
+
+  Your code failed on the examples from the problem docstring.
+
+  **Original Problem:**
+  {problem}
+
+  **Your Self-Reflection (from Step 1):**
+  {self_reflection}
+
+  **Your Code:**
+  ```python
+  {code}
+  ```
+
+  **Execution Error:**
+  ```
+  {error}
+  ```
+
+  Please fix the code. Pay special attention to the pitfalls identified in your self-reflection.
+
+  Provide the corrected code in a Python code block:
+
+  ```python
+  # Your corrected Python code here
+  ```
+
+debug_ai_tests: |-
+  DEBUG (AI-GENERATED TESTS FAILED):
+
+  Your code passes the public tests from the docstring, but failed on additional test cases.
+
+  **Original Problem:**
+  {problem}
+
+  **Your Self-Reflection (from Step 1):**
+  {self_reflection}
+
+  **Your Code:**
+  ```python
+  {code}
+  ```
+
+  **Failed Test:**
+  ```
+  {failed_test}
+  ```
+
+  **Execution Error:**
+  ```
+  {error}
+  ```
+
+  IMPORTANT: Your code must continue to pass the public tests. Fix only the issue revealed by the AI-generated test.
+
+  Provide the corrected code in a Python code block:
+
+  ```python
+  # Your corrected Python code here
+  ```
