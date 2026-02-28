@@ -410,7 +410,7 @@ def plot_heatmap_by_category(
     """Heatmap of pass rates grouped by question category (aggregated).
     
     This provides a clearer view by grouping similar questions together.
-    Includes average pass rate per category at the top.
+    Models sorted by strength (top to bottom), categories sorted by difficulty (hardest left, easiest right).
     """
     # Don't use seaborn style for heatmaps - it adds unwanted grid
     plt.rcParams['figure.figsize'] = (12, 6)
@@ -433,26 +433,38 @@ def plot_heatmap_by_category(
     # Pivot to get model x category matrix
     pivot_df = category_df.pivot(index="model", columns="category", values="pass_rate")
     
-    # Sort columns
-    pivot_df = pivot_df.reindex(sorted(pivot_df.columns), axis=1)
+    # Sort columns by category difficulty (average pass rate): easiest on left, hardest on right
+    category_avgs = pivot_df.mean(axis=0).sort_values(ascending=False)
+    pivot_df = pivot_df[category_avgs.index]
+    
+    # Sort rows by model strength (average pass rate): strongest at top (will be inverted in display)
+    model_strength = pivot_df.mean(axis=1).sort_values(ascending=False)
+    pivot_df = pivot_df.loc[model_strength.index]
     
     # Fill NaN with 0 for display
     pivot_df = pivot_df.fillna(0)
     
-    # Compute category averages (across all models)
+    # Compute category averages (across all models) - already sorted by difficulty
     category_avgs = pivot_df.mean(axis=0)
     
-    # Create figure with appropriate size - extra height for category averages at top
+    # Compute model averages (across all categories)
+    model_avgs = pivot_df.mean(axis=1)
+    
+    # Add model averages as a column in the pivot table
+    pivot_df_with_avg = pivot_df.copy()
+    pivot_df_with_avg['Average'] = model_avgs
+    
+    # Create figure with appropriate size
     n_categories = len(pivot_df.columns)
     n_models = len(pivot_df.index)
-    fig_width = max(10, n_categories * 1.8 + 3)
-    fig_height = max(6, n_models * 1.0 + 3)
+    fig_width = max(12, n_categories * 1.5 + 3.5)
+    fig_height = max(8, n_models * 0.9 + 2)
     
     fig, ax = plt.subplots(figsize=(fig_width, fig_height))
     
     # Use pcolormesh for cleaner rendering
     im = ax.pcolormesh(
-        pivot_df.values, 
+        pivot_df_with_avg.values, 
         cmap='RdYlGn', 
         vmin=0, 
         vmax=1,
@@ -461,39 +473,34 @@ def plot_heatmap_by_category(
     )
     
     # Y-axis labels (models) - center in cells
-    ax.set_yticks(np.arange(len(pivot_df.index)) + 0.5)
-    ax.set_yticklabels(pivot_df.index, fontsize=13, fontweight='bold')
+    ax.set_yticks(np.arange(len(pivot_df_with_avg.index)) + 0.5)
+    ax.set_yticklabels(pivot_df_with_avg.index, fontsize=12, fontweight='bold')
     
-    # X-axis labels (categories) - center in cells
-    ax.set_xticks(np.arange(len(pivot_df.columns)) + 0.5)
+    # X-axis labels (categories + Average) - center in cells
+    ax.set_xticks(np.arange(len(pivot_df_with_avg.columns)) + 0.5)
     # Clean up category names for display
     category_labels = [c.replace('_', ' ').title() for c in pivot_df.columns]
-    ax.set_xticklabels(category_labels, rotation=45, ha='right', fontsize=12, fontweight='bold')
+    category_labels.append('Average')
+    ax.set_xticklabels(category_labels, rotation=25, ha='right', fontsize=11, fontweight='bold')
     
-    ax.set_title("Pass Rate by Question Category and Model", fontsize=16, fontweight='bold', pad=40)
-    ax.set_xlabel("Question Category", fontsize=14, fontweight='bold')
-    ax.set_ylabel("Model", fontsize=14, fontweight='bold')
+    ax.set_title("")
+    ax.set_xlabel("", fontsize=14, fontweight='bold')
+    ax.set_ylabel("Model", fontsize=13, fontweight='bold')
     
     # Invert y-axis so first model is at top
     ax.invert_yaxis()
     
     # Add value annotations in each cell
-    for i in range(len(pivot_df.index)):
-        for j in range(len(pivot_df.columns)):
-            value = pivot_df.iloc[i, j]
+    for i in range(len(pivot_df_with_avg.index)):
+        for j in range(len(pivot_df_with_avg.columns)):
+            value = pivot_df_with_avg.iloc[i, j]
             if not np.isnan(value):
                 text_color = 'white' if value < 0.4 or value > 0.7 else 'black'
                 ax.text(j + 0.5, i + 0.5, f'{value:.0%}', ha='center', va='center',
-                       fontsize=12, fontweight='bold', color=text_color)
+                       fontsize=11, fontweight='bold', color=text_color)
     
-    # Add category averages at the top of columns
-    for j, (col, avg) in enumerate(zip(pivot_df.columns, category_avgs)):
-        ax.text(j + 0.5, -0.3, f'Avg: {avg:.0%}', ha='center', va='bottom',
-               fontsize=11, fontweight='bold', color='darkblue',
-               bbox=dict(boxstyle='round,pad=0.2', facecolor='lightyellow', edgecolor='gray', alpha=0.8))
-    
-    # Adjust top margin to show the category averages
-    ax.set_ylim(len(pivot_df.index), -0.6)
+    # Adjust margins to show content properly
+    ax.set_ylim(len(pivot_df_with_avg.index), -0.5)
     
     # Add colorbar
     cbar = plt.colorbar(im, ax=ax, label="Pass Rate", shrink=0.8, pad=0.02)
